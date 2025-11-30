@@ -1,6 +1,6 @@
-﻿using ElegantnailsstudioSystemManagement.Models;
+﻿using ElegantNailsStudioSystemManagement.Models;
 
-namespace ElegantnailsstudioSystemManagement.Services
+namespace ElegantNailsStudioSystemManagement.Services
 {
     public interface ICategoriaService
     {
@@ -10,6 +10,7 @@ namespace ElegantnailsstudioSystemManagement.Services
         Task<bool> CreateCategoriaAsync(Categoria categoria);
         Task<bool> UpdateCategoriaAsync(Categoria categoria);
         Task<bool> DeleteCategoriaAsync(int id);
+        Task<bool> ToggleCategoriaStatusAsync(int id);
     }
 
     public class CategoriaService : ICategoriaService
@@ -19,33 +20,38 @@ namespace ElegantnailsstudioSystemManagement.Services
 
         public CategoriaService()
         {
+            
             _categorias.AddRange(new[]
             {
                 new Categoria {
                     Id = _nextId++,
-                    Nombre = "Uñas"
+                    Nombre = "Uñas",
+                    Descripcion = "Servicios de manicura y pedicura",
+                    Activo = true
                 },
                 new Categoria {
                     Id = _nextId++,
-                    Nombre = "Pestañas"
+                    Nombre = "Pestañas",
+                    Descripcion = "Servicios de extensión y diseño de pestañas",
+                    Activo = true
                 }
             });
         }
 
         public Task<List<Categoria>> GetCategoriasAsync()
         {
-            return Task.FromResult(_categorias.ToList());
+            return Task.FromResult(_categorias.Where(c => c.Activo).ToList());
         }
 
         public Task<Categoria?> GetCategoriaByIdAsync(int id)
         {
-            return Task.FromResult(_categorias.FirstOrDefault(c => c.Id == id));
+            return Task.FromResult(_categorias.FirstOrDefault(c => c.Id == id && c.Activo));
         }
 
         public Task<Categoria?> GetCategoriaByNombreAsync(string nombre)
         {
             return Task.FromResult(_categorias.FirstOrDefault(c =>
-                c.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase)));
+                c.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase) && c.Activo));
         }
 
         public Task<bool> CreateCategoriaAsync(Categoria categoria)
@@ -54,6 +60,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                 return Task.FromResult(false);
 
             categoria.Id = _nextId++;
+            categoria.Activo = true;
             _categorias.Add(categoria);
             return Task.FromResult(true);
         }
@@ -64,6 +71,7 @@ namespace ElegantnailsstudioSystemManagement.Services
             if (existing != null)
             {
                 existing.Nombre = categoria.Nombre;
+                existing.Descripcion = categoria.Descripcion;
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
@@ -74,7 +82,18 @@ namespace ElegantnailsstudioSystemManagement.Services
             var categoria = _categorias.FirstOrDefault(c => c.Id == id);
             if (categoria != null)
             {
-                _categorias.Remove(categoria);
+                categoria.Activo = false;
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> ToggleCategoriaStatusAsync(int id)
+        {
+            var categoria = _categorias.FirstOrDefault(c => c.Id == id);
+            if (categoria != null)
+            {
+                categoria.Activo = !categoria.Activo;
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);

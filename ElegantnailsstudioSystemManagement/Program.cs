@@ -1,34 +1,26 @@
-using ElegantnailsstudioSystemManagement;
-using ElegantnailsstudioSystemManagement.Services;
+using ElegantnailsstudioSystemManagement.Components;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents()  // ? CAMBIA ESTO
-    .AddInteractiveServerComponents(); // ? Y AÑADE ESTO
-
-// Registrar servicios personalizados
-builder.Services.AddScoped<ICategoriaService, CategoriaService>();
-builder.Services.AddScoped<IServicioService, ServicioService>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<ICupoService, CupoService>();
-builder.Services.AddScoped<ICitaService, CitaService>();
-builder.Services.AddScoped<AuthStateService>();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// ? USA ESTO EN VEZ DE MapBlazorHub()
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

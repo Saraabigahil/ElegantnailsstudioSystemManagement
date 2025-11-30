@@ -1,6 +1,6 @@
-﻿using ElegantnailsstudioSystemManagement.Models;
+﻿using ElegantNailsStudioSystemManagement.Models;
 
-namespace ElegantnailsstudioSystemManagement.Services
+namespace ElegantNailsStudioSystemManagement.Services
 {
     public interface IUsuarioService
     {
@@ -22,12 +22,14 @@ namespace ElegantnailsstudioSystemManagement.Services
 
         public UsuarioService()
         {
+            // Inicializar roles
             _roles.AddRange(new[]
             {
                 new Rol { Id = 1, Nombre = "Admin" },
                 new Rol { Id = 2, Nombre = "Usuario" }
             });
 
+            // Usuario admin por defecto
             _usuarios.Add(new Usuario
             {
                 Id = _nextUsuarioId++,
@@ -35,10 +37,11 @@ namespace ElegantnailsstudioSystemManagement.Services
                 Email = "admin@elegantnails.com",
                 Password = "admin123",
                 Telefono = "76872677",
-                Rol = 1,
-                RolId = 1
+                RolId = 1,
+                FechaRegistro = DateTime.Now
             });
 
+            // Usuario cliente de ejemplo
             _usuarios.Add(new Usuario
             {
                 Id = _nextUsuarioId++,
@@ -46,24 +49,39 @@ namespace ElegantnailsstudioSystemManagement.Services
                 Email = "cliente@ejemplo.com",
                 Password = "cliente123",
                 Telefono = "1234-5678",
-                Rol = 2,
-                RolId = 2
+                RolId = 2,
+                FechaRegistro = DateTime.Now
             });
         }
 
         public Task<List<Usuario>> GetUsuariosAsync()
         {
-            return Task.FromResult(_usuarios.ToList());
+            var usuarios = _usuarios.Select(u => {
+                u.Rol = _roles.FirstOrDefault(r => r.Id == u.RolId);
+                return u;
+            }).ToList();
+
+            return Task.FromResult(usuarios);
         }
 
         public Task<Usuario?> GetUsuarioByIdAsync(int id)
         {
-            return Task.FromResult(_usuarios.FirstOrDefault(u => u.Id == id));
+            var usuario = _usuarios.FirstOrDefault(u => u.Id == id);
+            if (usuario != null)
+            {
+                usuario.Rol = _roles.FirstOrDefault(r => r.Id == usuario.RolId);
+            }
+            return Task.FromResult(usuario);
         }
 
         public Task<Usuario?> GetUsuarioByEmailAsync(string email)
         {
-            return Task.FromResult(_usuarios.FirstOrDefault(u => u.Email == email));
+            var usuario = _usuarios.FirstOrDefault(u => u.Email == email);
+            if (usuario != null)
+            {
+                usuario.Rol = _roles.FirstOrDefault(r => r.Id == usuario.RolId);
+            }
+            return Task.FromResult(usuario);
         }
 
         public Task<bool> CreateUsuarioAsync(Usuario usuario)
@@ -72,8 +90,8 @@ namespace ElegantnailsstudioSystemManagement.Services
                 return Task.FromResult(false);
 
             usuario.Id = _nextUsuarioId++;
-            usuario.Rol = 2;
-            usuario.RolId = 2;
+            usuario.RolId = 2; 
+            usuario.FechaRegistro = DateTime.Now;
             _usuarios.Add(usuario);
             return Task.FromResult(true);
         }
@@ -113,7 +131,14 @@ namespace ElegantnailsstudioSystemManagement.Services
             var rol = _roles.FirstOrDefault(r => r.Nombre == rolNombre);
             if (rol == null) return Task.FromResult(new List<Usuario>());
 
-            var usuarios = _usuarios.Where(u => u.RolId == rol.Id).ToList();
+            var usuarios = _usuarios
+                .Where(u => u.RolId == rol.Id)
+                .Select(u => {
+                    u.Rol = rol;
+                    return u;
+                })
+                .ToList();
+
             return Task.FromResult(usuarios);
         }
     }
