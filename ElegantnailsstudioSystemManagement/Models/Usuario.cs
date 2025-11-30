@@ -1,4 +1,6 @@
-﻿namespace ElegantNailsStudioSystemManagement.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ElegantnailsstudioSystemManagement.Models
 {
     public class Usuario
     {
@@ -7,10 +9,7 @@
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Telefono { get; set; } = string.Empty;
+        public int Rol { get; set; }
         public int RolId { get; set; }
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
-
-
-        public Rol? Rol { get; set; }
     }
 }

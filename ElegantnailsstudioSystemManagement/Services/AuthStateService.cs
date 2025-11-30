@@ -1,13 +1,13 @@
-﻿using ElegantNailsStudioSystemManagement.Models;
+﻿using ElegantnailsstudioSystemManagement.Models;
 
-namespace ElegantNailsStudioSystemManagement.Services
+namespace ElegantnailsstudioSystemManagement.Services
 {
     public class AuthStateService
     {
         public Usuario? CurrentUser { get; private set; }
         public bool IsLoggedIn => CurrentUser != null;
-        public bool IsAdmin => CurrentUser?.Rol?.Nombre == "Admin";
-        public bool IsUsuario => CurrentUser?.Rol?.Nombre == "Usuario";
+        public bool IsAdmin => CurrentUser?.Rol == 1;
+        public bool IsUsuario => CurrentUser?.Rol == 2;
 
         public event Action? OnChange;
 

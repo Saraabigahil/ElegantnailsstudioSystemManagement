@@ -1,0 +1,261 @@
+﻿@page "/servicios"
+@using ElegantnailsstudioSystemManagement.Models
+@using ElegantnailsstudioSystemManagement.Services
+@inject IServicioService ServicioService
+@inject ICategoriaService CategoriaService
+@inject AuthStateService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Elegant Nails - Servicios</PageTitle>
+
+<h1>Gestión de Servicios</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        @if (AuthService.IsAdmin)
+        {
+            <button class="btn btn-success" @onclick="ShowAddModal">
+                <i class="bi bi-plus-circle"></i> Agregar Servicio
+            </button>
+        }
+    </div>
+    <div class="col-md-6">
+        <select @bind="selectedCategoriaId" class="form-select" @oninput="(e) => OnCategoriaFilterChanged(e)">
+            <option value="0">Todas las categorías</option>
+            @foreach (var cat in categoriasFiltro)
+            {
+                <option value="@cat.Id">@cat.Nombre</option>
+            }
+        </select>
+    </div>
+</div>
+
+@if (servicios.Any())
+{
+    <div class="row">
+        @foreach (var servicio in servicios)
+        {
+            var categoria = categoriasFiltro.FirstOrDefault(c => c.Id == servicio.CategoriaId);
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@servicio.Nombre</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@(categoria?.Nombre ?? "Sin categoría")</h6>
+                        <p class="card-text">@servicio.Descripcion</p>
+                        <p class="card-text">
+                            <strong>Precio:</strong> @servicio.Precio.ToString("C")<br>
+                            <strong>Duración:</strong> @servicio.DuracionMinutos minutos
+                        </p>
+
+                    </div>
+                    @if (AuthService.IsAdmin)
+                    {
+                        <div class="card-footer">
+                            <button class="btn btn-sm btn-primary me-1" @onclick="() => EditServicio(servicio)">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
+                            <button class="btn btn-sm btn-danger" @onclick="() => DeleteServicio(servicio.Id)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card-footer">
+                            <button class="btn btn-primary w-100" @onclick="() => AgendarServicio(servicio)">
+                                <i class="bi bi-calendar-plus"></i> Agendar
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <h4>No hay servicios</h4>
+        <p>No se encontraron servicios @(selectedCategoriaId == 0 ? "" : "en esta categoría") en el sistema.</p>
+    </div>
+}
+
+<!-- Modal para agregar/editar servicio -->
+@if (showModal)
+{
+    <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@(currentServicio.Id == 0 ? "Agregar" : "Editar") Servicio</h5>
+                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                </div>
+                <EditForm Model="currentServicio" OnValidSubmit="SaveServicio">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Nombre:</label>
+                                    <InputText @bind-Value="currentServicio.Nombre" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Categoría:</label>
+                                    <select @bind="currentServicio.CategoriaId" class="form-select">
+                                        <option value="0">Seleccione categoría</option>
+                                        @foreach (var cat in categoriasFiltro)
+                                        {
+                                            <option value="@cat.Id">@cat.Nombre</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">Descripción:</label>
+                            <InputTextArea @bind-Value="currentServicio.Descripcion" class="form-control" rows="3" />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Precio ($):</label>
+                                    <InputNumber @bind-Value="currentServicio.Precio" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Duración (minutos):</label>
+                                    <InputNumber @bind-Value="currentServicio.DuracionMinutos" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label">URL de Imagen:</label>
+                            <InputText @bind-Value="currentServicio.ImagenUrl" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseModal">Cancelar</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Servicio> servicios = new();
+    private List<Categoria> categoriasFiltro = new();
+    private bool showModal = false;
+    private int selectedCategoriaId = 0;
+    private Servicio currentServicio = new();
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        try
+        {
+            categoriasFiltro = await CategoriaService.GetCategoriasAsync();
+            await LoadServicios();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar datos: {ex.Message}";
+        }
+    }
+
+    private async Task LoadServicios()
+    {
+        servicios = await ServicioService.GetServiciosActivosAsync();
+
+        if (selectedCategoriaId > 0)
+        {
+            servicios = servicios.Where(s => s.CategoriaId == selectedCategoriaId).ToList();
+        }
+    }
+
+    private async void OnCategoriaFilterChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int categoriaId))
+        {
+            selectedCategoriaId = categoriaId;
+        }
+        await LoadServicios();
+        StateHasChanged();
+    }
+
+    private void ShowAddModal()
+    {
+        currentServicio = new Servicio();
+        showModal = true;
+    }
+
+    private void EditServicio(Servicio servicio)
+    {
+        currentServicio = new Servicio
+            {
+                Id = servicio.Id,
+                Nombre = servicio.Nombre,
+                Descripcion = servicio.Descripcion,
+                Precio = servicio.Precio,
+                DuracionMinutos = servicio.DuracionMinutos,
+                CategoriaId = servicio.CategoriaId,
+                ImagenUrl = servicio.ImagenUrl
+            };
+        showModal = true;
+    }
+
+    private async Task SaveServicio()
+    {
+        try
+        {
+            bool success;
+            if (currentServicio.Id == 0)
+                success = await ServicioService.CrearServicio(currentServicio);
+            else
+                success = await ServicioService.ActualizarServicio(currentServicio);
+
+            if (success)
+            {
+                showModal = false;
+                await LoadServicios();
+                errorMessage = string.Empty;
+            }
+            else
+            {
+                errorMessage = "Error al guardar el servicio.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al guardar: {ex.Message}";
+        }
+    }
+
+    private async Task DeleteServicio(int id)
+    {
+        if (await ServicioService.EliminarServicio(id))
+        {
+            await LoadServicios();
+        }
+    }
+
+    private void AgendarServicio(Servicio servicio)
+    {
+        // Navegar a página de citas con el servicio pre-seleccionado
+        Navigation.NavigateTo($"/citas?servicioId={servicio.Id}");
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+        errorMessage = string.Empty;
+    }
+}

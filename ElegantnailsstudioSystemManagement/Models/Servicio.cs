@@ -1,4 +1,4 @@
-﻿namespace ElegantNailsStudioSystemManagement.Models
+﻿namespace ElegantnailsstudioSystemManagement.Models
 {
     public class Servicio
     {
@@ -9,9 +9,5 @@
         public int DuracionMinutos { get; set; } = 60;
         public int CategoriaId { get; set; }
         public string ImagenUrl { get; set; } = string.Empty;
-        public bool Activo { get; set; } = true;
-
-
-        public Categoria? Categoria { get; set; }
     }
 }
