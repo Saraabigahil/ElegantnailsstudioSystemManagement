@@ -1,0 +1,297 @@
+﻿@page "/usuarios"
+@using ElegantnailsstudioSystemManagement.Models
+@using ElegantnailsstudioSystemManagement.Services
+@inject IUsuarioService UsuarioService
+@inject AuthStateService AuthService
+
+<PageTitle>Elegant Nails - Usuarios</PageTitle>
+
+<h1>Gestión de Usuarios</h1>
+
+@if (!AuthService.IsAdmin)
+{
+    <div class="alert alert-warning">
+        <h4>Acceso Restringido</h4>
+        <p>No tienes permisos para acceder a esta sección.</p>
+    </div>
+}
+else
+{
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    }
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <button class="btn btn-success" @onclick="ShowAddModal">
+                <i class="bi bi-plus-circle"></i> Agregar Usuario
+            </button>
+        </div>
+        <div class="col-md-6">
+            <select @bind="rolFiltro" @bind:event="onchange" class="form-select">
+                <option value="">Todos los roles</option>
+                <option value="1">Administradores</option>
+                <option value="2">Clientes</option>
+            </select>
+        </div>
+    </div>
+
+    @if (usuarios.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Rol</th>
+                        <th>Fecha Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in usuarios)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Nombre</td>
+                            <td>@user.Email</td>
+                            <td>@user.Telefono</td>
+                            <td>
+                                <span class="badge @(GetBadgeClass(user.RolId))">
+                                    @GetRolName(user.RolId)
+                                </span>
+                            </td>
+                            
+                            <td>
+                                <button class="btn btn-sm btn-primary me-1" @onclick="() => EditUsuario(user)"
+                                        title="Editar usuario">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                @if (user.Id != AuthService.CurrentUser?.Id)
+                                {
+                                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteUsuario(user.Id)"
+                                            title="Eliminar usuario">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h4>No hay usuarios</h4>
+            <p>No se encontraron usuarios con los filtros aplicados.</p>
+        </div>
+    }
+
+    <!-- Modal para agregar/editar usuario -->
+    @if (showModal)
+    {
+        <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">@(currentUsuario.Id == 0 ? "Agregar" : "Editar") Usuario</h5>
+                        <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                    </div>
+                    <EditForm Model="currentUsuario" OnValidSubmit="SaveUsuario">
+                        <DataAnnotationsValidator />
+                        <div class="modal-body">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Nombre:</label>
+                                <InputText @bind-Value="currentUsuario.Nombre" class="form-control" />
+                                <ValidationMessage For="@(() => currentUsuario.Nombre)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Email:</label>
+                                <InputText @bind-Value="currentUsuario.Email" class="form-control" />
+                                <ValidationMessage For="@(() => currentUsuario.Email)" />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Teléfono:</label>
+                                <InputText @bind-Value="currentUsuario.Telefono" class="form-control" />
+                            </div>
+                            @if (currentUsuario.Id == 0)
+                            {
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Contraseña:</label>
+                                    <InputText type="password" @bind-Value="password" class="form-control" />
+                                    <ValidationMessage For="@(() => password)" />
+                                </div>
+                            }
+                            <div class="form-group mb-3">
+                                <label class="form-label">Rol:</label>
+                                <select @bind="currentUsuario.RolId" class="form-select">
+                                    <option value="1">Administrador</option>
+                                    <option value="2">Cliente</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="button" class="btn btn-secondary" @onclick="CloseModal">Cancelar</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private List<Usuario> usuarios = new();
+    private bool showModal = false;
+    private string rolFiltro = "";
+    private string password = "";
+    private Usuario currentUsuario = new();
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsuarios();
+    }
+
+    private async Task LoadUsuarios()
+    {
+        try
+        {
+            var allUsuarios = await UsuarioService.GetUsuariosAsync();
+
+            if (string.IsNullOrEmpty(rolFiltro))
+            {
+                usuarios = allUsuarios;
+            }
+            else
+            {
+                usuarios = allUsuarios.Where(u => u.RolId.ToString() == rolFiltro).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar usuarios: {ex.Message}";
+        }
+    }
+
+    // Este método se llama automáticamente cuando rolFiltro cambia
+    private async Task OnRolFiltroChanged()
+    {
+        await LoadUsuarios();
+        StateHasChanged();
+    }
+
+    private string GetRolName(int rolId)
+    {
+        return rolId switch
+        {
+            1 => "Admin",
+            2 => "Usuario",
+            _ => "Desconocido"
+        };
+    }
+
+    private string GetBadgeClass(int rolId)
+    {
+        return rolId == 1 ? "bg-danger" : "bg-info";
+    }
+
+    private void ShowAddModal()
+    {
+        currentUsuario = new Usuario { RolId = 2 }; // Por defecto Cliente
+        password = string.Empty;
+        showModal = true;
+    }
+
+    private void EditUsuario(Usuario user)
+    {
+        currentUsuario = new Usuario
+            {
+                Id = user.Id,
+                Nombre = user.Nombre,
+                Email = user.Email,
+                Telefono = user.Telefono,
+                RolId = user.RolId
+            };
+        showModal = true;
+    }
+
+    private async Task SaveUsuario()
+    {
+        try
+        {
+            bool success;
+            if (currentUsuario.Id == 0)
+            {
+                if (string.IsNullOrEmpty(password))
+                {
+                    errorMessage = "La contraseña es requerida para nuevos usuarios";
+                    return;
+                }
+
+                currentUsuario.Password = password;
+                success = await UsuarioService.CreateUsuarioAsync(currentUsuario);
+            }
+            else
+            {
+                success = await UsuarioService.UpdateUsuarioAsync(currentUsuario);
+            }
+
+            if (success)
+            {
+                showModal = false;
+                await LoadUsuarios();
+                errorMessage = string.Empty;
+            }
+            else
+            {
+                errorMessage = "Error al guardar el usuario. Verifique que el email no exista.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al guardar: {ex.Message}";
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task DeleteUsuario(int id)
+    {
+        try
+        {
+            if (await UsuarioService.DeleteUsuarioAsync(id))
+            {
+                await LoadUsuarios();
+                errorMessage = string.Empty;
+            }
+            else
+            {
+                errorMessage = "Error al eliminar el usuario";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al eliminar: {ex.Message}";
+        }
+
+        StateHasChanged();
+    }
+
+    private void CloseModal()
+    {
+        showModal = false;
+        errorMessage = string.Empty;
+        password = string.Empty;
+        StateHasChanged();
+    }
+}

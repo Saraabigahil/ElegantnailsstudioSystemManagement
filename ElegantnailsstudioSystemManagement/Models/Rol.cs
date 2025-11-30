@@ -1,4 +1,4 @@
-﻿namespace ElegantNailsStudioSystemManagement.Models
+﻿namespace ElegantnailsstudioSystemManagement.Models
 {
     public class Rol
     {

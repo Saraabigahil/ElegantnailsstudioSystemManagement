@@ -1,0 +1,65 @@
+﻿/* wwwroot/css/app.css */
+.main-content {
+    margin-top: 80px;
+    min-height: calc(100vh - 80px);
+    background-color: #f8f9fa;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    color: #6c757d !important;
+}
+
+.navbar-nav .nav-link {
+    color: #6c757d !important;
+    font-weight: 500;
+}
+
+    .navbar-nav .nav-link.active {
+        color: #495057 !important;
+        font-weight: 600;
+    }
+
+.service-card {
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+    .service-card:hover {
+        transform: translateY(-2px);
+    }
+
+.btn-primary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    border-radius: 4px;
+}
+
+    .btn-primary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+
+.btn-outline-primary {
+    color: #6c757d;
+    border-color: #6c757d;
+    border-radius: 4px;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+.text-primary {
+    color: #6c757d !important;
+}
+
+.card-title {
+    font-size: 1rem;
+    line-height: 1.4;
+}
