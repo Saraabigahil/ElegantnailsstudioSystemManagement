@@ -1,4 +1,5 @@
 ﻿using ElegantnailsstudioSystemManagement.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ElegantnailsstudioSystemManagement.Services
 {
@@ -14,70 +15,108 @@ namespace ElegantnailsstudioSystemManagement.Services
 
     public class CategoriaService : ICategoriaService
     {
-        private readonly List<Categoria> _categorias = new();
-        private int _nextId = 1;
+        private readonly ApplicationDbContext _context;
 
-        public CategoriaService()
+        public CategoriaService(ApplicationDbContext context)
         {
-            _categorias.AddRange(new[]
+            _context = context;
+        }
+
+        public async Task<List<Categoria>> GetCategoriasAsync()
+        {
+            try
             {
-                new Categoria {
-                    Id = _nextId++,
-                    Nombre = "Uñas"
-                },
-                new Categoria {
-                    Id = _nextId++,
-                    Nombre = "Pestañas"
-                }
-            });
-        }
-
-        public Task<List<Categoria>> GetCategoriasAsync()
-        {
-            return Task.FromResult(_categorias.ToList());
-        }
-
-        public Task<Categoria?> GetCategoriaByIdAsync(int id)
-        {
-            return Task.FromResult(_categorias.FirstOrDefault(c => c.Id == id));
-        }
-
-        public Task<Categoria?> GetCategoriaByNombreAsync(string nombre)
-        {
-            return Task.FromResult(_categorias.FirstOrDefault(c =>
-                c.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase)));
-        }
-
-        public Task<bool> CreateCategoriaAsync(Categoria categoria)
-        {
-            if (_categorias.Any(c => c.Nombre.Equals(categoria.Nombre, StringComparison.OrdinalIgnoreCase)))
-                return Task.FromResult(false);
-
-            categoria.Id = _nextId++;
-            _categorias.Add(categoria);
-            return Task.FromResult(true);
-        }
-
-        public Task<bool> UpdateCategoriaAsync(Categoria categoria)
-        {
-            var existing = _categorias.FirstOrDefault(c => c.Id == categoria.Id);
-            if (existing != null)
+                return await _context.Categorias
+                    .OrderBy(c => c.Nombre)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
             {
+                Console.WriteLine($"💥 ERROR GetCategoriasAsync: {ex.Message}");
+                return new List<Categoria>();
+            }
+        }
+
+        public async Task<Categoria?> GetCategoriaByIdAsync(int id)
+        {
+            try
+            {
+                return await _context.Categorias.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetCategoriaByIdAsync: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<Categoria?> GetCategoriaByNombreAsync(string nombre)
+        {
+            try
+            {
+                return await _context.Categorias
+                    .FirstOrDefaultAsync(c => c.Nombre.ToLower() == nombre.ToLower());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetCategoriaByNombreAsync: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> CreateCategoriaAsync(Categoria categoria)
+        {
+            try
+            {
+                // Evita duplicados
+                if (await _context.Categorias.AnyAsync(c => c.Nombre.ToLower() == categoria.Nombre.ToLower()))
+                    return false;
+
+                _context.Categorias.Add(categoria);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR CreateCategoriaAsync: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateCategoriaAsync(Categoria categoria)
+        {
+            try
+            {
+                var existing = await _context.Categorias.FindAsync(categoria.Id);
+                if (existing == null) return false;
+
                 existing.Nombre = categoria.Nombre;
-                return Task.FromResult(true);
+                await _context.SaveChangesAsync();
+                return true;
             }
-            return Task.FromResult(false);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR UpdateCategoriaAsync: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<bool> DeleteCategoriaAsync(int id)
+        public async Task<bool> DeleteCategoriaAsync(int id)
         {
-            var categoria = _categorias.FirstOrDefault(c => c.Id == id);
-            if (categoria != null)
+            try
             {
-                _categorias.Remove(categoria);
-                return Task.FromResult(true);
+                var categoria = await _context.Categorias.FindAsync(id);
+                if (categoria == null) return false;
+
+                _context.Categorias.Remove(categoria);
+                await _context.SaveChangesAsync();
+                return true;
             }
-            return Task.FromResult(false);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR DeleteCategoriaAsync: {ex.Message}");
+                return false;
+            }
         }
     }
 }

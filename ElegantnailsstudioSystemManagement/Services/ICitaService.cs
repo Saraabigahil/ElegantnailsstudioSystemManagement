@@ -1,4 +1,5 @@
 ﻿using ElegantnailsstudioSystemManagement.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ElegantnailsstudioSystemManagement.Services
 {
@@ -17,127 +18,292 @@ namespace ElegantnailsstudioSystemManagement.Services
         Task<List<Cita>> GetCitasByEstadoAsync(string estado);
     }
 
+
     public class CitaService : ICitaService
     {
-        private readonly List<Cita> _citas = new();
+        private readonly ApplicationDbContext _context;
         private readonly ICupoService _cupoService;
-        private int _nextId = 1;
 
-        public CitaService(ICupoService cupoService)
+        public CitaService(ApplicationDbContext context, ICupoService cupoService)
         {
+            _context = context;
             _cupoService = cupoService;
         }
 
-        public Task<List<Cita>> GetCitasAsync()
-        {
-            return Task.FromResult(_citas.ToList());
-        }
-
-        public Task<List<Cita>> GetCitasActivasAsync()
-        {
-            var citasActivas = _citas
-                .Where(c => c.Estado != "cancelada" && c.Estado != "completada")
-                .ToList();
-            return Task.FromResult(citasActivas);
-        }
-
-        public Task<Cita?> GetCitaByIdAsync(int id)
-        {
-            return Task.FromResult(_citas.FirstOrDefault(c => c.Id == id));
-        }
-
+        // En tu CitaService.cs, AÑADE estos métodos si no los tienes:
+        // En CitaService.cs - Corrige el método completo
         public async Task<bool> CreateCitaAsync(Cita cita)
         {
-            var disponible = await _cupoService.CheckDisponibilidadAsync(cita.FechaCita, cita.Turno);
-            if (!disponible)
-                return false;
+            try
+            {
+                // 1. Validar que el servicio exista
+                var servicio = await _context.Servicios.FindAsync(cita.ServicioId);
+                if (servicio == null)
+                {
+                    Console.WriteLine($"❌ Servicio con ID {cita.ServicioId} no encontrado");
+                    return false;
+                }
 
-            var cupoReservado = await _cupoService.ReservarCupoAsync(cita.FechaCita, cita.Turno);
-            if (!cupoReservado)
-                return false;
+                // 2. Validar que la fecha no sea pasada
+                if (cita.FechaCita.Date < DateTime.Today)
+                {
+                    Console.WriteLine($"❌ No se pueden agendar citas en fechas pasadas: {cita.FechaCita.Date}");
+                    return false;
+                }
 
-            cita.Id = _nextId++;
-            cita.Estado = "pendiente";
-            _citas.Add(cita);
-            return true;
+                // 3. Validar que el cupo esté habilitado
+                var cupo = await _cupoService.GetCupoByFechaTurnoAsync(cita.FechaCita, cita.Turno);
+                if (cupo == null || !cupo.Habilitado)
+                {
+                    Console.WriteLine($"❌ Cupo no habilitado para {cita.FechaCita.Date} - Turno: {cita.Turno}");
+                    return false;
+                }
+
+                // 4. Verificar disponibilidad considerando la duración del servicio
+                // CORREGIDO: Ahora pasamos la duración requerida
+                var disponible = await _cupoService.CheckDisponibilidadAsync(
+                    cita.FechaCita,
+                    cita.Turno,
+                    servicio.DuracionMinutos
+                );
+
+                if (!disponible)
+                {
+                    Console.WriteLine($"❌ No hay cupo disponible para {cita.FechaCita.Date} - {cita.Turno}");
+                    return false;
+                }
+
+                // 5. Reservar cupo
+                var cupoReservado = await _cupoService.ReservarCupoAsync(cita.FechaCita, cita.Turno);
+                if (!cupoReservado)
+                {
+                    Console.WriteLine($"❌ No se pudo reservar el cupo");
+                    return false;
+                }
+
+                // 6. Crear la cita
+                cita.Estado = "pendiente";
+                cita.FechaCreacion = DateTime.Now;
+                _context.Citas.Add(cita);
+
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"✅ Cita creada exitosamente - ID: {cita.Id}");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR CreateCitaAsync: {ex.Message}");
+                Console.WriteLine($"💥 StackTrace: {ex.StackTrace}");
+                return false;
+            }
         }
 
-        public Task<bool> UpdateCitaAsync(Cita cita)
+
+        public async Task<bool> CancelarCitaAsync(int id)
         {
-            var existing = _citas.FirstOrDefault(c => c.Id == cita.Id);
-            if (existing != null)
+            try
             {
+                var cita = await _context.Citas.FindAsync(id);
+                if (cita == null) return false;
+
+                // Solo se pueden cancelar citas pendientes
+                if (cita.Estado != "pendiente") return false;
+
+                // Liberar el cupo
+                await _cupoService.LiberarCupoAsync(cita.FechaCita, cita.Turno);
+
+                cita.Estado = "cancelada";
+                cita.FechaCancelacion = DateTime.Now;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR CancelarCitaAsync: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<List<Cita>> GetCitasAsync()
+        {
+            try
+            {
+                return await _context.Citas
+                    .OrderByDescending(c => c.FechaCita)
+                    .ThenBy(c => c.Turno)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetCitasAsync: {ex.Message}");
+                return new List<Cita>();
+            }
+        }
+
+        public async Task<List<Cita>> GetCitasActivasAsync()
+        {
+            try
+            {
+                return await _context.Citas
+                    .Where(c => c.Estado != "cancelada" && c.Estado != "completada")
+                    .OrderBy(c => c.FechaCita)
+                    .ThenBy(c => c.Turno)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetCitasActivasAsync: {ex.Message}");
+                return new List<Cita>();
+            }
+        }
+
+        public async Task<Cita?> GetCitaByIdAsync(int id)
+        {
+            try
+            {
+                return await _context.Citas.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetCitaByIdAsync: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> UpdateCitaAsync(Cita cita)
+        {
+            try
+            {
+                var existing = await _context.Citas.FindAsync(cita.Id);
+                if (existing == null) return false;
+
+                // Obtener el servicio para la duración
+                var servicio = await _context.Servicios.FindAsync(cita.ServicioId);
+                if (servicio == null) return false;
+
+                // Si cambia la fecha o turno, verificar cupo
+                if (existing.FechaCita.Date != cita.FechaCita.Date || existing.Turno != cita.Turno)
+                {
+                    // CORRECCIÓN: Agregar la duración del servicio
+                    var disponible = await _cupoService.CheckDisponibilidadAsync(
+                        cita.FechaCita,
+                        cita.Turno,
+                        servicio.DuracionMinutos);
+
+                    if (!disponible) return false;
+
+                    // Liberar cupo anterior
+                    await _cupoService.LiberarCupoAsync(existing.FechaCita, existing.Turno);
+
+                    // Reservar nuevo cupo
+                    var cupoReservado = await _cupoService.ReservarCupoAsync(cita.FechaCita, cita.Turno);
+                    if (!cupoReservado) return false;
+                }
+
                 existing.ClienteId = cita.ClienteId;
                 existing.ServicioId = cita.ServicioId;
                 existing.FechaCita = cita.FechaCita;
                 existing.Turno = cita.Turno;
                 existing.Estado = cita.Estado;
-                return Task.FromResult(true);
+
+                await _context.SaveChangesAsync();
+                return true;
             }
-            return Task.FromResult(false);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR UpdateCitaAsync: {ex.Message}");
+                return false;
+            }
         }
 
         public async Task<bool> DeleteCitaAsync(int id)
         {
-            var cita = _citas.FirstOrDefault(c => c.Id == id);
-            if (cita != null)
+            try
             {
+                var cita = await _context.Citas.FindAsync(id);
+                if (cita == null) return false;
+
+                // Liberar cupo
                 await _cupoService.LiberarCupoAsync(cita.FechaCita, cita.Turno);
-                _citas.Remove(cita);
+
+                _context.Citas.Remove(cita);
+                await _context.SaveChangesAsync();
                 return true;
             }
-            return false;
-        }
-
-        public async Task<bool> CancelarCitaAsync(int id)
-        {
-            var cita = _citas.FirstOrDefault(c => c.Id == id);
-            if (cita != null)
+            catch (Exception ex)
             {
-                cita.Estado = "cancelada";
-                await _cupoService.LiberarCupoAsync(cita.FechaCita, cita.Turno);
-                return true;
+                Console.WriteLine($"💥 ERROR DeleteCitaAsync: {ex.Message}");
+                return false;
             }
-            return false;
         }
 
-        public Task<bool> CompletarCitaAsync(int id)
+        public async Task<bool> CompletarCitaAsync(int id)
         {
-            var cita = _citas.FirstOrDefault(c => c.Id == id);
-            if (cita != null)
+            try
             {
+                var cita = await _context.Citas.FindAsync(id);
+                if (cita == null) return false;
+
                 cita.Estado = "completada";
-                return Task.FromResult(true);
+                await _context.SaveChangesAsync();
+                return true;
             }
-            return Task.FromResult(false);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR CompletarCitaAsync: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<List<Cita>> GetCitasByFechaAsync(DateTime fecha)
+        public async Task<List<Cita>> GetCitasByFechaAsync(DateTime fecha)
         {
-            var citas = _citas
-                .Where(c => c.FechaCita.Date == fecha.Date)
-                .OrderBy(c => c.Turno)
-                .ToList();
-            return Task.FromResult(citas);
+            try
+            {
+                return await _context.Citas
+                    .Where(c => c.FechaCita.Date == fecha.Date)
+                    .OrderBy(c => c.Turno)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetCitasByFechaAsync: {ex.Message}");
+                return new List<Cita>();
+            }
         }
 
-        public Task<List<Cita>> GetCitasByClienteAsync(int clienteId)
+        public async Task<List<Cita>> GetCitasByClienteAsync(int clienteId)
         {
-            var citas = _citas
-                .Where(c => c.ClienteId == clienteId)
-                .OrderByDescending(c => c.FechaCita)
-                .ToList();
-            return Task.FromResult(citas);
+            try
+            {
+                return await _context.Citas
+                    .Where(c => c.ClienteId == clienteId)
+                    .OrderByDescending(c => c.FechaCita)
+                    .ThenBy(c => c.Turno)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetCitasByClienteAsync: {ex.Message}");
+                return new List<Cita>();
+            }
         }
 
-        public Task<List<Cita>> GetCitasByEstadoAsync(string estado)
+        public async Task<List<Cita>> GetCitasByEstadoAsync(string estado)
         {
-            var citas = _citas
-                .Where(c => c.Estado == estado)
-                .OrderBy(c => c.FechaCita)
-                .ThenBy(c => c.Turno)
-                .ToList();
-            return Task.FromResult(citas);
+            try
+            {
+                return await _context.Citas
+                    .Where(c => c.Estado == estado)
+                    .OrderBy(c => c.FechaCita)
+                    .ThenBy(c => c.Turno)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetCitasByEstadoAsync: {ex.Message}");
+                return new List<Cita>();
+            }
         }
     }
 }

@@ -1,0 +1,118 @@
+﻿@page "/cliente"
+@layout MainLayout
+@using ElegantnailsstudioSystemManagement.Models
+@using ElegantnailsstudioSystemManagement.Services
+@inject IServicioService ServicioService
+@inject NavigationManager Navigation
+
+<PageTitle>Elegant Nails Studio</PageTitle>
+
+<!-- Header -->
+<header class="bg-primary text-white py-5 mb-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="display-4 fw-bold">Bienvenido a Elegant Nails Studio</h1>
+                <p class="lead">Tu belleza es nuestra prioridad</p>
+                <div class="mt-4">
+                    <!-- AGREGADO: Enlace a Mis Citas -->
+                    <a href="/citas/mis-citas" class="btn btn-info btn-lg me-3">
+                        <i class="bi bi-calendar-check me-2"></i>Mis Citas
+                    </a>
+                   
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="bi bi-gem display-1"></i>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Contenido Principal -->
+<main class="container">
+    <!-- Servicios -->
+    @if (servicios.Count == 0)
+    {
+        <div class="alert alert-info text-center">
+            <h4>No hay servicios disponibles</h4>
+            <p>Por el momento no tenemos servicios para mostrar.</p>
+        </div>
+    }
+    else
+    {
+        <h2 class="text-center mb-4">Nuestros Servicios</h2>
+        <div class="row g-4">
+            @foreach (var servicio in servicios)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@servicio.Nombre</h5>
+                            <p class="card-text text-muted">@servicio.Descripcion</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="h5 text-primary fw-bold">@servicio.Precio.ToString("C")</span>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
+                                </span>
+                            </div>
+                            <a href="/citas/agendar?servicioId=@servicio.Id" class="btn btn-primary w-100 mt-3">
+                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            }
+
+        </div>
+
+         
+            <a href="/" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-calendar-plus me-2"></i>Atrás
+            </a>
+      
+    }
+
+    <!-- CTA -->
+    <div class="text-center mt-5 py-5 bg-light rounded">
+        <h3>¿Listo para tu próxima cita?</h3>
+        <p class="mb-4">Agenda ahora y disfruta de nuestros servicios</p>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-0">Elegant Nails Studio © 2024</p>
+    </div>
+</footer>
+
+@code {
+    private List<Servicio> servicios = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarServicios();
+    }
+
+    private async Task CargarServicios()
+    {
+        try
+        {
+            servicios = await ServicioService.GetServiciosActivosAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error cargando servicios: {ex.Message}");
+        }
+    }
+
+    private void AgendarCita(int servicioId)
+    {
+        Navigation.NavigateTo($"/citas/agendar?servicioId={servicioId}");
+    }
+}

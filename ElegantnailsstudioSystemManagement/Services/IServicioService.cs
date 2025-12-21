@@ -1,4 +1,5 @@
 ﻿using ElegantnailsstudioSystemManagement.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ElegantnailsstudioSystemManagement.Services
 {
@@ -8,93 +9,157 @@ namespace ElegantnailsstudioSystemManagement.Services
         Task<Servicio?> GetServicioByIdAsync(int id);
         Task<bool> CrearServicio(Servicio servicio);
         Task<bool> ActualizarServicio(Servicio servicio);
-        Task<bool> EliminarServicio(int id);
+        Task<bool> EliminarServicioAsync(int id);
+        Task<List<Servicio>> GetServiciosByCategoriaAsync(int categoriaId);
     }
 
     public class ServicioService : IServicioService
     {
-        private readonly List<Servicio> _servicios = new();
-        private int _nextId = 1;
+        private readonly ApplicationDbContext _context;
 
-        public ServicioService()
+        public ServicioService(ApplicationDbContext context)
         {
-            _servicios.AddRange(new[]
+            _context = context;
+        }
+
+        public async Task<List<Servicio>> GetServiciosActivosAsync()
+        {
+            try
             {
-                new Servicio
-                {
-                    Id = _nextId++,
-                    Nombre = "Uñas Postizas largas a presión",
-                    Descripcion = "Servicio de uñas postizas",
-                    Precio = 30.00m,
-                    DuracionMinutos = 120,
-                    ImagenUrl = "images/servicios/unas-largas.jpg",
-                    CategoriaId = 1
-                },
-                new Servicio
-                {
-                    Id = _nextId++,
-                    Nombre = "Extensiones efecto rímel",
-                    Descripcion = "Extensiones con efecto rímel",
-                    Precio = 45.00m,
-                    DuracionMinutos = 120,
-                    ImagenUrl = "images/servicios/extensiones-rimel.jpg",
-                    CategoriaId = 2
-                },
-                new Servicio
-                {
-                    Id = _nextId++,
-                    Nombre = "Uñas postizas cortas francesas",
-                    Descripcion = "Uñas postizas cortas estilo francés",
-                    Precio = 20.00m,
-                    DuracionMinutos = 90,
-                    ImagenUrl = "images/servicios/unas-francesas.jpg",
-                    CategoriaId = 1
-                }
-            });
-        }
-
-        public Task<List<Servicio>> GetServiciosActivosAsync()
-        {
-            return Task.FromResult(_servicios.ToList());
-        }
-
-        public Task<Servicio?> GetServicioByIdAsync(int id)
-        {
-            return Task.FromResult(_servicios.FirstOrDefault(s => s.Id == id));
-        }
-
-        public Task<bool> CrearServicio(Servicio servicio)
-        {
-            servicio.Id = _nextId++;
-            _servicios.Add(servicio);
-            return Task.FromResult(true);
-        }
-
-        public Task<bool> ActualizarServicio(Servicio servicio)
-        {
-            var existing = _servicios.FirstOrDefault(s => s.Id == servicio.Id);
-            if (existing != null)
+                return await _context.Servicios
+                    .OrderBy(s => s.Nombre)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
             {
+                Console.WriteLine($"💥 ERROR GetServiciosActivosAsync: {ex.Message}");
+                return new List<Servicio>();
+            }
+        }
+
+        public async Task<Servicio?> GetServicioByIdAsync(int id)
+        {
+            try
+            {
+                return await _context.Servicios.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetServicioByIdAsync: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> CrearServicio(Servicio servicio)
+        {
+            try
+            {
+                _context.Servicios.Add(servicio);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR CrearServicio: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> ActualizarServicio(Servicio servicio)
+        {
+            try
+            {
+                var existing = await _context.Servicios.FindAsync(servicio.Id);
+                if (existing == null) return false;
+
                 existing.Nombre = servicio.Nombre;
                 existing.Descripcion = servicio.Descripcion;
                 existing.Precio = servicio.Precio;
                 existing.DuracionMinutos = servicio.DuracionMinutos;
                 existing.ImagenUrl = servicio.ImagenUrl;
                 existing.CategoriaId = servicio.CategoriaId;
-                return Task.FromResult(true);
+
+                await _context.SaveChangesAsync();
+                return true;
             }
-            return Task.FromResult(false);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR ActualizarServicio: {ex.Message}");
+                return false;
+            }
         }
 
-        public Task<bool> EliminarServicio(int id)
+        public async Task<List<Servicio>> GetServiciosByCategoriaAsync(int categoriaId)
         {
-            var servicio = _servicios.FirstOrDefault(s => s.Id == id);
-            if (servicio != null)
+            try
             {
-                _servicios.Remove(servicio);
-                return Task.FromResult(true);
+                return await _context.Servicios
+                    .Where(s => s.CategoriaId == categoriaId)
+                    .ToListAsync();
             }
-            return Task.FromResult(false);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR GetServiciosByCategoriaAsync: {ex.Message}");
+                return new List<Servicio>();
+            }
+        }
+
+        public async Task<bool> EliminarServicioAsync(int id)
+        {
+            try
+            {
+                Console.WriteLine($"🔍 [SERVICIO] Buscando servicio con ID: {id}");
+
+                var servicio = await _context.Servicios.FindAsync(id);
+
+                if (servicio == null)
+                {
+                    Console.WriteLine($"❌ [SERVICIO] Servicio {id} NO encontrado en la base de datos");
+                    return false;
+                }
+
+                Console.WriteLine($"✅ [SERVICIO] Servicio encontrado: {servicio.Nombre} (ID: {servicio.Id})");
+
+                // Verificar si hay citas asociadas
+                var tieneCitas = await _context.Citas
+                    .AnyAsync(c => c.ServicioId == id);
+
+                Console.WriteLine($"🔍 [SERVICIO] Tiene citas asociadas: {tieneCitas}");
+
+                if (tieneCitas)
+                {
+                    Console.WriteLine($"⚠️ [SERVICIO] NO se puede eliminar - Tiene citas asociadas");
+
+                    // Opcional: Mostrar cuántas citas tiene
+                    var cantidadCitas = await _context.Citas
+                        .CountAsync(c => c.ServicioId == id);
+                    Console.WriteLine($"📊 [SERVICIO] Cantidad de citas: {cantidadCitas}");
+
+                    return false;
+                }
+
+                Console.WriteLine($"🗑️ [SERVICIO] Eliminando servicio: {servicio.Nombre}");
+
+                _context.Servicios.Remove(servicio);
+                int resultado = await _context.SaveChangesAsync();
+
+                Console.WriteLine($"✅ [SERVICIO] SaveChanges resultó en {resultado} filas afectadas");
+
+                return resultado > 0;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                Console.WriteLine($"💥 [SERVICIO] ERROR de base de datos: {dbEx.Message}");
+                if (dbEx.InnerException != null)
+                    Console.WriteLine($"💥 [SERVICIO] ERROR interno: {dbEx.InnerException.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 [SERVICIO] ERROR general: {ex.Message}");
+                Console.WriteLine($"💥 [SERVICIO] StackTrace: {ex.StackTrace}");
+                return false;
+            }
         }
     }
 }

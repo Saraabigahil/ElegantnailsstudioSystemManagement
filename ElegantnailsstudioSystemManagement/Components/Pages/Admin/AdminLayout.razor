@@ -1,0 +1,32 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Routing
+
+
+<link rel="stylesheet" href="css/admin-panel.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<header class="header">
+    <div class="logo">
+        <div class="logo-img">EN</div>
+        <div class="logo-text">Elegant<span>Nails</span></div>
+    </div>
+
+    <NavLink href="/admin/categorias/agregar" class="btn btn-create">
+        <i class="fas fa-plus"></i> Crear Categoría
+    </NavLink>
+</header>
+
+<nav class="nav-container">
+    <ul class="nav-menu">
+        <li><NavLink href="/admin" Match="NavLinkMatch.All">Inicio</NavLink></li>
+        <li><NavLink href="/admin/citas">Citas</NavLink></li>
+        <li><NavLink href="/admin/servicios">Servicios</NavLink></li>
+        <li><NavLink href="/admin/categorias">Categorías</NavLink></li>
+        <li><NavLink href="/admin/turnos">Cupos</NavLink></li>
+        <li><NavLink href="/admin/logo">Logo</NavLink></li>
+    </ul>
+</nav>
+
+<main class="admin-content">
+    @Body
+</main>

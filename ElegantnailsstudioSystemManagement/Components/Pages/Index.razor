@@ -1,0 +1,131 @@
+﻿@page "/"
+@using ElegantnailsstudioSystemManagement.Models
+@using ElegantnailsstudioSystemManagement.Services
+@inject IServicioService ServicioService
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+
+<PageTitle>Elegant Nails Studio</PageTitle>
+
+
+<header class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">
+            <i class="bi bi-gem me-2"></i>Elegant Nails
+        </a>
+
+        <div class="navbar-nav ms-auto">
+            @if (AuthService.IsLoggedIn)
+            {
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person me-1"></i>@AuthService.CurrentUser?.Nombre
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="/citas">
+                                <i class="bi bi-calendar me-2"></i>Mis Citas
+                            </a>
+                        </li>
+                        @if (AuthService.IsAdmin)
+                        {
+                            <li><a class="dropdown-item" href="/admin">Panel Admin</a></li>
+                        }
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="#" @onclick="Logout">
+                                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a class="btn btn-outline-light me-2" href="/registro">
+                    Registrarme
+                </a>
+                <a class="btn btn-light" href="/login">
+                    Iniciar Sesión
+                </a>
+            }
+        </div>
+    </div>
+</header>
+
+
+<main class="container mt-5 pt-5">
+    <div class="text-center mb-5 py-4">
+        <h1 class="display-4 fw-bold">Bienvenido a Elegant Nails Studio</h1>
+        <p class="lead">Tu belleza es nuestra prioridad</p>
+    </div>
+
+    @if (servicios.Any())
+    {
+        <div class="row g-4">
+            @foreach (var servicio in servicios)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@servicio.Nombre</h5>
+                            <p class="card-text text-muted">@servicio.Descripcion</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="h5 text-primary fw-bold">@servicio.Precio.ToString("C")</span>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
+                                </span>
+                            </div>
+
+                            @if (AuthService.IsLoggedIn)
+                            {
+                                <button class="btn btn-primary w-100 mt-3"
+                                        @onclick="() => AgendarCita(servicio.Id)">
+                                    <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                                </button>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning mt-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <a href="/login" class="alert-link">Inicia sesión</a> para agendar citas
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</main>
+
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-0">Elegant Nails Studio © 2024</p>
+    </div>
+</footer>
+
+@code {
+    private List<Servicio> servicios = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarServicios();
+    }
+
+    private async Task CargarServicios()
+    {
+        servicios = await ServicioService.GetServiciosActivosAsync();
+    }
+
+    private void AgendarCita(int servicioId)
+    {
+        Navigation.NavigateTo($"/citas?servicioId={servicioId}");
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/", forceLoad: true);
+    }
+}
