@@ -1,76 +1,213 @@
 ﻿@page "/login"
-@using System.ComponentModel.DataAnnotations
 @using ElegantnailsstudioSystemManagement.Models
-@using ElegantnailsstudioSystemManagement.Services
-@inject AuthStateService AuthService
-@inject IUsuarioService UsuarioService
+@using ElegantnailsstudioSystemManagement.Providers
 @inject NavigationManager Navigation
+@inject AuthService AuthService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<PageTitle>Elegant Nails - Login</PageTitle>
+<PageTitle>Login - Elegant Nails</PageTitle>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Iniciar Sesión</h4>
-                </div>
-                <div class="card-body">
-                    <EditForm Model="loginModel" OnValidSubmit="HandleLogin" FormName="loginForm">
-                        <DataAnnotationsValidator />
+<div class="login-container">
+    <h2 class="login-title">
+        <i class="bi bi-shield-lock"></i>Acceso al Sistema
+    </h2>
 
-                        <div class="form-group mb-3">
-                            <label class="form-label">Email:</label>
-                            <InputText @bind-Value="loginModel.Email" class="form-control" placeholder="tu@email.com" />
-                            <ValidationMessage For="@(() => loginModel.Email)" />
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label class="form-label">Contraseña:</label>
-                            <InputText type="password" @bind-Value="loginModel.Password" class="form-control" />
-                            <ValidationMessage For="@(() => loginModel.Password)" />
-                        </div>
-
-                        @if (!string.IsNullOrEmpty(errorMessage))
-                        {
-                            <div class="alert alert-danger">@errorMessage</div>
-                        }
-
-                        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
-                    </EditForm>
-                </div>
-            </div>
-        </div>
+    <div class="form-group">
+        <label class="form-label">
+            <i class="bi bi-envelope-at"></i>Correo Electrónico
+        </label>
+        <input type="email"
+        @bind="email"
+        @bind:event="oninput"
+        placeholder="ejemplo@correo.com"
+        class="form-input"
+        @onfocus="OnInputFocus"
+        @onblur="OnInputBlur" />
     </div>
-</div>
 
-@code {
-    private LoginModel loginModel = new LoginModel();
-    private string errorMessage = "";
+    <div class="form-group">
+        <label class="form-label">
+            <i class="bi bi-key"></i>Contraseña
+        </label>
+        <input type="password"
+        @bind="password"
+        @bind:event="oninput"
+        placeholder="••••••••"
+        class="form-input"
+        @onfocus="OnInputFocus"
+        @onblur="OnInputBlur" />
+    </div>
 
-    private async Task HandleLogin()
+    <button @onclick="ValidarLogin"
+    class="login-button"
+    disabled="@isLoading">
+
+        @if (isLoading)
+        {
+            <span class="loading-text">
+                <i class="bi bi-arrow-repeat spinner"></i>
+                Validando...
+            </span>
+        }
+        else
+        {
+            <span class="button-text">
+                <i class="bi bi-door-open"></i>
+                Ingresar al Sistema
+            </span>
+        }
+    </button>
+
+    <div class="register-section">
+        <p class="register-text">
+            ¿No tienes una cuenta?
+        </p>
+        <a href="/registro" class="register-link">
+            <i class="bi bi-person-plus"></i>
+            Crear Cuenta Nueva
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
     {
+        <div class="error-message">
+            <strong>
+                <i class="bi bi-exclamation-triangle"></i>
+                Error:
+            </strong>
+            <span>@errorMessage</span>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(successMessage))
+    {
+        <div class="success-message">
+            <strong>
+                <i class="bi bi-check-circle"></i>
+                Éxito:
+            </strong>
+            <span>@successMessage</span>
+        </div>
+    }
+</div>
+@code {
+    private string email = "";
+    private string password = "";
+    private string errorMessage = "";
+    private string successMessage = "";
+    private bool isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("\n=== 🔄 LOGIN.RAZOR INICIALIZADO ===");
+        Console.WriteLine("✅ Formulario limpio");
+        Console.WriteLine($"📌 isLoading: {isLoading}");
+
+        await AuthService.InitializeAsync();
+    }
+    private async Task ValidarLogin()
+    {
+        Console.WriteLine("\n=== 🚀 VALIDAR LOGIN EJECUTADO ===");
+        Console.WriteLine($"🔥 Botón clickeado a las: {DateTime.Now:HH:mm:ss.fff}");
+
+        // PRUEBA: Forzar un cambio visual inmediato
+        isLoading = true;
+        StateHasChanged();
+        Console.WriteLine("🎨 UI actualizada - botón deshabilitado");
+
+        await Task.Delay(100);
+
         try
         {
-            var isValid = await UsuarioService.ValidateUsuarioAsync(loginModel.Email, loginModel.Password);
-
-            if (isValid)
+            Console.WriteLine("🔍 Validando campos...");
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                var usuario = await UsuarioService.GetUsuarioByEmailAsync(loginModel.Email);
-                if (usuario != null)
+                errorMessage = "⚠️ Por favor completa todos los campos";
+                isLoading = false;
+                Console.WriteLine("❌ Campos vacíos");
+                StateHasChanged();
+                return;
+            }
+
+            Console.WriteLine($"🔍 Email válido: {IsValidEmail(email)}");
+            if (!IsValidEmail(email))
+            {
+                errorMessage = "❌ Por favor ingresa un email válido";
+                isLoading = false;
+                StateHasChanged();
+                return;
+            }
+
+            Console.WriteLine($"🔍 Llamando a AuthService.LoginAsync...");
+
+           
+            var resultado = await AuthService.LoginAsync(email, password);
+            Console.WriteLine($"🔥 Resultado de LoginAsync: {resultado}");
+
+            if (resultado)
+            {
+                successMessage = "✅ ¡Autenticación exitosa! Redirigiendo...";
+                Console.WriteLine("🎉 Login válido en PostgreSQL");
+                StateHasChanged();
+
+                var provider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+                provider.NotifyAuthenticationChanged();
+
+                await Task.Delay(800);
+                if (AuthService.IsAdmin)
                 {
-                    AuthService.Login(usuario);
-                    Navigation.NavigateTo("/", true);
+                    Console.WriteLine("👑 Redirigiendo a panel admin");
+                    Navigation.NavigateTo("/admin", forceLoad: true);  
+                }
+                else
+                {
+                    Console.WriteLine("👤 Redirigiendo a inicio");
+                    Navigation.NavigateTo("/cliente", forceLoad: true); 
                 }
             }
             else
             {
-                errorMessage = "Credenciales incorrectas.";
+                errorMessage = "❌ Correo o contraseña incorrectos. Verifica tus credenciales.";
+                Console.WriteLine("⛔ Validación fallida en PostgreSQL");
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error: {ex.Message}";
+            errorMessage = $"💥 Error de conexión: {ex.Message}";
+            Console.WriteLine($"💥 EXCEPCIÓN: {ex.Message}");
+            Console.WriteLine($"📋 StackTrace: {ex.StackTrace}");
         }
+        finally
+        {
+            isLoading = false;
+            Console.WriteLine($"🔄 isLoading final: {isLoading}");
+            StateHasChanged();
+        }
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private void OnInputFocus()
+    {
+        
+    }
+
+    private void OnInputBlur()
+    {
+        
     }
 }

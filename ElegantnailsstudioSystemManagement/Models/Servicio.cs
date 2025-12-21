@@ -9,5 +9,8 @@
         public int DuracionMinutos { get; set; } = 60;
         public int CategoriaId { get; set; }
         public string ImagenUrl { get; set; } = string.Empty;
+
+        public Categoria Categoria { get; set; } = null!;
     }
 }
+

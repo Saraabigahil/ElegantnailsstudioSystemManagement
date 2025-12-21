@@ -1,0 +1,170 @@
+﻿@page "/admin/citas"
+@layout AdminLayout
+@inject ICitaService CitaService
+@inject IServicioService ServicioService
+@inject NavigationManager Navigation
+
+<PageTitle>Citas - Panel de Administración</PageTitle>
+
+<div class="container mt-4">
+    <h1 class="mb-4"><i class="bi bi-calendar-check me-2"></i>Citas de Clientes</h1>
+
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <div class="alert alert-danger">@mensajeError</div>
+    }
+    @if (!string.IsNullOrEmpty(mensajeExito))
+    {
+        <div class="alert alert-success">@mensajeExito</div>
+    }
+
+    @if (citas == null)
+    {
+        <div class="text-center p-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    }
+    else if (!citas.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i> No hay citas registradas.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente ID</th>
+                        <th>Servicio</th>
+                        <th>Fecha</th>
+                        <th>Turno</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cita in citas)
+                    {
+                        var servicio = servicios.FirstOrDefault(s => s.Id == cita.ServicioId);
+
+                        <tr>
+                            <td>#@cita.Id</td>
+                            <td>@cita.ClienteId</td>
+                            <td>
+                                @if (servicio != null)
+                                {
+                                    <div>
+                                        <div class="fw-bold">@servicio.Nombre</div>
+                                        <small class="text-muted">@servicio.Precio.ToString("C")</small>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Servicio #@cita.ServicioId</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="fw-bold">@cita.FechaCita.ToString("dd/MM/yyyy")</div>
+                                <small class="text-muted">@cita.FechaCreacion.ToString("HH:mm")</small>
+                            </td>
+                            <td>
+                                <span class="badge @(cita.Turno == "mañana" ? "bg-info" : "bg-warning")">
+                                    @cita.Turno
+                                </span>
+                            </td>
+                            <td>
+                                @if (cita.Estado == "pendiente")
+                                {
+                                    <span class="badge bg-warning">Pendiente</span>
+                                }
+                                else if (cita.Estado == "completada")
+                                {
+                                    <span class="badge bg-success">Completada</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Cancelada</span>
+                                }
+                            </td>
+                            <td>
+                                @if (cita.Estado == "pendiente")
+                                {
+                                    <button class="btn btn-sm btn-outline-success me-1"
+                                            @onclick="@(() => CompletarCita(cita.Id))">
+                                        <i class="bi bi-check"></i> Completar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            @onclick="@(() => CancelarCita(cita.Id))">
+                                        <i class="bi bi-x"></i> Cancelar
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-3">
+            <a href="/admin" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Atrás
+            </a>
+        </div>
+    }
+</div>
+
+@code {
+    private List<Cita> citas = new();
+    private List<Servicio> servicios = new();
+    private string? mensajeError;
+    private string? mensajeExito;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarCitas();
+    }
+
+    private async Task CargarCitas()
+    {
+        try
+        {
+            servicios = await ServicioService.GetServiciosActivosAsync();
+            citas = await CitaService.GetCitasAsync();
+            citas = citas.OrderByDescending(c => c.FechaCita).ThenBy(c => c.Turno).ToList();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al cargar citas: {ex.Message}";
+        }
+    }
+
+    private async Task CompletarCita(int id)
+    {
+        if (await CitaService.CompletarCitaAsync(id))
+        {
+            mensajeExito = "Cita marcada como completada";
+            await CargarCitas();
+        }
+        else
+        {
+            mensajeError = "Error al completar la cita";
+        }
+    }
+
+    private async Task CancelarCita(int id)
+    {
+        if (await CitaService.CancelarCitaAsync(id))
+        {
+            mensajeExito = "Cita cancelada";
+            await CargarCitas();
+        }
+        else
+        {
+            mensajeError = "Error al cancelar la cita";
+        }
+    }
+}

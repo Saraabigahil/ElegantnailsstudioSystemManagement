@@ -1,0 +1,45 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthService AuthService
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (!AuthService.IsLoggedIn)
+                    {
+                        <div style="text-align: center; padding: 50px;">
+                            <h3>🔒 Acceso no autorizado</h3>
+                            <p>Debes iniciar sesión para acceder a esta página.</p>
+                            <a href="/login" class="btn btn-primary">Ir al Login</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="text-align: center; padding: 50px;">
+                            <h3>⛔ Permisos insuficientes</h3>
+                            <p>No tienes permisos para acceder a esta sección.</p>
+                            <a href="/" class="btn btn-primary">Volver al inicio</a>
+                        </div>
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <div style="text-align: center; padding: 50px;">
+                    <h3>404 - Página no encontrada</h3>
+                    <p>La página que buscas no existe.</p>
+                    <a href="/" class="btn btn-primary">Volver al inicio</a>
+                </div>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthService.InitializeAsync();
+    }
+}

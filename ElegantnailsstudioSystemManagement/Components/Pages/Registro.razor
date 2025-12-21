@@ -1,80 +1,167 @@
 ﻿@page "/registro"
-@using System.ComponentModel.DataAnnotations
 @using ElegantnailsstudioSystemManagement.Models
 @using ElegantnailsstudioSystemManagement.Services
-@inject IUsuarioService UsuarioService
 @inject NavigationManager Navigation
+@inject IUsuarioService UsuarioService
 
-<PageTitle>Elegant Nails - Registro</PageTitle>
+<PageTitle>Crear Cuenta - Elegant Nails</PageTitle>
 
 <div class="container mt-5">
-    <div class="row justify-content-center">
+    <div class="row">
+      
         <div class="col-md-6">
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center py-4">
-                    <i class="bi bi-person-plus display-4"></i>
-                    <h2 class="mt-3 mb-0">Crear Cuenta</h2>
-                    <p class="mb-0 opacity-75">Únete a Elegant Nails Studio</p>
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0 text-center">Crear Cuenta Nueva</h3>
                 </div>
-                <div class="card-body p-5">
-                    <EditForm Model="nuevoUsuario" OnValidSubmit="HandleRegistro" FormName="registroForm">
-                        <DataAnnotationsValidator />
+                <div class="card-body p-4">
+                    @if (!string.IsNullOrEmpty(ErrorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            @ErrorMessage
+                            <button type="button" class="btn-close" @onclick="ClearError"></button>
+                        </div>
+                    }
 
-                        <div class="form-group mb-3">
-                            <label class="form-label fw-bold">Nombre Completo:</label>
-                            <InputText @bind-Value="nuevoUsuario.Nombre" class="form-control form-control-lg" placeholder="Ingresa tu nombre completo" />
-                            <ValidationMessage For="@(() => nuevoUsuario.Nombre)" />
+                    @if (!string.IsNullOrEmpty(SuccessMessage))
+                    {
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <i class="bi bi-check-circle me-2"></i>
+                            @SuccessMessage
+                            <button type="button" class="btn-close" @onclick="ClearSuccess"></button>
+                        </div>
+                    }
+
+                 
+                    <div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre completo <span class="text-danger">*</span>:</label>
+                            <input type="text"
+                                   @bind="nombre"
+                                   @bind:event="oninput"
+                                   class="form-control"
+                                   placeholder="Tu nombre completo" />
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label class="form-label fw-bold">Email:</label>
-                            <InputText @bind-Value="nuevoUsuario.Email" class="form-control form-control-lg" placeholder="tu@email.com" />
-                            <ValidationMessage For="@(() => nuevoUsuario.Email)" />
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email <span class="text-danger">*</span>:</label>
+                            <input type="email"
+                                   @bind="email"
+                                   @bind:event="oninput"
+                                   class="form-control"
+                                   placeholder="email@ejemplo.com" />
                         </div>
 
-                        <div class="form-group mb-3">
-                            <label class="form-label fw-bold">Teléfono:</label>
-                            <InputText @bind-Value="nuevoUsuario.Telefono" class="form-control form-control-lg" placeholder="Tu número de teléfono" />
-                            <ValidationMessage For="@(() => nuevoUsuario.Telefono)" />
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Contraseña <span class="text-danger">*</span>:</label>
+                            <input type="password"
+                                   @bind="password"
+                                   @bind:event="oninput"
+                                   class="form-control"
+                                   placeholder="Mínimo 6 caracteres" />
                         </div>
 
-                        <div class="form-group mb-4">
-                            <label class="form-label fw-bold">Contraseña:</label>
-                            <InputText type="password" @bind-Value="password" class="form-control form-control-lg" placeholder="Mínimo 6 caracteres" />
-                            <div class="form-text">La contraseña debe tener al menos 6 caracteres</div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Teléfono (opcional):</label>
+                            <input type="text"
+                                   @bind="telefono"
+                                   @bind:event="oninput"
+                                   class="form-control"
+                                   placeholder="(123) 456-7890" />
                         </div>
 
-                        @if (!string.IsNullOrEmpty(errorMessage))
-                        {
-                            <div class="alert alert-danger d-flex align-items-center">
-                                <i class="bi bi-exclamation-triangle me-2"></i>
-                                @errorMessage
-                            </div>
-                        }
+                        <div class="d-grid gap-2">
+                           
+                            <button type="button"
+                                    class="btn btn-primary btn-lg"
+                                    @onclick="GuardarUsuarioClick"
+                                    disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    <span>Creando cuenta...</span>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-person-plus me-2"></i>
+                                    <span>Crear Cuenta</span>
+                                }
+                            </button>
 
-                        @if (!string.IsNullOrEmpty(successMessage))
-                        {
-                            <div class="alert alert-success d-flex align-items-center">
-                                <i class="bi bi-check-circle me-2"></i>
-                                @successMessage
-                            </div>
-                        }
-
-                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3" disabled="@isLoading">
-                            @if (isLoading)
-                            {
-                                <span class="spinner-border spinner-border-sm me-2"></span>
-                            }
-                            <i class="bi bi-person-plus me-2"></i>Crear Cuenta
-                        </button>
-                    </EditForm>
-
-                    <div class="text-center mt-4">
-                        <p class="text-muted">
-                            ¿Ya tienes cuenta?
-                            <a href="/login" class="text-primary text-decoration-none fw-bold">Inicia Sesión</a>
-                        </p>
+                            <a href="/login" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Volver al Login
+                            </a>
+                        </div>
                     </div>
+
+                  
+                    <div class="mt-3">
+                        <button type="button"
+                                class="btn btn-warning btn-sm"
+                                @onclick="ProbarConDatos">
+                            <i class="bi bi-flask me-1"></i>Probar con datos de prueba
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0 text-center">
+                        <i class="bi bi-people me-2"></i>Usuarios Registrados
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    @if (usuariosExistente == null || !usuariosExistente.Any())
+                    {
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            No hay usuarios registrados
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Email</th>
+                                        <th>Rol</th>
+                                        <th>Teléfono</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var usuario in usuariosExistente)
+                                    {
+                                        <tr>
+                                            <td>@usuario.Id</td>
+                                            <td>@usuario.Nombre</td>
+                                            <td>@usuario.Email</td>
+                                            <td>
+                                                <span class="badge @(usuario.rolid == 1 ? "bg-danger" : "bg-success")">
+                                                    @(usuario.rolid == 1 ? "Admin" : "Usuario")
+                                                </span>
+                                            </td>
+                                            <td>@(string.IsNullOrEmpty(usuario.telefono) ? "-" : usuario.telefono)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-3 text-center text-muted">
+                            <small>
+                                <i class="bi bi-info-circle me-1"></i>
+                                Total: @usuariosExistente.Count usuarios
+                            </small>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -82,53 +169,167 @@
 </div>
 
 @code {
-    private Usuario nuevoUsuario = new Usuario();
-    private string password = string.Empty;
-    private string errorMessage = string.Empty;
-    private string successMessage = string.Empty;
-    private bool isLoading = false;
+   
+    private string nombre = "";
+    private string email = "";
+    private string password = "";
+    private string telefono = "";
 
-    private async Task HandleRegistro()
+    private string ErrorMessage = "";
+    private string SuccessMessage = "";
+    private bool isLoading = false;
+    private List<Usuario> usuariosExistente = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        isLoading = true;
-        errorMessage = string.Empty;
-        successMessage = string.Empty;
+        Console.WriteLine("🔍 Registro.razor inicializado");
+        await CargarUsuarios();
+    }
+
+    private async Task CargarUsuarios()
+    {
+        try
+        {
+            usuariosExistente = await UsuarioService.GetUsuariosAsync();
+            Console.WriteLine($"✅ Usuarios cargados: {usuariosExistente.Count}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error cargando usuarios: {ex.Message}");
+            usuariosExistente = new List<Usuario>();
+        }
+    }
+
+    
+    private void ProbarConDatos()
+    {
+        Console.WriteLine("🧪 Probando con datos de prueba...");
+
+        nombre = "Usuario de Prueba";
+        email = $"prueba{new Random().Next(1000, 9999)}@test.com";
+        password = "123456";
+        telefono = "1234567890";
+
+        Console.WriteLine($"📋 Datos cargados: {email}");
         StateHasChanged();
+    }
+
+    
+    private async Task GuardarUsuarioClick()
+    {
+        Console.WriteLine("\n=== 🚀 GUARDARUSUARIOCLICK INICIADO ===");
+        await ProcesarGuardado();
+    }
+
+    
+    private async Task ProcesarGuardado()
+    {
+        Console.WriteLine("\n=== 🚀 PROCESARGUARDADO INICIADO ===");
+        Console.WriteLine($"📝 Datos del formulario:");
+        Console.WriteLine($"   Nombre: '{nombre}'");
+        Console.WriteLine($"   Email: '{email}'");
+        Console.WriteLine($"   Password: '{password}' (length: {password?.Length})");
+        Console.WriteLine($"   Teléfono: '{telefono}'");
+
+        
+        if (string.IsNullOrWhiteSpace(nombre))
+        {
+            Console.WriteLine("❌ Validación falló: Nombre vacío");
+            ErrorMessage = "El nombre es requerido";
+            StateHasChanged();
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
+        {
+            Console.WriteLine("❌ Validación falló: Email inválido");
+            ErrorMessage = "Email inválido";
+            StateHasChanged();
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
+        {
+            Console.WriteLine($"❌ Validación falló: Password inválido (length: {password?.Length})");
+            ErrorMessage = "La contraseña debe tener al menos 6 caracteres";
+            StateHasChanged();
+            return;
+        }
+
+        
+        var nuevoUsuario = new Usuario
+            {
+                Nombre = nombre,
+                Email = email,
+                Password = password,
+                telefono = telefono,
+                rolid = 2  
+            };
+
+        Console.WriteLine($"👤 Usuario creado para guardar - RolId: {nuevoUsuario.rolid}");
+
+       
+        isLoading = true;
+        ErrorMessage = "";
+        SuccessMessage = "";
+        StateHasChanged();
+
+        await Task.Delay(300);
 
         try
         {
-            if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
-            {
-                errorMessage = "La contraseña debe tener al menos 6 caracteres";
-                isLoading = false;
-                StateHasChanged();
-                return;
-            }
-
-            nuevoUsuario.Password = password;
+            Console.WriteLine("📞 Llamando a UsuarioService.CreateUsuarioAsync...");
+            Console.WriteLine($"📧 Email a guardar: '{nuevoUsuario.Email}'");
+            Console.WriteLine($"🔑 Password: '{nuevoUsuario.Password}'");
+            Console.WriteLine($"📱 Teléfono: '{nuevoUsuario.telefono}'");
 
             var resultado = await UsuarioService.CreateUsuarioAsync(nuevoUsuario);
+            Console.WriteLine($"📞 Resultado del servicio: {resultado}");
 
             if (resultado)
             {
-                successMessage = "¡Cuenta creada exitosamente! Redirigiendo al login...";
+                Console.WriteLine($"✅ Usuario creado exitosamente!");
+                SuccessMessage = "¡Cuenta creada exitosamente! Redirigiendo al login...";
+
+                await CargarUsuarios();
+
+                
+                nombre = "";
+                email = "";
+                password = "";
+                telefono = "";
+
                 StateHasChanged();
-                await Task.Delay(2000);
-                Navigation.NavigateTo("/login");
+
+                
             }
             else
             {
-                errorMessage = "El email ya está registrado. Por favor usa otro email.";
+                ErrorMessage = "El email ya está registrado. Por favor usa otro email.";
+                Console.WriteLine("❌ Email ya existe en la base de datos o hubo otro error");
+                isLoading = false;
+                StateHasChanged();
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error al crear la cuenta: {ex.Message}";
-        }
-        finally
-        {
+            ErrorMessage = $"Error al crear la cuenta: {ex.Message}";
+            Console.WriteLine($"💥 ERROR en GuardarUsuario: {ex.Message}");
+            Console.WriteLine($"📋 StackTrace: {ex.StackTrace}");
             isLoading = false;
             StateHasChanged();
         }
+    }
+
+    private void ClearError()
+    {
+        ErrorMessage = "";
+        StateHasChanged();
+    }
+
+    private void ClearSuccess()
+    {
+        SuccessMessage = "";
+        StateHasChanged();
     }
 }

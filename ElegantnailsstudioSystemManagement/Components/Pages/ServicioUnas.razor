@@ -1,0 +1,99 @@
+﻿@page "/unas"
+@using ElegantnailsstudioSystemManagement.Models
+@using ElegantnailsstudioSystemManagement.Services
+@inject IServicioService ServicioService
+@inject ICategoriaService CategoriaService
+@inject NavigationManager Navigation
+
+<PageTitle>Elegant Nails - Uñas</PageTitle>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Servicios de Uñas</h1>
+
+    @if (serviciosUnas.Count == 0)
+    {
+        <div class="alert alert-info">
+            <h4>No hay servicios de uñas disponibles</h4>
+            <p>Próximamente agregaremos nuestros servicios de uñas.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var servicio in serviciosUnas)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            @if (!string.IsNullOrEmpty(servicio.ImagenUrl))
+                            {
+                                <img src="@servicio.ImagenUrl" alt="@servicio.Nombre"
+                                     class="card-img-top mb-3" style="height: 200px; object-fit: cover;" />
+                            }
+                            <h5 class="card-title">@servicio.Nombre</h5>
+                            <p class="card-text text-muted">@servicio.Descripcion</p>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="h5 text-primary fw-bold">@servicio.Precio.ToString("C")</span>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
+                                </span>
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn btn-primary" @onclick="() => AgendarServicio(servicio.Id)">
+                                    <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+
+</div>
+
+@code {
+    private List<Servicio> serviciosUnas = new();
+    private Categoria? categoriaUnas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarServiciosUnas();
+    }
+
+    private async Task CargarServiciosUnas()
+    {
+        try
+        {
+            // Buscar categoría "Uñas"
+            categoriaUnas = await CategoriaService.GetCategoriaByNombreAsync("Uñas");
+
+            if (categoriaUnas != null)
+            {
+                serviciosUnas = await ServicioService.GetServiciosByCategoriaAsync(categoriaUnas.Id);
+            }
+            else
+            {
+                // Si no existe la categoría, mostrar todos los servicios relacionados con uñas
+                var todosServicios = await ServicioService.GetServiciosActivosAsync();
+                serviciosUnas = todosServicios
+                    .Where(s => s.Nombre.ToLower().Contains("uña") ||
+                               s.Nombre.ToLower().Contains("manicura") ||
+                               s.Descripcion.ToLower().Contains("uña"))
+                    .ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error cargando servicios de uñas: {ex.Message}");
+        }
+    }
+
+    private void AgendarServicio(int servicioId)
+    {
+        Navigation.NavigateTo($"/citas?servicioId={servicioId}");
+    }
+}
