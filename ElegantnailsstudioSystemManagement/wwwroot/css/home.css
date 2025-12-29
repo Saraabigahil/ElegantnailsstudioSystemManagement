@@ -1,0 +1,351 @@
+﻿/* wwwroot/css/home.css - DISEÑO EXACTO COMO TU IMAGEN */
+
+/* ===== VARIABLES CON COLORES EXACTOS ===== */
+:root {
+    --header-black: #000000; /* NEGRO PURO para la parte superior */
+    --menu-dark-purple: #2A0B5E; /* MORADO OSCURÍSIMO para menú */
+    --card-soft-purple: #9575CD; /* Morado tierno/suave para cards */
+    --text-dark: #333333;
+    --text-light: #666666;
+    --white: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== PARTE SUPERIOR NEGRA (donde está "Elegant Nails") ===== */
+.navbar-morado {
+    background: var(--header-black); /* NEGRO PURO */
+    padding: 0;
+}
+
+/* Fila superior: Logo izquierda, botones derecha - NEGRO PURO */
+.fila-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--header-black); /* NEGRO PURO */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-izquierda {
+    text-align: left;
+}
+
+    .logo-izquierda h1 {
+        color: white;
+        font-size: 2rem;
+        font-weight: 300;
+        margin: 0;
+        letter-spacing: 1px;
+    }
+
+.slogan {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-weight: 300;
+    margin: 5px 0 0 0;
+    letter-spacing: 0.5px;
+}
+
+/* Botones a la derecha - SOBRE FONDO NEGRO */
+.botones-derecha {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-registro {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px 25px;
+    border-radius: 20px;
+    font-weight: 400;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+    .btn-registro:hover {
+        border-color: white;
+        color: white;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+.btn-login {
+    background: white;
+    color: var(--header-black);
+    border: 2px solid white;
+    padding: 8px 25px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+    .btn-login:hover {
+        background: rgba(255, 255, 255, 0.9);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+    }
+
+/* ===== MENÚ - MORADO OSCURÍSIMO SEPARADO ===== */
+.fila-inferior {
+    background: var(--menu-dark-purple); /* MORADO OSCURÍSIMO */
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.menu-lista {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 30px;
+}
+
+    .menu-lista a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        padding: 10px 0;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        position: relative;
+        font-size: 0.95rem;
+    }
+
+        /* SIN íconos - solo texto */
+        .menu-lista a i {
+            display: none;
+        }
+
+        .menu-lista a:hover {
+            color: white;
+        }
+
+        .menu-lista a.activo {
+            color: white;
+            font-weight: 500;
+        }
+
+            .menu-lista a.activo::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: white;
+            }
+
+/* ===== CARRUSEL ===== */
+.hero-carousel {
+    margin-top: 0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 0 20px 20px;
+    box-shadow: var(--shadow);
+}
+
+/* ===== SECCIÓN "A TU ESTILO" - FONDO BLANCO ===== */
+.welcome-section {
+    padding: 4rem 0;
+    background: white;
+    text-align: center;
+}
+
+    .welcome-section h1.display-4.fw-bold {
+        color: var(--text-dark);
+        font-size: 2.5rem;
+        font-weight: 300;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+
+    .welcome-section .lead {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+    }
+
+/* ===== CARDS DE SERVICIOS - CON ACENTOS EN MORADO ===== */
+.card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+    height: 100%;
+    border-left: 4px solid var(--card-soft-purple); /* Borde izquierdo morado */
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: var(--card-soft-purple);
+    }
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: var(--text-dark);
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.card-text.text-muted {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    min-height: 60px;
+}
+
+/* PRECIO - en morado tierno */
+.text-primary {
+    color: var(--card-soft-purple) !important;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+/* BADGE DE DURACIÓN */
+.badge.bg-secondary {
+    background-color: #f5f5f5 !important;
+    color: var(--text-light) !important;
+    font-weight: 400;
+    padding: 5px 10px;
+    border: 1px solid #e0e0e0;
+}
+
+/* ===== BOTÓN AGENDAR CITA - MORADO TIERNO ===== */
+.btn-primary {
+    background: var(--card-soft-purple) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+}
+
+    .btn-primary:hover {
+        background: #7E57C2 !important; /* Morado un poco más oscuro en hover */
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(149, 117, 205, 0.3);
+    }
+
+/* ===== ALERTA DE LOGIN ===== */
+.alert-warning {
+    background-color: #fff8e1;
+    border: 1px solid #ffd54f;
+    color: #5d4037;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    padding: 12px;
+}
+
+.alert-link {
+    color: var(--menu-dark-purple) !important; /* Morado oscuro */
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .alert-link:hover {
+        color: var(--card-soft-purple) !important; /* Morado tierno */
+        text-decoration: underline;
+    }
+
+/* ===== FOOTER - NEGRO IGUAL QUE HEADER ===== */
+footer.bg-dark {
+    background: var(--header-black) !important; /* NEGRO igual que la parte superior */
+    color: white;
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+    footer.bg-dark p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .fila-superior {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .logo-izquierda {
+        text-align: center;
+    }
+
+        .logo-izquierda h1 {
+            font-size: 1.6rem;
+        }
+
+    .menu-lista {
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+    }
+
+        .menu-lista a {
+            font-size: 0.85rem;
+            padding: 5px 15px;
+        }
+
+    .botones-derecha {
+        justify-content: center;
+    }
+
+    .welcome-section h1.display-4.fw-bold {
+        font-size: 2rem;
+    }
+
+    .welcome-section .lead {
+        font-size: 1rem;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-izquierda h1 {
+        font-size: 1.4rem;
+    }
+
+    .slogan {
+        font-size: 0.8rem;
+    }
+
+    .btn-registro,
+    .btn-login {
+        padding: 6px 20px;
+        font-size: 0.9rem;
+    }
+
+    .menu-lista {
+        gap: 10px;
+    }
+
+        .menu-lista a {
+            font-size: 0.8rem;
+        }
+}
+
+
+
+
+
+

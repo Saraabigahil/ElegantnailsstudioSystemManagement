@@ -10,26 +10,30 @@ namespace ElegantnailsstudioSystemManagement.Services
         bool EliminarLogo();
         string ObtenerLogoActual();
         string ObtenerRutaLogo();
+        // ELIMINA O COMENTA ESTA LÍNEA:
+        // string ObtenerRutaLogoPorDefecto(); // <-- BORRAR ESTA FUNCIÓN
     }
 
     public class LogoService : ILogoService
     {
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<LogoService> _logger;
-        private const string LogoFileName = "Logo.jpg";
+        private const string LogoFileName = "logo_custom.jpg";
         private const string LogoFolder = "uploads/logos";
-        private const string DefaultLogo = "/images/Logo.jpg";
+        // ELIMINA O COMENTA ESTA LÍNEA:
+        // private const string DefaultLogo = "/static/Logo.jpg"; // <-- BORRAR ESTO
 
         public LogoService(IWebHostEnvironment environment, ILogger<LogoService> logger)
         {
             _environment = environment;
             _logger = logger;
 
-            // Crear carpeta si no existe
+            // Crear carpeta de logos si no existe
             var uploadsFolder = Path.Combine(_environment.WebRootPath, LogoFolder);
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
+                _logger.LogInformation($"Carpeta de logos creada: {uploadsFolder}");
             }
         }
 
@@ -37,20 +41,27 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-                // Ruta completa del archivo
                 var filePath = Path.Combine(_environment.WebRootPath, LogoFolder, LogoFileName);
                 var relativePath = $"/{LogoFolder}/{LogoFileName}";
 
                 _logger.LogInformation($"Guardando logo en: {filePath}");
 
-                // Guardar archivo
+                // Eliminar logo anterior si existe
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    _logger.LogInformation($"Logo anterior eliminado: {filePath}");
+                }
+
+                // Guardar nuevo archivo
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await fileStream.CopyToAsync(stream);
                 }
 
                 _logger.LogInformation($"Logo guardado exitosamente: {relativePath}");
-                return relativePath;
+
+                return relativePath + "?v=" + DateTime.Now.Ticks;
             }
             catch (Exception ex)
             {
@@ -68,10 +79,11 @@ namespace ElegantnailsstudioSystemManagement.Services
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
-                    _logger.LogInformation($"Logo eliminado: {filePath}");
+                    _logger.LogInformation($"Logo personalizado eliminado: {filePath}");
                     return true;
                 }
 
+                _logger.LogInformation($"No hay logo personalizado para eliminar");
                 return false;
             }
             catch (Exception ex)
@@ -90,15 +102,17 @@ namespace ElegantnailsstudioSystemManagement.Services
 
                 if (File.Exists(filePath))
                 {
-                    return relativePath + "?t=" + DateTime.Now.Ticks; // Cache busting
+                    // Logo personalizado existe
+                    return relativePath + "?t=" + DateTime.Now.Ticks;
                 }
 
-                return DefaultLogo;
+                // SI NO HAY LOGO - DEVUELVE STRING VACÍO
+                return "";
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al obtener logo actual");
-                return DefaultLogo;
+                return "";
             }
         }
 
@@ -106,5 +120,22 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             return Path.Combine(_environment.WebRootPath, LogoFolder, LogoFileName);
         }
+
+        // ELIMINA O COMENTA ESTE MÉTODO COMPLETO:
+        /*
+        public string ObtenerRutaLogoPorDefecto()
+        {
+            return DefaultLogo;
+        }
+        */
     }
 }
+
+
+
+
+
+
+
+
+

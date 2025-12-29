@@ -168,3 +168,12 @@ namespace ElegantnailsstudioSystemManagement.Migrations
         }
     }
 }
+
+
+
+
+
+
+
+
+

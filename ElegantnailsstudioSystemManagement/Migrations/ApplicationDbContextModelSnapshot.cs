@@ -237,3 +237,9 @@ namespace ElegantnailsstudioSystemManagement.Migrations
         }
     }
 }
+
+
+
+
+
+

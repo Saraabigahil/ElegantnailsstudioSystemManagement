@@ -6,167 +6,135 @@
 
 <PageTitle>Crear Cuenta - Elegant Nails</PageTitle>
 
-<div class="container mt-5">
-    <div class="row">
-      
-        <div class="col-md-6">
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0 text-center">Crear Cuenta Nueva</h3>
-                </div>
-                <div class="card-body p-4">
-                    @if (!string.IsNullOrEmpty(ErrorMessage))
-                    {
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            @ErrorMessage
-                            <button type="button" class="btn-close" @onclick="ClearError"></button>
-                        </div>
-                    }
+<PageTitle>Crear Cuenta - Elegant Nails</PageTitle>
 
-                    @if (!string.IsNullOrEmpty(SuccessMessage))
-                    {
-                        <div class="alert alert-success alert-dismissible fade show">
-                            <i class="bi bi-check-circle me-2"></i>
-                            @SuccessMessage
-                            <button type="button" class="btn-close" @onclick="ClearSuccess"></button>
-                        </div>
-                    }
-
-                 
-                    <div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Nombre completo <span class="text-danger">*</span>:</label>
-                            <input type="text"
-                                   @bind="nombre"
-                                   @bind:event="oninput"
-                                   class="form-control"
-                                   placeholder="Tu nombre completo" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Email <span class="text-danger">*</span>:</label>
-                            <input type="email"
-                                   @bind="email"
-                                   @bind:event="oninput"
-                                   class="form-control"
-                                   placeholder="email@ejemplo.com" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Contraseña <span class="text-danger">*</span>:</label>
-                            <input type="password"
-                                   @bind="password"
-                                   @bind:event="oninput"
-                                   class="form-control"
-                                   placeholder="Mínimo 6 caracteres" />
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Teléfono (opcional):</label>
-                            <input type="text"
-                                   @bind="telefono"
-                                   @bind:event="oninput"
-                                   class="form-control"
-                                   placeholder="(123) 456-7890" />
-                        </div>
-
-                        <div class="d-grid gap-2">
-                           
-                            <button type="button"
-                                    class="btn btn-primary btn-lg"
-                                    @onclick="GuardarUsuarioClick"
-                                    disabled="@isLoading">
-                                @if (isLoading)
-                                {
-                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                    <span>Creando cuenta...</span>
-                                }
-                                else
-                                {
-                                    <i class="bi bi-person-plus me-2"></i>
-                                    <span>Crear Cuenta</span>
-                                }
-                            </button>
-
-                            <a href="/login" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2"></i>Volver al Login
-                            </a>
-                        </div>
-                    </div>
-
-                  
-                    <div class="mt-3">
-                        <button type="button"
-                                class="btn btn-warning btn-sm"
-                                @onclick="ProbarConDatos">
-                            <i class="bi bi-flask me-1"></i>Probar con datos de prueba
-                        </button>
-                    </div>
+<div class="registro-page">
+    <div class="container">
+        <div class="row g-0 registro-container">
+            <!-- LADO IZQUIERDO - TU IMAGEN -->
+            <div class="col-lg-6 registro-lado-imagen">
+                <div class="registro-imagen-overlay"></div>
+                <div class="registro-contenido-imagen">
+                    <h1 class="registro-titulo-imagen">Elegant Nails</h1>
+                    <p class="registro-descripcion">
+                        Transforma tu estilo con nuestros servicios exclusivos.
+                        La perfección en cada detalle para realzar tu belleza natural.
+                    </p>
                 </div>
             </div>
-        </div>
 
-      
-        <div class="col-md-6">
-            <div class="card shadow-lg">
-                <div class="card-header bg-info text-white">
-                    <h3 class="mb-0 text-center">
-                        <i class="bi bi-people me-2"></i>Usuarios Registrados
-                    </h3>
+            <!-- LADO DERECHO - FORMULARIO -->
+            <div class="col-lg-6 registro-lado-formulario">
+                <div class="registro-header">
+                    <h2 class="registro-titulo">Crear Cuenta Nueva</h2>
+                    <p class="registro-subtitulo">Completa tus datos para comenzar</p>
                 </div>
-                <div class="card-body p-4">
-                    @if (usuariosExistente == null || !usuariosExistente.Any())
-                    {
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            No hay usuarios registrados
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-hover table-sm">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nombre</th>
-                                        <th>Email</th>
-                                        <th>Rol</th>
-                                        <th>Teléfono</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var usuario in usuariosExistente)
-                                    {
-                                        <tr>
-                                            <td>@usuario.Id</td>
-                                            <td>@usuario.Nombre</td>
-                                            <td>@usuario.Email</td>
-                                            <td>
-                                                <span class="badge @(usuario.rolid == 1 ? "bg-danger" : "bg-success")">
-                                                    @(usuario.rolid == 1 ? "Admin" : "Usuario")
-                                                </span>
-                                            </td>
-                                            <td>@(string.IsNullOrEmpty(usuario.telefono) ? "-" : usuario.telefono)</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
 
-                        <div class="mt-3 text-center text-muted">
-                            <small>
-                                <i class="bi bi-info-circle me-1"></i>
-                                Total: @usuariosExistente.Count usuarios
-                            </small>
-                        </div>
-                    }
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <div class="alert alert-danger alert-registro">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        @ErrorMessage
+                        <button type="button" class="btn-close" @onclick="ClearError"></button>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(SuccessMessage))
+                {
+                    <div class="alert alert-success alert-registro">
+                        <i class="bi bi-check-circle me-2"></i>
+                        @SuccessMessage
+                        <button type="button" class="btn-close" @onclick="ClearSuccess"></button>
+                    </div>
+                }
+
+                <div class="registro-form">
+                    <!-- Nombre completo -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Nombre completo <span class="text-danger">*</span>:
+                        </label>
+                        <input type="text"
+                               @bind="nombre"
+                               @bind:event="oninput"
+                               class="form-control"
+                               placeholder="Tu nombre completo" />
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Email <span class="text-danger">*</span>:
+                        </label>
+                        <input type="email"
+                               @bind="email"
+                               @bind:event="oninput"
+                               class="form-control"
+                               placeholder="email@ejemplo.com" />
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Contraseña <span class="text-danger">*</span>:
+                        </label>
+                        <input type="password"
+                               @bind="password"
+                               @bind:event="oninput"
+                               class="form-control"
+                               placeholder="Mínimo 6 caracteres" />
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Teléfono (opcional):
+                        </label>
+                        <input type="text"
+                               @bind="telefono"
+                               @bind:event="oninput"
+                               class="form-control"
+                               placeholder="(123) 456-7890" />
+                    </div>
+
+                    <!-- Botón Crear Cuenta -->
+                    <button type="button"
+                            class="btn-registro-principal"
+                            @onclick="GuardarUsuarioClick"
+                            disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                            <span>Creando cuenta...</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-person-plus me-2"></i>
+                            <span>Crear Cuenta</span>
+                        }
+                    </button>
+
+                    <!-- Separador -->
+                    <hr class="registro-separador" />
+
+                    <!-- Volver al Login -->
+                    <a href="/login" class="btn-registro-secundario">
+                        <i class="bi bi-arrow-left me-2"></i>Volver al Login
+                    </a>
+                </div>
+
+                <!-- Enlace alternativo -->
+                <div class="text-center mt-4">
+                    <a href="/login" class="btn-volver-link">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        ¿Ya tienes una cuenta? Inicia sesión aquí
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 @code {
    
@@ -289,7 +257,7 @@
             if (resultado)
             {
                 Console.WriteLine($"✅ Usuario creado exitosamente!");
-                SuccessMessage = "¡Cuenta creada exitosamente! Redirigiendo al login...";
+                SuccessMessage = "¡Cuenta creada exitosamente! Tu cuenta ha sido registrada correctamente.";
 
                 await CargarUsuarios();
 
@@ -299,6 +267,7 @@
                 password = "";
                 telefono = "";
 
+                isLoading = false;
                 StateHasChanged();
 
                 
@@ -333,3 +302,10 @@
         StateHasChanged();
     }
 }
+
+
+
+
+
+
+
