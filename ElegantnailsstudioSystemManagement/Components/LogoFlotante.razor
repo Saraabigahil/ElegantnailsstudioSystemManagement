@@ -1,0 +1,44 @@
+﻿@using ElegantnailsstudioSystemManagement.Services
+@inject ILogoService LogoService
+
+@if (!string.IsNullOrEmpty(rutaLogo))
+{
+    <div class="logo-flotante-container">
+        <img src="@rutaLogo"
+             alt="Logo Elegant Nails"
+             class="logo-flotante"
+             onerror="this.style.display='none'" />
+    </div>
+}
+
+@code {
+    private string rutaLogo = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarLogo();
+    }
+
+    private async Task CargarLogo()
+    {
+        try
+        {
+            rutaLogo = LogoService.ObtenerLogoActual();
+            if (!string.IsNullOrEmpty(rutaLogo))
+            {
+                // Evitar cache
+                rutaLogo += "?t=" + DateTime.Now.Ticks;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando logo: {ex.Message}");
+        }
+    }
+}
+
+
+
+
+
+

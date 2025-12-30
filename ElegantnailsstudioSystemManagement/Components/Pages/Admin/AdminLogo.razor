@@ -1,6 +1,7 @@
 ﻿@page "/admin/logo"
 @layout AdminLayout
 @using System.IO
+@using Microsoft.AspNetCore.Components.Forms
 @inject ILogoService LogoService
 @inject NavigationManager Navigation
 
@@ -9,6 +10,7 @@
 <div class="container mt-4">
     <h1 class="mb-4"><i class="bi bi-palette me-2"></i>Gestión del Logo</h1>
 
+    <!-- Mensajes de error/éxito -->
     @if (!string.IsNullOrEmpty(mensajeError))
     {
         <div class="alert alert-danger alert-dismissible fade show">
@@ -35,7 +37,7 @@
                     <h5 class="mb-0"><i class="bi bi-image me-2"></i>Logo Actual</h5>
                 </div>
                 <div class="card-body text-center">
-                    @if (logoActual != "/images/Logo.jpg")
+                    @if (!string.IsNullOrEmpty(logoActual))
                     {
                         <div class="mb-3">
                             <img src="@logoActual"
@@ -55,7 +57,7 @@
                     {
                         <div class="py-4">
                             <i class="bi bi-image text-muted display-4 d-block mb-3"></i>
-                            <h5 class="text-muted">Logo por defecto</h5>
+                            <h5 class="text-muted">No hay logo cargado</h5>
                             <p class="text-muted small mb-0">Sube un logo para personalizar tu sitio</p>
                         </div>
                     }
@@ -73,67 +75,66 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Seleccionar archivo de imagen</label>
 
-                        <!-- Formulario de subida TRADICIONAL para Blazor Server -->
-                        <form method="post" enctype="multipart/form-data" @onsubmit="SubirLogo">
-                            <div class="mb-3">
-                                <input type="file"
-                                       class="form-control"
-                                       name="archivoLogo"
-                                       accept=".png,.jpg,.jpeg,.gif,.webp"
-                                       @onchange="HandleFileSelected" />
-                                <div class="form-text text-muted">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Formatos permitidos: PNG, JPG, JPEG, GIF, WEBP (Máximo 5MB)
-                                </div>
+                        <!-- Input File SIMPLIFICADO -->
+                        <div class="mb-3">
+                            <input type="file"
+                                   id="fileInput"
+                                   class="form-control"
+                                   accept=".png,.jpg,.jpeg,.gif,.webp"
+                                   @onchange="HandleFileSelected" />
+                            <div class="form-text text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Formatos permitidos: PNG, JPG, JPEG, GIF, WEBP (Máximo 5MB)
                             </div>
+                        </div>
 
-                            <!-- Vista previa -->
-                            @if (!string.IsNullOrEmpty(previewImagen))
-                            {
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Vista previa:</label>
-                                    <div class="text-center">
-                                        <img src="@previewImagen"
-                                             alt="Vista previa"
-                                             class="img-thumbnail border-success"
-                                             style="max-height: 150px; max-width: 100%;" />
-                                        <div class="mt-2 small">
-                                            <span class="badge bg-info">
-                                                <i class="bi bi-file-earmark-image me-1"></i>
-                                                @fileName
-                                            </span>
-                                            <span class="badge bg-secondary ms-2">
-                                                <i class="bi bi-hdd me-1"></i>
-                                                @fileSize KB
-                                            </span>
-                                        </div>
+                        <!-- Vista previa -->
+                        @if (!string.IsNullOrEmpty(previewImagen))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Vista previa:</label>
+                                <div class="text-center">
+                                    <img src="@previewImagen"
+                                         alt="Vista previa"
+                                         class="img-thumbnail border-success"
+                                         style="max-height: 150px; max-width: 100%;" />
+                                    <div class="mt-2 small">
+                                        <span class="badge bg-info">
+                                            <i class="bi bi-file-earmark-image me-1"></i>
+                                            @fileName
+                                        </span>
+                                        <span class="badge bg-secondary ms-2">
+                                            <i class="bi bi-hdd me-1"></i>
+                                            @fileSize KB
+                                        </span>
                                     </div>
                                 </div>
-                            }
-
-                            <!-- Botón Subir -->
-                            <div class="d-grid gap-2">
-                                <button type="submit"
-                                        class="btn btn-success"
-                                        disabled="@(archivoStream == null || isUploading)">
-                                    @if (isUploading)
-                                    {
-                                        <span>
-                                            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                            Subiendo...
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span><i class="bi bi-upload me-2"></i>Subir Logo</span>
-                                    }
-                                </button>
-
-                                <button type="button" class="btn btn-outline-secondary" @onclick="Cancelar">
-                                    <i class="bi bi-x-circle me-2"></i>Cancelar
-                                </button>
                             </div>
-                        </form>
+                        }
+
+                        <!-- Botón Subir -->
+                        <div class="d-grid gap-2">
+                            <button type="button"
+                                    class="btn btn-success"
+                                    @onclick="SubirLogo"
+                                    disabled="@(string.IsNullOrEmpty(previewImagen) || isUploading)">
+                                @if (isUploading)
+                                {
+                                    <span>
+                                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                        Subiendo...
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span><i class="bi bi-upload me-2"></i>Subir Logo</span>
+                                }
+                            </button>
+
+                            <button type="button" class="btn btn-outline-secondary" @onclick="Cancelar">
+                                <i class="bi bi-x-circle me-2"></i>Cancelar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -156,7 +157,7 @@
                 <div class="modal-body text-center">
                     <i class="bi bi-trash text-danger display-4 d-block mb-3"></i>
                     <h4>¿Eliminar el logo actual?</h4>
-                    <p class="text-muted">Se restaurará el logo por defecto.</p>
+                    <p class="text-muted">Esta acción no se puede deshacer.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @onclick="CerrarModal">
@@ -166,19 +167,13 @@
                         <i class="bi bi-trash me-2"></i>Sí, Eliminar
                     </button>
                 </div>
-
-                <div class="mt-3">
-                    <a href="/" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>Atrás
-                    </a>
-                </div>
             </div>
         </div>
     </div>
 }
 
 @code {
-    private string logoActual = "/images/Logo.jpg";
+    private string logoActual = "";
     private string? previewImagen;
     private bool mostrarModalEliminar = false;
     private string? mensajeError;
@@ -186,8 +181,7 @@
     private bool isUploading = false;
     private string fileName = "";
     private string fileSize = "0";
-    private Stream? archivoStream; // Cambié el nombre aquí
-    private long fileLength = 0;
+    private IBrowserFile? archivoSeleccionado;
 
     protected override async Task OnInitializedAsync()
     {
@@ -199,6 +193,11 @@
         try
         {
             logoActual = LogoService.ObtenerLogoActual();
+            if (!string.IsNullOrEmpty(logoActual))
+            {
+                // Agregar timestamp para evitar cache
+                logoActual += "?t=" + DateTime.Now.Ticks;
+            }
         }
         catch (Exception ex)
         {
@@ -206,6 +205,7 @@
         }
     }
 
+    // MÉTODO SIMPLIFICADO - usa InputFileChangeEventArgs
     private async Task HandleFileSelected(ChangeEventArgs e)
     {
         try
@@ -217,39 +217,44 @@
             if (input == null || input.FileCount == 0)
                 return;
 
-            var file = input.File; // 'file' es la variable correcta
+            var file = input.File;
+            if (file == null)
+                return;
 
-            // Validaciones
+            // Validar tamaño (5MB máximo)
             if (file.Size > 5 * 1024 * 1024)
             {
                 mensajeError = "El archivo es demasiado grande (Máx. 5MB)";
                 previewImagen = null;
+                archivoSeleccionado = null;
                 return;
             }
 
-            // Guardar stream para luego usarlo
-            fileLength = file.Size;
+            // Guardar el archivo
+            archivoSeleccionado = file;
             fileName = file.Name;
             fileSize = (file.Size / 1024).ToString("N0");
 
             // Crear vista previa
-            var buffer = new byte[file.Size];
-            await file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024).ReadAsync(buffer);
-            previewImagen = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+            var format = "image/png";
+            var imageFile = await file.RequestImageFileAsync(format, 800, 600);
+            var buffer = new byte[imageFile.Size];
+            await imageFile.OpenReadStream().ReadAsync(buffer);
+            previewImagen = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
 
-            // Guardar stream para subir
-            archivoStream = new MemoryStream(buffer); // Usa archivoStream
+            StateHasChanged();
         }
         catch (Exception ex)
         {
             mensajeError = $"Error al cargar archivo: {ex.Message}";
             previewImagen = null;
+            archivoSeleccionado = null;
         }
     }
 
     private async Task SubirLogo()
     {
-        if (archivoStream == null) // Cambié aquí
+        if (archivoSeleccionado == null)
         {
             mensajeError = "Por favor selecciona un archivo";
             return;
@@ -260,11 +265,11 @@
 
         try
         {
-            // Resetear posición del stream
-            archivoStream.Position = 0; // Cambié aquí
+            // Leer el archivo como stream
+            var stream = archivoSeleccionado.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
 
             // Subir archivo usando el servicio
-            var nuevaRuta = await LogoService.GuardarLogoAsync(archivoStream, fileName); // Cambié aquí
+            var nuevaRuta = await LogoService.GuardarLogoAsync(stream, fileName);
 
             // Actualizar logo actual
             logoActual = nuevaRuta;
@@ -277,9 +282,6 @@
             // Recargar después de 2 segundos
             await Task.Delay(2000);
             mensajeExito = null;
-
-            // Forzar recarga de imagen (cache busting)
-            await InvokeAsync(StateHasChanged);
         }
         catch (Exception ex)
         {
@@ -288,8 +290,7 @@
         finally
         {
             isUploading = false;
-            archivoStream?.Dispose(); // Cambié aquí
-            archivoStream = null; // Cambié aquí
+            StateHasChanged();
         }
     }
 
@@ -298,7 +299,7 @@
         previewImagen = null;
         fileName = "";
         fileSize = "0";
-        fileLength = 0;
+        archivoSeleccionado = null;
     }
 
     private void Cancelar()
@@ -310,7 +311,7 @@
 
     private void MostrarModalEliminar()
     {
-        if (logoActual != "/images/Logo.jpg")
+        if (!string.IsNullOrEmpty(logoActual))
         {
             mostrarModalEliminar = true;
         }
@@ -328,13 +329,12 @@
             var resultado = LogoService.EliminarLogo();
             if (resultado)
             {
-                logoActual = "/images/Logo.jpg";
-                mensajeExito = "Logo eliminado, se restauró el logo por defecto";
+                logoActual = "";
+                mensajeExito = "Logo eliminado correctamente";
                 mostrarModalEliminar = false;
 
                 await Task.Delay(2000);
                 mensajeExito = null;
-                await InvokeAsync(StateHasChanged);
             }
             else
             {

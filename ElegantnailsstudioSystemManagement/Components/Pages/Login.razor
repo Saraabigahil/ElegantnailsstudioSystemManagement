@@ -7,89 +7,110 @@
 
 <PageTitle>Login - Elegant Nails</PageTitle>
 
+<!-- CONTAINER PRINCIPAL -->
 <div class="login-container">
-    <h2 class="login-title">
-        <i class="bi bi-shield-lock"></i>Acceso al Sistema
-    </h2>
-
-    <div class="form-group">
-        <label class="form-label">
-            <i class="bi bi-envelope-at"></i>Correo Electrónico
-        </label>
-        <input type="email"
-        @bind="email"
-        @bind:event="oninput"
-        placeholder="ejemplo@correo.com"
-        class="form-input"
-        @onfocus="OnInputFocus"
-        @onblur="OnInputBlur" />
-    </div>
-
-    <div class="form-group">
-        <label class="form-label">
-            <i class="bi bi-key"></i>Contraseña
-        </label>
-        <input type="password"
-        @bind="password"
-        @bind:event="oninput"
-        placeholder="••••••••"
-        class="form-input"
-        @onfocus="OnInputFocus"
-        @onblur="OnInputBlur" />
-    </div>
-
-    <button @onclick="ValidarLogin"
-    class="login-button"
-    disabled="@isLoading">
-
-        @if (isLoading)
-        {
-            <span class="loading-text">
-                <i class="bi bi-arrow-repeat spinner"></i>
-                Validando...
-            </span>
-        }
-        else
-        {
-            <span class="button-text">
-                <i class="bi bi-door-open"></i>
-                Ingresar al Sistema
-            </span>
-        }
-    </button>
-
-    <div class="register-section">
-        <p class="register-text">
-            ¿No tienes una cuenta?
-        </p>
-        <a href="/registro" class="register-link">
-            <i class="bi bi-person-plus"></i>
-            Crear Cuenta Nueva
-        </a>
-    </div>
-
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <div class="error-message">
-            <strong>
-                <i class="bi bi-exclamation-triangle"></i>
-                Error:
-            </strong>
-            <span>@errorMessage</span>
+    <!-- LADO IZQUIERDO CON IMAGEN -->
+    <div class="login-image-side">
+        <div class="login-welcome">
+            <h1>Bienvenido a Elegant Nails</h1>
+            <p>Studio & Lashes</p>
+            <p>Accede a tu cuenta para gestionar tus citas, ver nuestros servicios y disfrutar de la mejor experiencia en belleza y cuidado personal.</p>
         </div>
-    }
+    </div>
 
-    @if (!string.IsNullOrEmpty(successMessage))
-    {
-        <div class="success-message">
-            <strong>
-                <i class="bi bi-check-circle"></i>
-                Éxito:
-            </strong>
-            <span>@successMessage</span>
+    <!-- LADO DERECHO CON FORMULARIO -->
+    <div class="login-form-side">
+        <div class="login-form-container">
+            <h2 class="login-title">
+                <i class="bi bi-shield-lock"></i>Acceso al Sistema
+            </h2>
+            <p class="login-subtitle">Ingresa tus credenciales para continuar</p>
+
+            <!-- CORREO ELECTRÓNICO -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="bi bi-envelope-at"></i>Correo Electrónico
+                </label>
+                <input type="email"
+                       @bind="email"
+                       @bind:event="oninput"
+                       placeholder="ejemplo@correo.com"
+                       class="form-input"
+                       @onfocus="OnInputFocus"
+                       @onblur="OnInputBlur" />
+            </div>
+
+            <!-- CONTRASEÑA -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="bi bi-key"></i>Contraseña
+                </label>
+                <input type="password"
+                       @bind="password"
+                       @bind:event="oninput"
+                       placeholder="••••••••"
+                       class="form-input"
+                       @onfocus="OnInputFocus"
+                       @onblur="OnInputBlur" />
+            </div>
+
+            <!-- BOTÓN INGRESAR -->
+            <button @onclick="ValidarLogin"
+                    class="login-button"
+                    disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="loading-text">
+                        <i class="bi bi-arrow-repeat spinner"></i>
+                        Validando...
+                    </span>
+                }
+                else
+                {
+                    <span class="button-text">
+                        <i class="bi bi-door-open"></i>
+                        Ingresar al Sistema
+                    </span>
+                }
+            </button>
+
+            <!-- ENLACE A REGISTRO -->
+            <div class="register-section">
+                <p class="register-text">
+                    ¿No tienes una cuenta?
+                </p>
+                <a href="/registro" class="register-link">
+                    <i class="bi bi-person-plus"></i>
+                    Crear Cuenta Nueva
+                </a>
+            </div>
+
+            <!-- MENSAJES DE ERROR/ÉXITO -->
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-message">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <div>
+                        <strong>Error:</strong>
+                        <span>@errorMessage</span>
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="success-message">
+                    <i class="bi bi-check-circle"></i>
+                    <div>
+                        <strong>Éxito:</strong>
+                        <span>@successMessage</span>
+                    </div>
+                </div>
+            }
         </div>
-    }
+    </div>
 </div>
+
 @code {
     private string email = "";
     private string password = "";
@@ -105,12 +126,12 @@
 
         await AuthService.InitializeAsync();
     }
+
     private async Task ValidarLogin()
     {
         Console.WriteLine("\n=== 🚀 VALIDAR LOGIN EJECUTADO ===");
         Console.WriteLine($"🔥 Botón clickeado a las: {DateTime.Now:HH:mm:ss.fff}");
 
-        // PRUEBA: Forzar un cambio visual inmediato
         isLoading = true;
         StateHasChanged();
         Console.WriteLine("🎨 UI actualizada - botón deshabilitado");
@@ -140,7 +161,6 @@
 
             Console.WriteLine($"🔍 Llamando a AuthService.LoginAsync...");
 
-           
             var resultado = await AuthService.LoginAsync(email, password);
             Console.WriteLine($"🔥 Resultado de LoginAsync: {resultado}");
 
@@ -157,12 +177,12 @@
                 if (AuthService.IsAdmin)
                 {
                     Console.WriteLine("👑 Redirigiendo a panel admin");
-                    Navigation.NavigateTo("/admin", forceLoad: true);  
+                    Navigation.NavigateTo("/admin", forceLoad: true);
                 }
                 else
                 {
                     Console.WriteLine("👤 Redirigiendo a inicio");
-                    Navigation.NavigateTo("/cliente", forceLoad: true); 
+                    Navigation.NavigateTo("/cliente", forceLoad: true);
                 }
             }
             else
@@ -203,11 +223,17 @@
 
     private void OnInputFocus()
     {
-        
+        // Puedes agregar efectos de focus aquí si lo necesitas
     }
 
     private void OnInputBlur()
     {
-        
+        // Puedes agregar efectos de blur aquí si lo necesitas
     }
 }
+
+
+
+
+
+

@@ -22,3 +22,8 @@ namespace ElegantnailsstudioSystemManagement.Models
         public int rolid { get; set; } = 2; 
     }
 }
+
+
+
+
+

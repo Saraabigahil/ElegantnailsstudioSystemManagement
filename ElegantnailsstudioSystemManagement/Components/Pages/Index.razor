@@ -1,60 +1,50 @@
 ﻿@page "/"
 @using ElegantnailsstudioSystemManagement.Models
 @using ElegantnailsstudioSystemManagement.Services
+@using ElegantnailsstudioSystemManagement.Components
 @inject IServicioService ServicioService
 @inject NavigationManager Navigation
 @inject AuthService AuthService
 
 <PageTitle>Elegant Nails Studio</PageTitle>
 
+<!-- AGREGAR ESTA LÍNEA: Logo flotante -->
+<LogoFlotante />
 
-<header class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="/">
-            <i class="bi bi-gem me-2"></i>Elegant Nails
-        </a>
+<!-- MENÚ MORADO - Index -->
+<!-- MENÚ NEGRO Y MORADO OSCURO - Index -->
+<header class="navbar-morado">
+    <!-- Fila superior NEGRA: Logo izquierda, botones derecha -->
+    <div class="fila-superior">
+        <div class="logo-izquierda">
+            <h1>Elegant Nails</h1>
+            <p class="slogan">PREMIUM AUDIBLE SERIES</p>
+        </div>
 
-        <div class="navbar-nav ms-auto">
-            @if (AuthService.IsLoggedIn)
-            {
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person me-1"></i>@AuthService.CurrentUser?.Nombre
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <a class="dropdown-item" href="/citas">
-                                <i class="bi bi-calendar me-2"></i>Mis Citas
-                            </a>
-                        </li>
-                        @if (AuthService.IsAdmin)
-                        {
-                            <li><a class="dropdown-item" href="/admin">Panel Admin</a></li>
-                        }
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="#" @onclick="Logout">
-                                <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            }
-            else
-            {
-                <a class="btn btn-outline-light me-2" href="/registro">
-                    Registrarme
-                </a>
-                <a class="btn btn-light" href="/login">
-                    Iniciar Sesión
-                </a>
-            }
+        <div class="botones-derecha">
+            <a href="/registro" class="btn-registro">Registrarme</a>
+            <a href="/login" class="btn-login">Inicio sesión</a>
         </div>
     </div>
+
+    <!-- Fila inferior MORADO OSCURÍSIMO: Menú centrado -->
+    <nav class="fila-inferior">
+        <div class="container">
+            <ul class="menu-lista">
+                <li><a href="/" class="activo">Inicio</a></li>
+                <li><a href="/citas">Citas</a></li>
+                <li><a href="/pestanas">Pestañas</a></li>
+                <li><a href="/servicios-unas">Servicio de uñas</a></li>
+            </ul>
+        </div>
+    </nav>
 </header>
 
+<!-- Componente Carrusel Compartido -->
+<CarouselComponent />
 
-<main class="container mt-5 pt-5">
+<!-- Agrega esta clase al contenedor principal -->
+<main class="container mt-5 pt-5 welcome-section">
     <div class="text-center mb-5 py-4">
         <h1 class="display-4 fw-bold">Bienvenido a Elegant Nails Studio</h1>
         <p class="lead">Tu belleza es nuestra prioridad</p>
@@ -129,3 +119,8 @@
         Navigation.NavigateTo("/", forceLoad: true);
     }
 }
+
+
+
+
+

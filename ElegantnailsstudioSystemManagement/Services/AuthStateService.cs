@@ -1,6 +1,7 @@
 ﻿using ElegantnailsstudioSystemManagement.Models;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Security.Claims;
+using System.Text.Json; // <-- Agrega esta línea
 
 namespace ElegantnailsstudioSystemManagement.Services
 {
@@ -21,7 +22,7 @@ namespace ElegantnailsstudioSystemManagement.Services
         public Usuario CurrentUser => _currentUser;
         public bool IsAdmin => _currentUser?.rolid == 1;
 
-        
+
         public async Task<bool> LoginAsync(string email, string password)
         {
             Console.WriteLine($"\n🔐 LOGIN ASYNC INICIADO");
@@ -30,8 +31,7 @@ namespace ElegantnailsstudioSystemManagement.Services
 
             try
             {
-               
-                var isValid = await _usuarioService.ValidateUsuarioAsync(email, password);
+                var isValid = await _usuarioService.ValidateUsuarioAsync(email, password).ConfigureAwait(false);
                 Console.WriteLine($"✅ Validación en PostgreSQL: {isValid}");
 
                 if (!isValid)
@@ -40,8 +40,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-               
-                var usuario = await _usuarioService.GetUsuarioByEmailAsync(email);
+                var usuario = await _usuarioService.GetUsuarioByEmailAsync(email).ConfigureAwait(false);
                 if (usuario == null)
                 {
                     Console.WriteLine("❌ Usuario no encontrado en BD");
@@ -50,26 +49,25 @@ namespace ElegantnailsstudioSystemManagement.Services
 
                 Console.WriteLine($"✅ Usuario obtenido de BD: {usuario.Nombre}");
 
-                
                 _currentUser = usuario;
 
-                
                 try
                 {
-                    await _sessionStorage.SetAsync("usuario_autenticado", new
+                    var usuarioData = new
                     {
                         Id = usuario.Id,
                         Nombre = usuario.Nombre,
                         Email = usuario.Email,
                         RolId = usuario.rolid,
                         FechaLogin = DateTime.Now
-                    });
+                    };
+
+                    await _sessionStorage.SetAsync("usuario_autenticado", JsonSerializer.Serialize(usuarioData)).ConfigureAwait(false);
                     Console.WriteLine("💾 Usuario guardado en sessionStorage");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"⚠️ No se pudo guardar en sessionStorage: {ex.Message}");
-                   
                 }
 
                 Console.WriteLine("🎉✅ LOGIN EXITOSO CON POSTGRESQL");
@@ -101,25 +99,31 @@ namespace ElegantnailsstudioSystemManagement.Services
             await Task.CompletedTask;
         }
 
-        
+
         public async Task InitializeAsync()
         {
             Console.WriteLine("🔄 AuthService InitializeAsync");
 
             try
             {
-                var result = await _sessionStorage.GetAsync<dynamic>("usuario_autenticado");
-                if (result.Success && result.Value != null)
+                var result = await _sessionStorage.GetAsync<string>("usuario_autenticado").ConfigureAwait(false);
+
+                if (result.Success && !string.IsNullOrEmpty(result.Value))
                 {
-                    dynamic usuarioData = result.Value;
+                    var usuarioData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(result.Value);
+
                     _currentUser = new Usuario
                     {
-                        Id = usuarioData.Id,
-                        Nombre = usuarioData.Nombre,
-                        Email = usuarioData.Email,
-                        rolid = usuarioData.RolId
+                        Id = usuarioData["Id"].GetInt32(),
+                        Nombre = usuarioData["Nombre"].GetString(),
+                        Email = usuarioData["Email"].GetString(),
+                        rolid = usuarioData["RolId"].GetInt32()
                     };
                     Console.WriteLine($"✅ Sesión recuperada: {_currentUser.Nombre}");
+                }
+                else
+                {
+                    Console.WriteLine("📭 No hay sesión guardada");
                 }
             }
             catch (Exception ex)
@@ -129,3 +133,9 @@ namespace ElegantnailsstudioSystemManagement.Services
         }
     }
 }
+
+
+
+
+
+
