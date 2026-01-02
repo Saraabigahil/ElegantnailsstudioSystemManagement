@@ -1,24 +1,33 @@
 ﻿@page "/cliente"
 @layout MainLayout
+
 @using ElegantnailsstudioSystemManagement.Models
 @using ElegantnailsstudioSystemManagement.Services
 @using ElegantnailsstudioSystemManagement.Components
 @inject IServicioService ServicioService
 @inject NavigationManager Navigation
+@inject ILogoService LogoService 
 
 <PageTitle>Elegant Nails Studio</PageTitle>
-
-<!-- AGREGAR ESTA LÍNEA: Logo flotante -->
-<LogoFlotante />
+<link rel="stylesheet" href="css/admin-panel.css">
+<!-- ELIMINAR ESTA LÍNEA: -->
+<!-- <LogoFlotante /> -->
 
 <!-- MENÚ IGUAL QUE INDEX - Cliente -->
 <header class="navbar-morado-cliente">
     <!-- Fila superior: Logo izquierda, bienvenida derecha -->
     <div class="fila-superior-cliente">
-        <!-- Logo a la izquierda -->
+        <!-- Logo a la izquierda - MODIFICADO -->
         <div class="logo-superior-cliente">
-            <h1>Elegant Nails</h1>
-            <p class="slogan-cliente">Studio & Lashes</p>
+            @if (!string.IsNullOrEmpty(logoPath))
+            {
+                <img src="@logoPath" alt="Elegant Nails Logo" class="cliente-logo" />
+            }
+            else
+            {
+                <h1>Elegant Nails</h1>
+                <p class="slogan-cliente">Studio & Lashes</p>
+            }
         </div>
 
         <!-- Bienvenida a la derecha -->
@@ -152,12 +161,15 @@
 
 @code {
     private List<Servicio> servicios = new();
+    private string logoPath = string.Empty; // AGREGAR ESTA LÍNEA
 
     protected override async Task OnInitializedAsync()
     {
+        // AGREGAR ESTAS 2 LÍNEAS:
+        logoPath = LogoService.ObtenerLogoActual();
+
         await CargarServicios();
     }
-
     private async Task CargarServicios()
     {
         try

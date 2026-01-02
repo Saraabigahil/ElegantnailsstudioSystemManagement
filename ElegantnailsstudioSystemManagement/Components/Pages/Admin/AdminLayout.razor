@@ -1,19 +1,20 @@
 ﻿@inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Components.Routing
+@using ElegantnailsstudioSystemManagement.Services
+@inject ILogoService LogoService
 
 
-<link rel="stylesheet" href="css/admin-panel.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <header class="header">
-    <div class="logo">
-        <div class="logo-img">EN</div>
-        <div class="logo-text">Elegant<span>Nails</span></div>
-    </div>
+ 
 
-    <NavLink href="/admin/categorias/agregar" class="btn btn-create">
-        <i class="fas fa-plus"></i> Crear Categoría
-    </NavLink>
+    <!-- Botón de crear categoría a la derecha -->
+    <div class="header-actions">
+        <NavLink href="/admin/categorias/agregar" class="btn btn-create">
+            <i class="fas fa-plus"></i> Crear Categoría
+        </NavLink>
+    </div>
 </header>
 
 <nav class="nav-container">
@@ -31,6 +32,6 @@
     @Body
 </main>
 
-
-
-
+@code {
+    // ELIMINA el código del logo, solo deja el texto
+}
