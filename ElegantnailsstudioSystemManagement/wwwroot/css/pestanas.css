@@ -1,0 +1,249 @@
+﻿/* ===== ESTILOS PARA PÁGINA DE PESTAÑAS ===== */
+
+/* ENCABEZADO NEGRO */
+.pestanas-header {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    padding: 50px 0;
+    margin-bottom: 40px;
+    border-bottom: 3px solid #8b5fbf;
+}
+
+.pestanas-header-content {
+    text-align: center;
+}
+
+.pestanas-title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.pestanas-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* CONTENIDO PRINCIPAL */
+.pestanas-main {
+    background: white;
+    padding: 30px 0 60px 0;
+}
+
+/* CARDS BLANCOS */
+.pestanas-card {
+    background: white !important;
+    border-radius: 15px !important;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08) !important;
+    position: relative;
+    border: none !important;
+}
+
+    .pestanas-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 15px;
+        padding: 3px; 
+        background: linear-gradient(135deg, #e91e63 0%, #9c27b0 50%, #6a1b9a 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+
+    .pestanas-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12) !important;
+    }
+
+        .pestanas-card:hover::before {
+            background: linear-gradient(135deg, #ff4081 0%, #ba68c8 50%, #8e24aa 100%);
+            animation: border-glow 1.5s infinite alternate;
+        }
+
+@keyframes border-glow {
+    0% {
+        opacity: 0.8;
+        padding: 3px;
+    }
+
+    100% {
+        opacity: 1;
+        padding: 4px;
+    }
+}
+
+/* ENCABEZADO DE CARD */
+.pestanas-card .card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+    border-bottom: 2px solid #f0f0f0 !important;
+    padding: 20px;
+}
+
+.pestanas-card .card-title {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin: 0;
+    color: #2d0036 !important;
+}
+
+/* ICONOS EN EL HEADER */
+.pestanas-card .card-header i {
+    color: #9c27b0 !important;
+}
+
+.pestanas-card .card-body {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    background: white !important;
+}
+
+.servicio-descripcion {
+    color: #666 !important;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.servicio-info {
+    margin-top: auto;
+}
+
+.servicio-precio {
+    color: #2d0036 !important;
+    font-size: 1.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+}
+
+    .servicio-precio i {
+        color: #e91e63 !important;
+    }
+
+.servicio-duracion {
+    background: linear-gradient(135deg, #f3e5f5 0%, #fce4ec 100%);
+    color: #6a1b9a !important;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    border: 1px solid #e1bee7;
+}
+
+    .servicio-duracion i {
+        color: #9c27b0 !important;
+    }
+
+/* BOTÓN AGENDAR */
+.pestanas-btn-agendar {
+    background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 12px 20px !important;
+    border-radius: 10px !important;
+    transition: all 0.3s ease !important;
+    margin-top: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .pestanas-btn-agendar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: 0.5s;
+    }
+
+    .pestanas-btn-agendar:hover {
+        background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%) !important;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(233, 30, 99, 0.3) !important;
+    }
+
+        .pestanas-btn-agendar:hover::before {
+            left: 100%;
+        }
+
+    .pestanas-btn-agendar i {
+        color: white !important;
+    }
+
+/* ALERTA */
+.alert-info {
+    background: linear-gradient(135deg, #f3e5f5 0%, #fce4ec 100%);
+    border: 2px solid #e1bee7;
+    color: #6a1b9a;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+    .alert-info h4 {
+        color: #6a1b9a !important;
+    }
+
+    .alert-info i {
+        color: #9c27b0 !important;
+    }
+
+.pestanas-card .bi {
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .pestanas-header {
+        padding: 30px 0;
+    }
+
+    .pestanas-title {
+        font-size: 2rem;
+    }
+
+    .pestanas-subtitle {
+        font-size: 1rem;
+    }
+
+    .pestanas-card .card-body {
+        padding: 20px;
+    }
+
+    .servicio-precio {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .pestanas-title {
+        font-size: 1.7rem;
+    }
+
+    .pestanas-card .card-title {
+        font-size: 1.1rem;
+    }
+
+    .pestanas-card::before {
+        padding: 2px;
+    }
+}

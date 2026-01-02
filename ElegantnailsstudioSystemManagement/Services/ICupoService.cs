@@ -24,7 +24,7 @@ namespace ElegantnailsstudioSystemManagement.Services
             _context = context;
         }
 
-        // Crear o actualizar cupos para una fecha específica
+        // Crear o actualizar cupos 
         public async Task<bool> HabilitarTurnoAsync(DateTime fecha, string turno, int cuposMaximos)
         {
             try
@@ -42,7 +42,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                     // Crear nuevo
                     var nuevoCupo = new Cupo
                     {
-                        Fecha = fecha.Date, // Solo la fecha, sin hora
+                        Fecha = fecha.Date, 
                         Turno = turno,
                         CupoMaximo = cuposMaximos,
                         CupoReservado = 0,
@@ -62,7 +62,7 @@ namespace ElegantnailsstudioSystemManagement.Services
             }
         }
 
-        // Método para verificar disponibilidad
+        // verificar disponibilidad
         public async Task<bool> CheckDisponibilidadAsync(DateTime fecha, string turno, int duracionRequerida)
         {
             try
@@ -75,7 +75,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-                // Verificar si hay cupos disponibles
+               
                 bool disponible = cupo.CuposDisponibles > 0;
 
                 Console.WriteLine($"📊 Fecha: {fecha:dd/MM/yyyy} - Turno: {turno}");
@@ -92,7 +92,6 @@ namespace ElegantnailsstudioSystemManagement.Services
             }
         }
 
-        // Método para reservar cupo
         public async Task<bool> ReservarCupoAsync(DateTime fecha, string turno)
         {
             try
@@ -122,7 +121,6 @@ namespace ElegantnailsstudioSystemManagement.Services
             }
         }
 
-        // Método para liberar cupo (al cancelar)
         public async Task<bool> LiberarCupoAsync(DateTime fecha, string turno)
         {
             try
@@ -149,14 +147,12 @@ namespace ElegantnailsstudioSystemManagement.Services
             }
         }
 
-        // Obtener cupo por fecha y turno
         public async Task<Cupo?> GetCupoByFechaTurnoAsync(DateTime fecha, string turno)
         {
             return await _context.Cupos
                 .FirstOrDefaultAsync(c => c.Fecha.Date == fecha.Date && c.Turno == turno);
         }
 
-        // Obtener todos los cupos de una fecha
         public async Task<List<Cupo>> GetCuposByFechaAsync(DateTime fecha)
         {
             return await _context.Cupos
@@ -165,7 +161,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                 .ToListAsync();
         }
 
-        // Obtener cupos habilitados para un rango de fechas
+       
         public async Task<List<Cupo>> GetCuposHabilitadosAsync(DateTime desde, DateTime hasta)
         {
             return await _context.Cupos
@@ -177,7 +173,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                 .ToListAsync();
         }
 
-        // Método auxiliar para verificar si hay cupo disponible
+       
         public async Task<bool> HayCupoDisponibleAsync(DateTime fechaCita, string turno)
         {
             try

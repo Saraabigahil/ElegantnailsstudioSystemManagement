@@ -120,7 +120,7 @@ namespace ElegantnailsstudioSystemManagement.Services
 
                 Console.WriteLine($"✅ [SERVICIO] Servicio encontrado: {servicio.Nombre} (ID: {servicio.Id})");
 
-                // Verificar si hay citas asociadas
+                
                 var tieneCitas = await _context.Citas
                     .AnyAsync(c => c.ServicioId == id);
 
@@ -130,7 +130,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                 {
                     Console.WriteLine($"⚠️ [SERVICIO] NO se puede eliminar - Tiene citas asociadas");
 
-                    // Opcional: Mostrar cuántas citas tiene
+                   
                     var cantidadCitas = await _context.Citas
                         .CountAsync(c => c.ServicioId == id);
                     Console.WriteLine($"📊 [SERVICIO] Cantidad de citas: {cantidadCitas}");

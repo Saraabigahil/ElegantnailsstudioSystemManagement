@@ -97,7 +97,6 @@
                                 }
                             </td>
                             <td>
-                                <!-- BOTÓN PARA CANCELAR - Solo para citas pendientes -->
                                 @if (cita.Estado == "pendiente")
                                 {
                                     <button class="btn btn-sm btn-outline-danger"
@@ -127,7 +126,7 @@
     </div>
 </div>
 
-<!-- Modal de confirmación para cancelar cita -->
+<!-- Modal de confirmación al cancelar cita -->
 @if (citaSeleccionada != null)
 {
     <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);" tabindex="-1">
@@ -212,11 +211,8 @@
     {
         try
         {
-            // Obtener todas las citas (por ahora)
-            // En producción, filtrarías por clienteId logueado
             citasCliente = await CitaService.GetCitasAsync();
 
-            // Obtener servicios para mostrar información
             servicios = await ServicioService.GetServiciosActivosAsync();
         }
         catch (Exception ex)
@@ -258,10 +254,8 @@
                     mensajeExito = "¡Cita cancelada exitosamente!";
                     citaSeleccionada = null;
 
-                    // Recargar la lista de citas
                     await CargarDatos();
 
-                    // Cerrar automáticamente el mensaje después de 3 segundos
                     await Task.Delay(3000);
                     mensajeExito = null;
                 }

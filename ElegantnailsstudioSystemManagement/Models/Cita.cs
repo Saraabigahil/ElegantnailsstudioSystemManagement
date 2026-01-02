@@ -12,7 +12,6 @@
         public DateTime? FechaCancelacion { get; set; }
         public DateTime? FechaConfirmacion { get; set; }
 
-        // Propiedades de navegación
         public virtual Usuario? Cliente { get; set; }
         public virtual Servicio? Servicio { get; set; }
     }

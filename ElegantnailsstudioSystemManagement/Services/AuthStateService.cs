@@ -1,7 +1,7 @@
 ﻿using ElegantnailsstudioSystemManagement.Models;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Security.Claims;
-using System.Text.Json; // <-- Agrega esta línea
+using System.Text.Json; 
 
 namespace ElegantnailsstudioSystemManagement.Services
 {

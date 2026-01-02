@@ -8,32 +8,27 @@
 
 <PageTitle>Elegant Nails Studio</PageTitle>
 
-<!-- AGREGAR ESTA LÍNEA: Logo flotante -->
 <LogoFlotante />
 
-<!-- MENÚ IGUAL QUE INDEX - Cliente -->
 <header class="navbar-morado-cliente">
-    <!-- Fila superior: Logo izquierda, bienvenida derecha -->
     <div class="fila-superior-cliente">
-        <!-- Logo a la izquierda -->
         <div class="logo-superior-cliente">
             <h1>Elegant Nails</h1>
             <p class="slogan-cliente">Studio & Lashes</p>
         </div>
 
-        <!-- Bienvenida a la derecha -->
         <div class="bienvenida-derecha">
             <span class="bienvenida-saludo">BIENVENIDO A</span>
             <span class="bienvenida-nombre">ELEGANT NAILS ART STUDIO & LASHES!</span>
         </div>
     </div>
 
-    <!-- Fila inferior: Menú centrado -->
     <nav class="menu-inferior-cliente">
         <div class="container">
             <ul class="menu-lista-cliente">
                 <li><a href="/cliente" class="activo"><i class="bi bi-house"></i> Inicio</a></li>
-                <li><a href="/citas"><i class="bi bi-calendar"></i> Citas</a></li>
+                <li><a href="/citas/mis-citas"><i class="bi bi-calendar-check"></i> Mis Citas</a></li>
+                <li><a href="/citas/agendar"><i class="bi bi-calendar-plus"></i> Agendar Cita</a></li>
                 <li><a href="/pestanas"><i class="bi bi-eye"></i> Pestañas</a></li>
                 <li><a href="/unas"><i class="bi bi-brush"></i> Uñas</a></li>
             </ul>
@@ -41,24 +36,16 @@
     </nav>
 </header>
 
-<!-- CARRUSEL (ya está bien) -->
-<div class="cliente-carrusel">
+<!-- CARRUSEL -->
+<div class="hero-carousel">
     <CarouselComponent />
 </div>
 
-<!-- TODO LO DEMÁS QUEDA EXACTAMENTE IGUAL -->
-<main class="container cliente-contenido mt-4">
-    <!-- Bienvenida centrada -->
-    <div class="text-center mb-5">
-        <h1 class="fw-bold">Bienvenido a Elegant Nails Studio & Lashes</h1>
-        <p class="lead text-muted">Tu belleza es nuestra prioridad</p>
-
-        <!-- Botón Mis Citas DEBAJO (como en tu diseño) -->
-        <div class="mt-4">
-            <a href="/citas/mis-citas" class="btn btn-info btn-lg">
-                <i class="bi bi-calendar-check me-2"></i>Mis Citas
-            </a>
-        </div>
+<!-- CONTENIDO PRINCIPAL -->
+<main class="container mt-5 pt-5 welcome-section">
+    <div class="text-center mb-5 py-4">
+        <h1 class="display-4 fw-bold">Bienvenido a Elegant Nails Studio & Lashes</h1>
+        <p class="lead">Tu belleza es nuestra prioridad</p>
     </div>
 
     <!-- SERVICIOS -->
@@ -71,39 +58,27 @@
     }
     else
     {
-        <h2 class="text-center mb-4 fw-bold">A TU ESTILO</h2>
-        <p class="text-center text-muted mb-5">en cada detalle</p>
 
         <div class="row g-4">
             @foreach (var servicio in servicios)
             {
                 <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow servicio-card-cliente">
-                        <div class="card-body p-4">
-                            <!-- Título del servicio -->
-                            <div class="servicio-titulo-container mb-3">
-                                <h5 class="card-title fw-bold mb-2 servicio-nombre">@servicio.Nombre</h5>
-                                @if (!string.IsNullOrEmpty(servicio.Descripcion))
-                                {
-                                    <p class="card-text servicio-descripcion">@servicio.Descripcion</p>
-                                }
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@servicio.Nombre</h5>
+                            @if (!string.IsNullOrEmpty(servicio.Descripcion))
+                            {
+                                <p class="card-text text-muted">@servicio.Descripcion</p>
+                            }
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="h5 text-primary fw-bold">@servicio.Precio.ToString("C")</span>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
+                                </span>
                             </div>
 
-                            <!-- Precio y duración -->
-                            <div class="servicio-info-container mb-4">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span class="servicio-precio-cliente">@servicio.Precio.ToString("C")</span>
-                                    </div>
-                                    <span class="servicio-duracion-badge">
-                                        <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Botón Agendar -->
                             <a href="/citas/agendar?servicioId=@servicio.Id"
-                               class="btn btn-agendar-cliente w-100">
+                               class="btn btn-cliente-primary w-100 mt-3">
                                 <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
                             </a>
                         </div>
@@ -113,37 +88,8 @@
         </div>
     }
 
-    <!-- SECCIÓN EXTRA (como en tu diseño) -->
-    <div class="mt-5 pt-5">
-        <h3 class="text-center fw-bold mb-4">Nuestros Servicios</h3>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <div class="servicio-destacado p-3">
-                    <h5 class="fw-bold">Pestañas individuales</h5>
-                    <div class="d-flex justify-content-between align-items-center mt-2">
-                        <span class="servicio-precio-cliente">$30.00</span>
-                        <a href="/citas/agendar?tipo=pestanas" class="btn btn-sm btn-agendar-cliente">
-                            <i class="bi bi-calendar-plus me-1"></i>Agendar Cita
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="servicio-destacado p-3">
-                    <h5 class="fw-bold">Pestañas magnéticas</h5>
-                    <div class="d-flex justify-content-between align-items-center mt-2">
-                        <span class="servicio-precio-cliente">$35.00</span>
-                        <a href="/citas/agendar?tipo=pestanas-magneticas" class="btn btn-sm btn-agendar-cliente">
-                            <i class="bi bi-calendar-plus me-1"></i>Agendar Cita
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </main>
 
-<!-- Footer -->
 <footer class="bg-dark text-white py-4 mt-5">
     <div class="container text-center">
         <p class="mb-0">Elegant Nails Studio © 2024</p>
@@ -170,10 +116,3 @@
         }
     }
 }
-
-
-
-
-
-
-

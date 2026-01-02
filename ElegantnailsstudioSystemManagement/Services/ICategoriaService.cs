@@ -68,7 +68,6 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-                // Evita duplicados
                 if (await _context.Categorias.AnyAsync(c => c.Nombre.ToLower() == categoria.Nombre.ToLower()))
                     return false;
 

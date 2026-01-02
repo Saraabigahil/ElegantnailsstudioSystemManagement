@@ -18,8 +18,7 @@ namespace ElegantnailsstudioSystemManagement.Providers
         {
             try
             {
-                // ESPERA a que se inicialice el AuthService
-                await _authService.InitializeAsync().ConfigureAwait(false); // <-- Cambia esto
+                await _authService.InitializeAsync().ConfigureAwait(false); 
 
                 if (_authService.IsLoggedIn && _authService.CurrentUser != null)
                 {
