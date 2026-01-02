@@ -2,22 +2,30 @@
 @using Microsoft.AspNetCore.Authorization
 @using ElegantnailsstudioSystemManagement.Services
 @using ElegantnailsstudioSystemManagement.Models
-@using Microsoft.AspNetCore.Components.Forms <!-- Agregar esta línea -->
+@using Microsoft.AspNetCore.Components.Forms
 @using ElegantnailsstudioSystemManagement.Components
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 @inject IServicioService ServicioService
 @inject ICategoriaService CategoriaService
+@inject ILogoService LogoService
 
 <PageTitle>Elegant Nails - Panel de Administración</PageTitle>
 
-<LogoFlotante />
+<link rel="stylesheet" href="css/admin-panel.css">
 
 <header class="navbar-negro-admin">
     <div class="fila-superior-admin">
         <div class="logo-izquierda-admin">
-            <h1>Elegant Nails Admin</h1>
-            <p class="slogan-admin">A TU ESTILO en cada detalle</p>
+            @if (!string.IsNullOrEmpty(logoPath))
+            {
+                <img src="@logoPath" alt="Elegant Nails Logo" class="dashboard-logo" />
+            }
+            else
+            {
+                <h1>Elegant Nails Admin</h1>
+                <p class="slogan-admin">A TU ESTILO en cada detalle</p>
+            }
         </div>
 
         <div class="botones-derecha-admin">
@@ -43,7 +51,6 @@
         </div>
     </nav>
 </header>
-
 
 <div class="container-fluid mt-4 admin-page">
     <CarouselComponent />
@@ -147,6 +154,11 @@
                                 </div>
                             </div>
 
+                            <div class="mt-3">
+                                <a href="/" class="btn btn-volver">
+                                    <i class="bi bi-arrow-left me-1"></i>Atrás
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -167,9 +179,6 @@
         }
     </div>
 </div>
-
-
-
 
 <!-- Modal de confirmación para eliminar servicio -->
 @if (showConfirmacionEliminar && servicioAEliminar != null)
@@ -227,6 +236,7 @@
     private int serviciosActivos = 0;
     private int categoriasCount = 0;
     private int totalServicios = 0;
+    private string logoPath = string.Empty;
 
     private bool showConfirmacionEliminar = false;
     private Servicio servicioAEliminar = null;
@@ -239,6 +249,9 @@
         Console.WriteLine($"🔍 AuthService.IsLoggedIn: {AuthService.IsLoggedIn}");
         Console.WriteLine($"🔍 AuthService.IsAdmin: {AuthService.IsAdmin}");
         Console.WriteLine($"🔍 AuthService.CurrentUser: {AuthService.CurrentUser?.Email}");
+
+        // Cargar logo
+        logoPath = LogoService.ObtenerLogoActual();
 
         await CargarDatos();
         await base.OnInitializedAsync();

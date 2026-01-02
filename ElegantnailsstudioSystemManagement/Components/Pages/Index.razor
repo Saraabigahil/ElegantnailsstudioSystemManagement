@@ -1,20 +1,32 @@
 ﻿@page "/"
+
 @using ElegantnailsstudioSystemManagement.Models
 @using ElegantnailsstudioSystemManagement.Services
 @using ElegantnailsstudioSystemManagement.Components
 @inject IServicioService ServicioService
 @inject NavigationManager Navigation
 @inject AuthService AuthService
+@inject ILogoService LogoService 
 
 <PageTitle>Elegant Nails Studio</PageTitle>
+<link rel="stylesheet" href="css/admin-panel.css">
 
-<LogoFlotante />
+
 
 <header class="navbar-morado">
+
     <div class="fila-superior">
+        <!-- Logo a la izquierda - MODIFICADO -->
         <div class="logo-izquierda">
-            <h1>Elegant Nails</h1>
-            <p class="slogan">PREMIUM AUDIBLE SERIES</p>
+            @if (!string.IsNullOrEmpty(logoPath))
+            {
+                <img src="@logoPath" alt="Elegant Nails Logo" class="home-logo" />
+            }
+            else
+            {
+                <h1>Elegant Nails</h1>
+                <p class="slogan">PREMIUM AUDIBLE SERIES</p>
+            }
         </div>
 
         <div class="botones-derecha">
@@ -122,10 +134,17 @@
 
 @code {
     private List<Servicio> servicios = new();
+
+    private string logoPath = string.Empty; // AGREGAR ESTA LÍNEA
+
     private bool mostrarAlertaNoLogueado = false; 
+
 
     protected override async Task OnInitializedAsync()
     {
+        // AGREGAR ESTA LÍNEA:
+        logoPath = LogoService.ObtenerLogoActual();
+
         await CargarServicios();
     }
 
