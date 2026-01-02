@@ -6,26 +6,29 @@
 
 <PageTitle>Elegant Nails - Categorías</PageTitle>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="admin-categorias-container">
+    <div class="categorias-header d-flex justify-content-between align-items-center">
         <h1><i class="bi bi-tags me-2"></i>Gestión de Categorías</h1>
         <a href="/admin/categorias/agregar" class="btn btn-success">
-            <i class="bi bi-plus-circle me-1"></i>Agregar Categoría
+            <i class="bi bi-plus-circle me-2"></i>Agregar Categoría
         </a>
     </div>
 
     @if (categorias.Count == 0)
     {
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle me-2"></i>
-            No hay categorías registradas.
-            <a href="/admin/categorias/agregar" class="alert-link">Agrega tu primera categoría</a>
+        <div class="empty-state">
+            <i class="bi bi-tags empty-state-icon"></i>
+            <h3>No hay categorías registradas</h3>
+            <p class="mb-4">Comienza agregando tu primera categoría para organizar tus servicios.</p>
+            <a href="/admin/categorias/agregar" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Agregar Primera Categoría
+            </a>
         </div>
     }
     else
     {
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover categorias-table">
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
@@ -37,15 +40,15 @@
                     @foreach (var cat in categorias)
                     {
                         <tr>
-                            <td>@cat.Id</td>
+                            <td><strong>@cat.Id</strong></td>
                             <td>@cat.Nombre</td>
                             <td>
-                                <div class="btn-group" role="group">
+                                <div class="btn-group-actions">
                                     <a href="/admin/categorias/modificar/@cat.Id"
-                                       class="btn btn-sm btn-outline-primary me-2">
+                                       class="btn btn-action btn-edit">
                                         <i class="bi bi-pencil"></i> Editar
                                     </a>
-                                    <button class="btn btn-sm btn-outline-danger"
+                                    <button class="btn btn-action btn-delete"
                                             @onclick="() => MostrarConfirmacionEliminar(cat)">
                                         <i class="bi bi-trash"></i> Eliminar
                                     </button>
@@ -55,41 +58,44 @@
                     }
                 </tbody>
             </table>
-
         </div>
     }
 
-    <div class="mt-3">
-        <a href="/admin" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Volver al panel
+    <div class="mt-4 pt-3 border-top">
+        <a href="/admin" class="btn btn-back">
+            <i class="bi bi-arrow-left me-2"></i>Volver al panel
         </a>
     </div>
 </div>
 
-<!-- Modal para confirmar eliminación (opcional, si quieres mantenerlo) -->
+<!-- Modal para confirmar eliminación -->
 @if (categoriaAEliminar != null)
 {
-    <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Eliminar Categoría</h5>
+    <div class="modal show d-block modal-categorias" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-custom">
+                <div class="modal-header modal-header-danger">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Eliminar Categoría
+                    </h5>
                     <button type="button" class="btn-close btn-close-white" @onclick="CancelarEliminacion"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="text-center">
-                        <i class="bi bi-exclamation-triangle text-danger display-4 mb-3"></i>
-                        <h4>¿Estás seguro de eliminar esta categoría?</h4>
-                        <p class="text-muted">"@categoriaAEliminar.Nombre"</p>
-                        <p class="text-danger"><strong>Esta categoría desaparecerá permanentemente.</strong></p>
-                    </div>
+                <div class="modal-body modal-body-custom">
+                    <i class="bi bi-exclamation-triangle modal-icon-warning"></i>
+                    <h4 class="mb-3">¿Estás seguro de eliminar esta categoría?</h4>
+                    <p class="fs-5 text-dark mb-2">"@categoriaAEliminar.Nombre"</p>
+                    <p class="text-danger mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        <strong>Esta acción no se puede deshacer.</strong>
+                    </p>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="CancelarEliminacion">
-                        Cancelar
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn btn-secondary px-4" @onclick="CancelarEliminacion">
+                        <i class="bi bi-x-circle me-2"></i>Cancelar
                     </button>
-                    <button type="button" class="btn btn-danger" @onclick="ConfirmarEliminacion">
-                        <i class="bi bi-trash me-2"></i>Eliminar Categoría
+                    <button type="button" class="btn btn-danger px-4" @onclick="ConfirmarEliminacion">
+                        <i class="bi bi-trash me-2"></i>Sí, Eliminar
                     </button>
                 </div>
             </div>
@@ -131,9 +137,3 @@
         }
     }
 }
-
-
-
-
-
-

@@ -1,17 +1,15 @@
-﻿/* ===== MENÚ MORADO PARA ADMIN ===== */
-/* ===== MENÚ MORADO PARA ADMIN ===== */
-.navbar-morado-admin {
-    background: linear-gradient(135deg, #4a1d96 0%, #2d1065 100%);
+﻿/* ===== DISEÑO DE ADMIN  ===== */
+.navbar-negro-admin {
+    background: linear-gradient(135deg, #000000 0%, #2d2d2d 100%);
     padding: 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-bottom: 3px solid #e91e63; 
 
-/* Fila superior: Logo izquierda, Botones derecha */
 .fila-superior-admin {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 20px;
+    padding: 15px 25px;
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -22,70 +20,74 @@
 
     .logo-izquierda-admin h1 {
         color: white;
-        font-size: 1.6rem;
-        font-weight: 700;
+        font-size: 1.8rem;
+        font-weight: 800;
         margin: 0;
+        letter-spacing: 0.5px;
     }
 
-.slogan-admin {
-    color: #b39ddb;
-    font-size: 0.8rem;
-    font-weight: 300;
-    margin: 4px 0 0 0;
-    font-style: italic;
-}
+    .logo-izquierda-admin .slogan-admin {
+        color: #e91e63; 
+        font-size: 0.9rem;
+        font-weight: 400;
+        margin: 5px 0 0 0;
+        font-style: italic;
+    }
 
-/* Botones a la derecha */
 .botones-derecha-admin {
     display: flex;
     gap: 15px;
 }
 
 .btn-sitio-publico {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: 500;
+    background: rgba(233, 30, 99, 0.15); 
+    border: 2px solid rgba(233, 30, 99, 0.4); 
+    color: #f48fb1; 
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-weight: 600;
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
 }
 
     .btn-sitio-publico:hover {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: white;
+        background: rgba(233, 30, 99, 0.25);
+        border-color: #e91e63;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
     }
 
 .btn-cerrar-sesion {
-    background: rgba(220, 53, 69, 0.2);
-    border: 2px solid rgba(220, 53, 69, 0.4);
-    color: #ff6b6b;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-weight: 600;
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
 }
 
     .btn-cerrar-sesion:hover {
-        background: rgba(220, 53, 69, 0.3);
-        border-color: #ff6b6b;
-        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        border-color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
     }
 
-/* Fila inferior: Menú compacto */
 .fila-inferior-admin {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 8px 0;
+    background: #4a1e7c; 
+    padding: 10px 0;
+    border-top: 1px solid rgba(233, 30, 99, 0.2); 
 }
 
 .menu-lista-admin {
@@ -95,45 +97,70 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    gap: 8px;
+    gap: 5px;
 }
 
     .menu-lista-admin a {
-        color: rgba(255, 255, 255, 0.85);
+        color: rgba(255, 255, 255, 0.9);
         text-decoration: none;
-        padding: 8px 12px;
+        padding: 10px 16px;
         border-radius: 8px;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
         font-weight: 500;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         min-width: auto;
-        transition: all 0.3s;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.1); 
     }
 
         .menu-lista-admin a:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(233, 30, 99, 0.4); 
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
         }
 
         .menu-lista-admin a.activo {
-            background: linear-gradient(135deg, #a88be0 0%, #9575cd 100%);
+            background: linear-gradient(135deg, #e91e63, #f06292); 
             color: white;
             font-weight: 600;
-            box-shadow: 0 2px 6px rgba(168, 139, 224, 0.3);
+            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
         }
 
-/* El resto de los estilos se mantienen igual */
+        .menu-lista-admin a i {
+            font-size: 1rem;
+        }
+
+        .menu-lista-admin a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #e91e63;
+            transition: width 0.3s ease;
+        }
+
+        .menu-lista-admin a:hover::after {
+            width: 70%;
+        }
 
 /* ===== CONTENIDO ADMIN ===== */
 .admin-page {
     min-height: 100vh;
-    background: linear-gradient(135deg, #f8f9ff 0%, #fff5f7 100%);
-    padding-top: 0; /* Cambiado de 70px a 0 porque el navbar ya no es fixed */
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+    padding-top: 0;
 }
 
-/* EL RESTO DE TU admin.css SE QUEDA IGUAL */
+    .admin-page .container-fluid {
+        padding-top: 20px;
+    }
 
 .admin-carousel-container {
     margin: 0 auto 2rem;
@@ -179,50 +206,55 @@
     padding: 1.5rem;
     margin-bottom: 2rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    border: none;
+    border: 2px solid #f0f0f0;
 }
 
     .servicios-title-card h5 {
-        color: #2d3748;
+        color: #333333;
         font-weight: 700;
         font-size: 1.5rem;
         margin: 0;
     }
 
 .btn-gestionar-servicios {
-    background: linear-gradient(135deg, #a88be0 0%, #9575cd 100%);
+    background: linear-gradient(135deg, #e91e63, #f06292); /* Rosado */
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 8px 20px;
+    padding: 10px 22px;
     font-weight: 600;
     transition: all 0.3s;
 }
 
     .btn-gestionar-servicios:hover {
+        background: linear-gradient(135deg, #d81b60, #ec407a);
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(168, 139, 224, 0.3);
+        box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3);
     }
 
+/* ===== CARDS DE SERVICIOS===== */
 .servicio-card {
-    border: none;
-    border-radius: 15px;
+    border: 2px solid #e1bee7 !important; 
+    border-radius: 15px !important;
     overflow: hidden;
     transition: all 0.3s ease;
-    background: white;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    background: white !important; 
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.1) !important;
     height: 100%;
 }
 
     .servicio-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(168, 139, 224, 0.2);
+        transform: translateY(-5px);
+        border-color: #e91e63 !important; 
+        box-shadow: 0 12px 30px rgba(233, 30, 99, 0.15) !important;
     }
 
+/* CONTENEDOR DE IMAGEN */
 .servicio-img-container {
     height: 200px;
     overflow: hidden;
     position: relative;
+    background: linear-gradient(135deg, #6a1b9a, #9c27b0) !important; 
 }
 
 .servicio-img {
@@ -236,24 +268,54 @@
     transform: scale(1.05);
 }
 
+.no-image-placeholder-admin {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+    width: 100% !important;
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #6a1b9a, #9c27b0) !important;
+}
+
+    .no-image-placeholder-admin i {
+        font-size: 50px !important;
+        margin-bottom: 10px;
+    }
+
+    .no-image-placeholder-admin p {
+        font-size: 14px;
+        color: white;
+        opacity: 0.9;
+    }
+
 .servicio-badge {
-    background: linear-gradient(135deg, #a88be0 0%, #9575cd 100%);
-    color: white;
+    background: linear-gradient(135deg, #e91e63, #f06292) !important; /* Rosado */
+    color: white !important;
     font-weight: 600;
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 0.85rem;
+    display: inline-block;
+    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.2);
+}
+
+.card-body.p-4 {
+    background: white !important; 
+    color: #333333 !important; 
 }
 
 .servicio-title {
-    color: #2d3748;
+    color: #6a1b9a !important; 
     font-weight: 700;
     font-size: 1.25rem;
     margin: 10px 0;
 }
 
 .servicio-descripcion {
-    color: #718096;
+    color: #666666 !important; 
     font-size: 0.95rem;
     line-height: 1.5;
     height: 72px;
@@ -264,95 +326,223 @@
 }
 
 .servicio-precio {
-    color: #2d3748;
+    color: #e91e63 !important; 
     font-weight: 800;
     font-size: 1.5rem;
 }
 
 .servicio-duracion {
-    color: #718096;
+    color: #666666 !important;
     font-size: 0.9rem;
 }
 
+    .servicio-duracion i {
+        color: #9c27b0 !important; 
+    }
+
+/* BOTONES DE EDITAR Y ELIMINAR */
 .btn-editar-servicio {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-    color: white;
-    border: none;
+    background: rgba(156, 39, 176, 0.1) !important; 
+    color: #9c27b0 !important; 
+    border: 2px solid #9c27b0 !important;
     border-radius: 8px;
-    padding: 8px 20px;
+    padding: 10px 20px;
     font-weight: 600;
     width: 100%;
     transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
     .btn-editar-servicio:hover {
+        background: #9c27b0 !important; 
+        color: white !important;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(72, 187, 120, 0.3);
+        box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
     }
 
 .btn-eliminar-servicio {
-    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-    color: white;
-    border: none;
+    background: rgba(233, 30, 99, 0.1) !important; 
+    color: #e91e63 !important;
+    border: 2px solid #e91e63 !important;
     border-radius: 8px;
-    padding: 8px 20px;
+    padding: 10px 20px;
     font-weight: 600;
     width: 100%;
     transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
     .btn-eliminar-servicio:hover {
+        background: #e91e63 !important; 
+        color: white !important;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(245, 101, 101, 0.3);
+        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+    }
+
+.card-footer.bg-white {
+    background: rgba(248, 249, 250, 0.8) !important;
+    backdrop-filter: blur(5px);
+    border-top: 1px solid #e1bee7 !important;
+}
+
+.card-footer {
+    padding-bottom: 1.5rem !important;
+}
+
+/* ===== ESTILOS COMPLEMENTARIOS ===== */
+.img-preview-container {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-upload-info {
+    background-color: #f3e5f5; 
+    border-left: 4px solid #9c27b0; 
+    padding: 10px;
+    border-radius: 4px;
+    color: #6a1b9a;
+}
+
+.progress-bar-custom {
+    transition: width 0.3s ease;
+}
+
+.table img {
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.form-label.fw-bold {
+    color: #333333;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 10px 15px;
+    transition: all 0.3s;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: #e91e63; 
+        box-shadow: 0 0 0 0.2rem rgba(233, 30, 99, 0.25);
+    }
+
+.btn-sm {
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.875rem;
+}
+
+.btn-outline-primary {
+    color: #e91e63; 
+    border-color: #e91e63;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #e91e63;
+        border-color: #e91e63;
+        color: white;
+    }
+
+.btn-outline-danger {
+    color: #f44336;
+    border-color: #f44336;
+}
+
+    .btn-outline-danger:hover {
+        background-color: #f44336;
+        border-color: #f44336;
+        color: white;
     }
 
 .btn-volver {
-    background: transparent;
-    color: #a88be0;
-    border: 2px solid #a88be0;
-    border-radius: 8px;
-    padding: 8px 20px;
-    font-weight: 600;
-    transition: all 0.3s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    display: none !important;
 }
 
-    .btn-volver:hover {
-        background: #a88be0;
-        color: white;
-        transform: translateY(-2px);
-    }
+.card-footer .mt-3:has(.btn-volver) {
+    display: none;
+}
 
 @media (max-width: 768px) {
-    .admin-page {
-        padding-top: 60px;
+    .navbar-negro-admin {
+        padding: 0 10px;
     }
 
-    .admin-carousel {
-        height: 300px;
+    .fila-superior-admin {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        text-align: center;
     }
 
-    .carousel-caption h5 {
+    .logo-izquierda-admin h1 {
         font-size: 1.5rem;
     }
 
-    .servicio-card {
-        margin-bottom: 1.5rem;
+    .botones-derecha-admin {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .menu-lista-admin {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px;
+    }
+
+        .menu-lista-admin a {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+
+    .table-responsive {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+
+    .modal-dialog {
+        margin: 10px;
     }
 }
 
+@media (max-width: 480px) {
+    .fila-superior-admin {
+        padding: 12px;
+    }
 
+    .logo-izquierda-admin h1 {
+        font-size: 1.3rem;
+    }
 
+    .btn-sitio-publico,
+    .btn-cerrar-sesion {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
 
+    .menu-lista-admin {
+        gap: 3px;
+    }
 
+        .menu-lista-admin a {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+        }
 
-
-
-
-
-
-
-
+            .menu-lista-admin a i {
+                font-size: 0.9rem;
+            }
+}
 

@@ -7,7 +7,7 @@ namespace ElegantnailsstudioSystemManagement.Services
 {
     public interface ILogoService
     {
-        Task<string> GuardarLogoAsync(IFormFile archivo); // Cambia esto
+        Task<string> GuardarLogoAsync(IFormFile archivo);
         bool EliminarLogo();
         string ObtenerLogoActual();
         string ObtenerRutaLogo();
@@ -18,6 +18,7 @@ namespace ElegantnailsstudioSystemManagement.Services
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<LogoService> _logger;
         private const string LogoFolder = "uploads/logos";
+        private const string LogoFileName = "logo_custom.jpg"; // Agregado
 
         public LogoService(IWebHostEnvironment environment, ILogger<LogoService> logger)
         {
@@ -32,7 +33,6 @@ namespace ElegantnailsstudioSystemManagement.Services
             }
         }
 
-        // NUEVO MÉTODO que recibe IFormFile directamente
         public async Task<string> GuardarLogoAsync(IFormFile archivo)
         {
             try
@@ -47,7 +47,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                 if (!extensionesPermitidas.Contains(extension))
                     return "";
 
-                if (archivo.Length > 5 * 1024 * 1024)
+                if (archivo.Length > 5 * 1024 * 1024) // 5MB
                     return "";
 
                 // Carpeta
@@ -55,14 +55,23 @@ namespace ElegantnailsstudioSystemManagement.Services
                 if (!Directory.Exists(carpetaLogos))
                     Directory.CreateDirectory(carpetaLogos);
 
-                // Ruta fija
-                var rutaCompleta = Path.Combine(carpetaLogos, "logo_custom.jpg");
-                var rutaRelativa = $"/{LogoFolder}/logo_custom.jpg";
+                // Ruta completa
+                var rutaCompleta = Path.Combine(carpetaLogos, LogoFileName);
 
-                // Guardar usando el archivo recibido
-                using var stream = new FileStream(rutaCompleta, FileMode.Create);
-                await archivo.CopyToAsync(stream);
+                // Eliminar logo anterior si existe
+                if (File.Exists(rutaCompleta))
+                {
+                    File.Delete(rutaCompleta);
+                    _logger.LogInformation($"Logo anterior eliminado: {rutaCompleta}");
+                }
 
+                // Guardar nuevo logo
+                using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+                {
+                    await archivo.CopyToAsync(stream);
+                }
+
+                var rutaRelativa = $"/{LogoFolder}/{LogoFileName}";
                 _logger.LogInformation($"✅ Logo guardado: {rutaRelativa}");
                 return rutaRelativa;
             }
@@ -73,25 +82,22 @@ namespace ElegantnailsstudioSystemManagement.Services
             }
         }
 
-        // Mantén el método viejo para compatibilidad
+        // Método para compatibilidad (opcional)
         public async Task<string> GuardarLogoAsync(Stream fileStream, string fileName)
         {
-            // Si alguien llama al método viejo, lo convertimos
             var ms = new MemoryStream();
             await fileStream.CopyToAsync(ms);
             ms.Position = 0;
 
-            // Crear un IFormFile simulado
             var formFile = new FormFile(ms, 0, ms.Length, "file", fileName);
             return await GuardarLogoAsync(formFile);
         }
 
-        // Resto de métodos igual...
         public bool EliminarLogo()
         {
             try
             {
-                var filePath = Path.Combine(_environment.WebRootPath, LogoFolder, "logo_custom.jpg");
+                var filePath = Path.Combine(_environment.WebRootPath, LogoFolder, LogoFileName);
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
@@ -110,10 +116,16 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-                var filePath = Path.Combine(_environment.WebRootPath, LogoFolder, "logo_custom.jpg");
-                return File.Exists(filePath)
-                    ? $"/{LogoFolder}/logo_custom.jpg?t={DateTime.Now.Ticks}"
-                    : "";
+                var filePath = Path.Combine(_environment.WebRootPath, LogoFolder, LogoFileName);
+                var relativePath = $"/{LogoFolder}/{LogoFileName}";
+
+                if (File.Exists(filePath))
+                {
+                    // Agregar timestamp para evitar caché
+                    return relativePath + "?t=" + DateTime.Now.Ticks;
+                }
+
+                return "";
             }
             catch (Exception ex)
             {
@@ -124,7 +136,7 @@ namespace ElegantnailsstudioSystemManagement.Services
 
         public string ObtenerRutaLogo()
         {
-            return Path.Combine(_environment.WebRootPath, LogoFolder, "logo_custom.jpg");
+            return Path.Combine(_environment.WebRootPath, LogoFolder, LogoFileName);
         }
     }
 }

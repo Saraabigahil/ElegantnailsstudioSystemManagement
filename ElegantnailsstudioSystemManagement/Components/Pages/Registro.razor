@@ -11,7 +11,6 @@
 <div class="registro-page">
     <div class="container">
         <div class="row g-0 registro-container">
-            <!-- LADO IZQUIERDO - TU IMAGEN -->
             <div class="col-lg-6 registro-lado-imagen">
                 <div class="registro-imagen-overlay"></div>
                 <div class="registro-contenido-imagen">
@@ -23,7 +22,6 @@
                 </div>
             </div>
 
-            <!-- LADO DERECHO - FORMULARIO -->
             <div class="col-lg-6 registro-lado-formulario">
                 <div class="registro-header">
                     <h2 class="registro-titulo">Crear Cuenta Nueva</h2>
@@ -49,7 +47,6 @@
                 }
 
                 <div class="registro-form">
-                    <!-- Nombre completo -->
                     <div class="form-group">
                         <label class="form-label">
                             Nombre completo <span class="text-danger">*</span>:
@@ -61,7 +58,6 @@
                                placeholder="Tu nombre completo" />
                     </div>
 
-                    <!-- Email -->
                     <div class="form-group">
                         <label class="form-label">
                             Email <span class="text-danger">*</span>:
@@ -73,7 +69,6 @@
                                placeholder="email@ejemplo.com" />
                     </div>
 
-                    <!-- Contraseña -->
                     <div class="form-group">
                         <label class="form-label">
                             Contraseña <span class="text-danger">*</span>:
@@ -85,7 +80,6 @@
                                placeholder="Mínimo 6 caracteres" />
                     </div>
 
-                    <!-- Teléfono -->
                     <div class="form-group">
                         <label class="form-label">
                             Teléfono (opcional):
@@ -97,7 +91,6 @@
                                placeholder="(123) 456-7890" />
                     </div>
 
-                    <!-- Botón Crear Cuenta -->
                     <button type="button"
                             class="btn-registro-principal"
                             @onclick="GuardarUsuarioClick"
@@ -114,16 +107,13 @@
                         }
                     </button>
 
-                    <!-- Separador -->
                     <hr class="registro-separador" />
 
-                    <!-- Volver al Login -->
                     <a href="/login" class="btn-registro-secundario">
                         <i class="bi bi-arrow-left me-2"></i>Volver al Login
                     </a>
                 </div>
 
-                <!-- Enlace alternativo -->
                 <div class="text-center mt-4">
                     <a href="/login" class="btn-volver-link">
                         <i class="bi bi-arrow-left me-1"></i>

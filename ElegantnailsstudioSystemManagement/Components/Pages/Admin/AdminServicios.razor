@@ -1,152 +1,282 @@
 ﻿@page "/admin/servicios"
 @using ElegantnailsstudioSystemManagement.Models
 @using ElegantnailsstudioSystemManagement.Services
-@using Microsoft.AspNetCore.Components.Forms <!-- AÑADE ESTA LÍNEA -->
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using System.IO
 @inject IServicioService ServicioService
 @inject ICategoriaService CategoriaService
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@inject IWebHostEnvironment HostEnvironment
 
-<PageTitle>Elegant Nails - Servicios</PageTitle>
+<PageTitle>Gestión de Servicios</PageTitle>
 
-<h1>Gestión de Servicios</h1>
-
-<!-- Mensajes de éxito/error -->
-@if (!string.IsNullOrEmpty(mensajeExito))
-{
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        <i class="bi bi-check-circle me-2"></i> @mensajeExito
-        <button type="button" class="btn-close" @onclick="() => mensajeExito = string.Empty"></button> <!-- CAMBIADO '' por string.Empty -->
-    </div>
-}
-
-@if (!string.IsNullOrEmpty(mensajeError))
-{
-    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-        <i class="bi bi-exclamation-triangle me-2"></i> @mensajeError
-        <button type="button" class="btn-close" @onclick="() => mensajeError = string.Empty"></button> <!-- CAMBIADO '' por string.Empty -->
-    </div>
-}
-
-<div class="row mb-4">
-    <div class="col-md-6">
-        <button class="btn btn-success" @onclick="ShowAddModal">
-            <i class="bi bi-plus-circle"></i> Agregar Servicio
+<div class="admin-servicios-container">
+    <div class="d-flex justify-content-between align-items-center servicios-header">
+        <h3><i class="bi bi-scissors me-2"></i>Gestión de Servicios</h3>
+        <button class="btn btn-new-service" @onclick="AbrirNuevo">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Servicio
         </button>
     </div>
-    <div class="col-md-6">
-        <select @bind="selectedCategoriaId" class="form-select" @oninput="(e) => OnCategoriaFilterChanged(e)">
-            <option value="0">Todas las categorías</option>
-            @foreach (var cat in categoriasFiltro)
-            {
-                <option value="@cat.Id">@cat.Nombre</option>
-            }
-        </select>
-    </div>
-</div>
 
-@if (servicios.Any())
-{
-    <div class="row">
-        @foreach (var servicio in servicios)
-        {
-            var categoria = categoriasFiltro.FirstOrDefault(c => c.Id == servicio.CategoriaId);
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">@servicio.Nombre</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@(categoria?.Nombre ?? "Sin categoría")</h6>
-                        <p class="card-text">@servicio.Descripcion</p>
-                        <p class="card-text">
-                            <strong>Precio:</strong> @servicio.Precio.ToString("C")<br>
-                            <strong>Duración:</strong> @servicio.DuracionMinutos minutos
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-sm btn-primary me-1" @onclick="() => EditServicio(servicio)">
-                            <i class="bi bi-pencil"></i> Editar
-                        </button>
-                        <button class="btn btn-sm btn-danger me-1" @onclick="() => MostrarConfirmacionEliminar(servicio)">
-                            <i class="bi bi-trash"></i> Eliminar
-                        </button>
-                    </div>
+    @if (!string.IsNullOrEmpty(mensajeExito))
+    {
+        <div class="alert alert-success alert-servicio alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @mensajeExito
+            <button type="button" class="btn-close" @onclick="LimpiarMensajeExito"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(mensajeError))
+    {
+        <div class="alert alert-danger alert-servicio alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @mensajeError
+            <button type="button" class="btn-close" @onclick="LimpiarMensajeError"></button>
+        </div>
+    }
+
+    @if (isUploading)
+    {
+        <div class="alert alert-info alert-servicio">
+            <div class="d-flex align-items-center">
+                <div class="spinner-border spinner-border-sm me-3"></div>
+                <div>
+                    <strong>Subiendo imagen...</strong>
+                    <div class="small">Por favor espera un momento.</div>
                 </div>
             </div>
-        }
-    </div>
-}
-else
-{
-    <div class="alert alert-info">
-        <h4>No hay servicios</h4>
-        <p>No se encontraron servicios @(selectedCategoriaId == 0 ? "" : "en esta categoría") en el sistema.</p>
-    </div>
-}
+        </div>
+    }
 
-<!-- Modal para agregar/editar servicio -->
-@if (showModal)
-{
-    <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">@(currentServicio.Id == 0 ? "Agregar" : "Editar") Servicio</h5>
-                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
-                </div>
-                <!-- 🔥 AGREGADO FormName -->
-                <EditForm Model="currentServicio" OnValidSubmit="SaveServicio" FormName="serviciosForm">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label class="form-label">Nombre:</label>
-                                    <InputText @bind-Value="currentServicio.Nombre" class="form-control" />
-                                </div>
+    <!-- servicios -->
+    @if (servicios.Any())
+    {
+        <div class="services-grid">
+            @foreach (var s in servicios)
+            {
+                <div class="service-card">
+                    <div class="card-img-container">
+                        @if (!string.IsNullOrEmpty(s.ImagenUrl) && !s.ImagenUrl.Contains("placeholder"))
+                        {
+                            <img src="@s.ImagenUrl"
+                                 alt="@s.Nombre"
+                                 onerror="this.onerror=null; this.src='/placeholder-image.png';" />
+                        }
+                        else
+                        {
+                            <div class="no-image-placeholder">
+                                <i class="bi bi-scissors"></i>
+                                <span>@s.Nombre</span>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label class="form-label">Categoría:</label>
-                                    <select @bind="currentServicio.CategoriaId" class="form-select">
-                                        <option value="0">Seleccione categoría</option>
-                                        @foreach (var cat in categoriasFiltro)
+                        }
+                    </div>
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title">@s.Nombre</h5>
+                            <span class="badge badge-category">@(s.Categoria?.Nombre ?? "Sin categoría")</span>
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(s.Descripcion))
+                        {
+                            <p class="card-text service-description">@Truncate(s.Descripcion, 100)</p>
+                        }
+
+                        <div class="service-info">
+                            <div>
+                                <span class="service-price">S/ @s.Precio.ToString("0.00")</span>
+                            </div>
+                            <span class="service-duration">
+                                <i class="bi bi-clock"></i>@s.DuracionMinutos min
+                            </span>
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="btn btn-card-action btn-edit-service"
+                                    @onclick="() => Editar(s)"
+                                    title="Editar servicio">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-card-action btn-delete-service"
+                                    @onclick="() => MostrarModalEliminar(s)"
+                                    title="Eliminar servicio">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-scissors empty-icon"></i>
+            <h4>No hay servicios registrados</h4>
+            <p class="mb-4">Comienza agregando tu primer servicio para ofrecer a tus clientes.</p>
+            <button class="btn btn-new-service" @onclick="AbrirNuevo">
+                <i class="bi bi-plus-circle me-2"></i>Crear Primer Servicio
+            </button>
+        </div>
+    }
+</div>
+
+<!-- MODAL para Crear/Editar Servicio -->
+@if (mostrarModal)
+{
+    <div class="modal show d-block modal-servicio" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content modal-content-servicio">
+                <div class="modal-header modal-header-servicio">
+                    <h5 class="modal-title modal-title-servicio">
+                        <i class="bi bi-scissors"></i>
+                        @(servicio.Id == 0 ? "Nuevo Servicio" : "Editar Servicio")
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" @onclick="CerrarModal"></button>
+                </div>
+
+                <EditForm Model="servicio" OnValidSubmit="@GuardarServicio">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="modal-body modal-body-servicio">
+                        <div class="form-section">
+                            <h6 class="form-section-title">
+                                <i class="bi bi-info-circle"></i>Información del Servicio
+                            </h6>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nombre del Servicio *</label>
+                                    <InputText @bind-Value="servicio.Nombre"
+                                               class="form-control"
+                                               placeholder="Ej: Manicure Francés" />
+                                    <ValidationMessage For="@(() => servicio.Nombre)" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Categoría *</label>
+                                    <select @bind="servicio.CategoriaId" class="form-select">
+                                        <option value="0">-- Seleccionar Categoría --</option>
+                                        @foreach (var cat in categorias)
                                         {
                                             <option value="@cat.Id">@cat.Nombre</option>
                                         }
                                     </select>
+                                    <ValidationMessage For="@(() => servicio.CategoriaId)" />
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label">Descripción:</label>
-                            <InputTextArea @bind-Value="currentServicio.Descripcion" class="form-control" rows="3" />
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label class="form-label">Precio ($):</label>
-                                    <InputNumber @bind-Value="currentServicio.Precio" class="form-control" />
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Precio (S/) *</label>
+                                    <InputNumber @bind-Value="servicio.Precio"
+                                                 class="form-control"
+                                                 placeholder="Ej: 45.00" />
+                                    <ValidationMessage For="@(() => servicio.Precio)" />
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Duración (minutos) *</label>
+                                    <InputNumber @bind-Value="servicio.DuracionMinutos"
+                                                 class="form-control"
+                                                 placeholder="Ej: 60" />
+                                    <ValidationMessage For="@(() => servicio.DuracionMinutos)" />
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label class="form-label">Duración (minutos):</label>
-                                    <InputNumber @bind-Value="currentServicio.DuracionMinutos" class="form-control" />
-                                </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Descripción</label>
+                                <InputTextArea @bind-Value="servicio.Descripcion"
+                                               class="form-control"
+                                               rows="3"
+                                               placeholder="Describe el servicio en detalle..." />
+                                <ValidationMessage For="@(() => servicio.Descripcion)" />
                             </div>
                         </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label">URL de Imagen:</label>
-                            <InputText @bind-Value="currentServicio.ImagenUrl" class="form-control" />
-                            @if (!string.IsNullOrEmpty(currentServicio.ImagenUrl))
-                            {
-                                <div class="mt-2">
-                                    <img src="@currentServicio.ImagenUrl" alt="Vista previa" class="img-thumbnail" style="max-height: 100px;" />
+
+                        <div class="form-section">
+                            <h6 class="form-section-title">
+                                <i class="bi bi-image"></i>Imagen del Servicio *
+                            </h6>
+
+                            <!-- Vista previa de imagen -->
+                            <div class="image-preview-container text-center mb-4">
+                                @if (!string.IsNullOrEmpty(previewImageUrl))
+                                {
+                                    <img src="@previewImageUrl"
+                                         class="img-fluid image-preview"
+                                         alt="Vista previa" />
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-remove-image" @onclick="EliminarImagenSeleccionada">
+                                            <i class="bi bi-trash"></i> Quitar imagen
+                                        </button>
+                                    </div>
+                                }
+                                else if (!string.IsNullOrEmpty(servicio.ImagenUrl))
+                                {
+                                    <img src="@servicio.ImagenUrl"
+                                         class="img-fluid image-preview"
+                                         alt="Imagen actual" />
+                                    <div class="mt-2 text-muted">
+                                        <small><i class="bi bi-info-circle me-1"></i>Imagen actual</small>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-center py-4">
+                                        <i class="bi bi-image text-muted mb-3" style="font-size: 4rem;"></i>
+                                        <p class="text-muted">No hay imagen seleccionada</p>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Selector de archivo -->
+                            <div class="mb-3">
+                                <label class="form-label">Seleccionar imagen:</label>
+                                <InputFile type="file"
+                                           accept="image/*"
+                                           class="form-control"
+                                           OnChange="@SeleccionarImagen" />
+                                <div class="form-text text-muted mt-2">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Formatos: JPG, PNG, GIF, BMP, WebP. Tamaño máximo: 5MB
                                 </div>
-                            }
+
+                                @if (!string.IsNullOrEmpty(nombreArchivoSeleccionado))
+                                {
+                                    <div class="file-info-success">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        <div>
+                                            <strong>Imagen lista:</strong> @nombreArchivoSeleccionado
+                                            <div class="small">(@((tamanoArchivoKB).ToString("0.0")) KB)</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                        <button type="button" class="btn btn-secondary" @onclick="CloseModal">Cancelar</button>
+
+                    <div class="modal-footer modal-footer-servicio">
+                        <button type="submit" class="btn btn-save-service" disabled="@(isGuardando || isUploading)">
+                            @if (isGuardando || isUploading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>@(isUploading ? "Subiendo imagen..." : "Guardando...")</span>
+                            }
+                            else
+                            {
+                                <i class="bi bi-save me-2"></i>
+                                <span>Guardar Servicio</span>
+                            }
+                        </button>
+                        <button type="button" class="btn btn-cancel-service" @onclick="CerrarModal">
+                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                        </button>
                     </div>
                 </EditForm>
             </div>
@@ -154,62 +284,50 @@ else
     </div>
 }
 
-<!-- Modal de confirmación para eliminar servicio -->
-@if (showConfirmacionEliminar && servicioAEliminar != null)
+<!-- MODAL de Confirmación para Eliminar -->
+@if (mostrarModalEliminar && servicioAEliminar != null)
 {
-    <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);" tabindex="-1">
+    <div class="modal show d-block modal-eliminar" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-danger">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        Eliminar Servicio
+            <div class="modal-content modal-content-eliminar">
+                <div class="modal-header modal-header-eliminar">
+                    <h5 class="modal-title modal-title-eliminar">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Confirmar Eliminación
                     </h5>
-                    <button type="button" class="btn-close" @onclick="CancelarEliminacion"></button>
+                    <button type="button" class="btn-close btn-close-white" @onclick="CancelarEliminacion"></button>
                 </div>
 
-                <div class="modal-body text-center py-4">
-                    <!-- Icono de advertencia -->
-                    <div class="mb-3">
-                        <i class="bi bi-trash-fill text-danger" style="font-size: 3rem;"></i>
+                <div class="modal-body modal-body-eliminar text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-trash-fill" style="font-size: 4rem; color: #e91e63;"></i>
                     </div>
 
-                    <!-- Título -->
-                    <h4 class="mb-3">¿Estás seguro de eliminar este servicio?</h4>
+                    <h4 class="mb-3">¿Estás segura de eliminar este servicio?</h4>
 
-                    <!-- Nombre del servicio -->
-                    <div class="alert alert-light border">
-                        <h5 class="mb-0">"@servicioAEliminar.Nombre"</h5>
+                    <div class="servicio-detalle-eliminar">
+                        <h5 class="mb-2">"@servicioAEliminar.Nombre"</h5>
+                        <div class="detalles-eliminar">
+                            <p><strong>Categoría:</strong> @(servicioAEliminar.Categoria?.Nombre ?? "Sin categoría")</p>
+                            <p><strong>Precio:</strong> S/ @servicioAEliminar.Precio.ToString("0.00")</p>
+                            <p><strong>Duración:</strong> @servicioAEliminar.DuracionMinutos minutos</p>
+                        </div>
                     </div>
 
-                    <!-- Detalles del servicio -->
-                    <div class="mt-3 text-start">
-                        <p><strong>Descripción:</strong> @servicioAEliminar.Descripcion</p>
-                        <p><strong>Precio:</strong> @servicioAEliminar.Precio.ToString("C")</p>
-                        <p><strong>Duración:</strong> @servicioAEliminar.DuracionMinutos minutos</p>
-                    </div>
-
-                    <!-- Advertencia -->
-                    <div class="alert alert-warning mt-3">
+                    <div class="alert alert-warning mt-4">
                         <i class="bi bi-exclamation-circle me-2"></i>
-                        <strong>Este servicio desaparecerá permanentemente.</strong>
+                        <strong>Esta acción no se puede deshacer.</strong> El servicio desaparecerá permanentemente.
                     </div>
                 </div>
 
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-outline-secondary" @onclick="CancelarEliminacion">
-                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                <div class="modal-footer modal-footer-eliminar">
+                    <button type="button" class="btn btn-cancel-eliminar" @onclick="CancelarEliminacion">
+                        <i class="bi bi-x-circle me-2"></i>Cancelar
                     </button>
-                    <button type="button" class="btn btn-danger" @onclick="ConfirmarEliminacion">
-                        <i class="bi bi-trash me-1"></i> Eliminar Servicio
+                    <button type="button" class="btn btn-confirm-eliminar" @onclick="ConfirmarEliminacion">
+                        <i class="bi bi-trash me-2"></i>Eliminar Servicio
                     </button>
                 </div>
-            </div>
-
-            <div class="mt-3">
-                <a href="/admin" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Atrás
-                </a>
             </div>
         </div>
     </div>
@@ -217,26 +335,33 @@ else
 
 @code {
     private List<Servicio> servicios = new();
-    private List<Categoria> categoriasFiltro = new();
-    private bool showModal = false;
-    private bool showConfirmacionEliminar = false;
-    private int selectedCategoriaId = 0;
-    private Servicio currentServicio = new();
+    private List<Categoria> categorias = new();
+    private Servicio servicio = new();
+    private bool mostrarModal = false;
+    private bool mostrarModalEliminar = false;
     private Servicio servicioAEliminar = null;
-    private string mensajeExito = string.Empty;
-    private string mensajeError = string.Empty;
+    private string mensajeExito = "";
+    private string mensajeError = "";
+    private bool isGuardando = false;
+    private bool isUploading = false;
+
+    // Variables para imágenes
+    private IBrowserFile? archivoSeleccionado;
+    private string? nombreArchivoSeleccionado;
+    private string? previewImageUrl;
+    private double tamanoArchivoKB = 0;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadData();
+        await CargarDatos();
     }
 
-    private async Task LoadData()
+    private async Task CargarDatos()
     {
         try
         {
-            categoriasFiltro = await CategoriaService.GetCategoriasAsync();
-            await LoadServicios();
+            servicios = await ServicioService.GetServiciosActivosAsync();
+            categorias = await CategoriaService.GetCategoriasAsync();
         }
         catch (Exception ex)
         {
@@ -244,146 +369,341 @@ else
         }
     }
 
-    private async Task LoadServicios()
+    private void AbrirNuevo()
     {
-        servicios = await ServicioService.GetServiciosActivosAsync();
-
-        if (selectedCategoriaId > 0)
-        {
-            servicios = servicios.Where(s => s.CategoriaId == selectedCategoriaId).ToList();
-        }
+        servicio = new Servicio();
+        ResetearImagen();
+        mostrarModal = true;
+        mensajeError = "";
+        mensajeExito = "";
     }
 
-    private async void OnCategoriaFilterChanged(ChangeEventArgs e)
+    private void Editar(Servicio s)
     {
-        if (int.TryParse(e.Value?.ToString(), out int categoriaId))
-        {
-            selectedCategoriaId = categoriaId;
-        }
-        await LoadServicios();
-        StateHasChanged();
-    }
-
-    private void ShowAddModal()
-    {
-        currentServicio = new Servicio();
-        showModal = true;
-    }
-
-    private void EditServicio(Servicio servicio)
-    {
-        currentServicio = new Servicio
+        servicio = new Servicio
             {
-                Id = servicio.Id,
-                Nombre = servicio.Nombre,
-                Descripcion = servicio.Descripcion,
-                Precio = servicio.Precio,
-                DuracionMinutos = servicio.DuracionMinutos,
-                CategoriaId = servicio.CategoriaId,
-                ImagenUrl = servicio.ImagenUrl
+                Id = s.Id,
+                Nombre = s.Nombre,
+                Descripcion = s.Descripcion,
+                Precio = s.Precio,
+                DuracionMinutos = s.DuracionMinutos,
+                CategoriaId = s.CategoriaId,
+                ImagenUrl = s.ImagenUrl
             };
-        showModal = true;
+
+        if (!string.IsNullOrEmpty(servicio.ImagenUrl))
+        {
+            previewImageUrl = servicio.ImagenUrl;
+        }
+
+        ResetearImagen();
+        mostrarModal = true;
+        mensajeError = "";
+        mensajeExito = "";
     }
 
-    private async Task SaveServicio()
+    private async Task GuardarServicio()
     {
+        Console.WriteLine($"=== INICIANDO GUARDAR SERVICIO ===");
+
+        if (servicio.CategoriaId == 0)
+        {
+            mensajeError = "Debe seleccionar una categoría";
+            return;
+        }
+
+        isGuardando = true;
+        mensajeError = "";
+        mensajeExito = "";
+        StateHasChanged();
+
         try
         {
-            bool success;
-            if (currentServicio.Id == 0)
-                success = await ServicioService.CrearServicio(currentServicio);
-            else
-                success = await ServicioService.ActualizarServicio(currentServicio);
+            Console.WriteLine("=== PASO 1: MANEJANDO IMAGEN ===");
 
-            if (success)
+            if (archivoSeleccionado != null)
             {
-                showModal = false;
-                await LoadServicios();
-                mensajeExito = "Servicio guardado exitosamente";
-                mensajeError = string.Empty;
+                isUploading = true;
+                StateHasChanged();
+
+                try
+                {
+                    var imageUrl = await SubirImagenLocalmente();
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        servicio.ImagenUrl = imageUrl;
+                        Console.WriteLine($"✅ Imagen subida: {imageUrl}");
+                    }
+                    else
+                    {
+                        servicio.ImagenUrl = "/placeholder-image.png";
+                        Console.WriteLine($"⚠️ Usando imagen placeholder");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Error al subir imagen: {ex.Message}");
+                    servicio.ImagenUrl = "/placeholder-image.png";
+                }
+                finally
+                {
+                    isUploading = false;
+                }
+            }
+            else if (string.IsNullOrEmpty(servicio.ImagenUrl))
+            {
+                servicio.ImagenUrl = "/placeholder-image.png";
+            }
+
+            Console.WriteLine($"Imagen URL resultante: {servicio.ImagenUrl}");
+
+            Console.WriteLine("=== PASO 2: GUARDANDO EN BD ===");
+            bool exito;
+            if (servicio.Id == 0)
+            {
+                Console.WriteLine("Creando nuevo servicio...");
+                exito = await ServicioService.CrearServicio(servicio);
             }
             else
             {
-                mensajeError = "Error al guardar el servicio.";
+                Console.WriteLine("Actualizando servicio existente...");
+                exito = await ServicioService.ActualizarServicio(servicio);
+            }
+
+            if (exito)
+            {
+                Console.WriteLine("¡Servicio guardado exitosamente!");
+                mensajeExito = servicio.Id == 0 ? "Servicio creado exitosamente" : "Servicio actualizado exitosamente";
+                mostrarModal = false;
+                ResetearImagen();
+                await CargarDatos();
+            }
+            else
+            {
+                Console.WriteLine("ERROR: No se pudo guardar en BD");
+                mensajeError = "Error al guardar el servicio en la base de datos";
             }
         }
         catch (Exception ex)
         {
-            mensajeError = $"Error al guardar: {ex.Message}";
+            Console.WriteLine($"=== EXCEPCIÓN EN GUARDAR SERVICIO ===");
+            Console.WriteLine($"Mensaje: {ex.Message}");
+            mensajeError = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            Console.WriteLine("=== FINALIZANDO GUARDADO ===");
+            isGuardando = false;
+            isUploading = false;
+            StateHasChanged();
         }
     }
 
-    // Métodos para el modal de confirmación de eliminación
-    private void MostrarConfirmacionEliminar(Servicio servicio)
+    private async Task<string> SubirImagenLocalmente()
     {
-        servicioAEliminar = servicio;
-        showConfirmacionEliminar = true;
+        if (archivoSeleccionado == null)
+            return "/placeholder-image.png";
+
+        try
+        {
+            Console.WriteLine($"📤 Subiendo imagen localmente...");
+            Console.WriteLine($"📄 Archivo: {archivoSeleccionado.Name} ({archivoSeleccionado.Size} bytes)");
+
+            const long maxFileSize = 5 * 1024 * 1024;
+            if (archivoSeleccionado.Size > maxFileSize)
+            {
+                Console.WriteLine($"❌ Archivo demasiado grande: {archivoSeleccionado.Size} bytes");
+                return "/placeholder-image.png";
+            }
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
+            var extension = Path.GetExtension(archivoSeleccionado.Name).ToLowerInvariant();
+            if (!allowedExtensions.Contains(extension))
+            {
+                Console.WriteLine($"❌ Extensión no permitida: {extension}");
+                return "/placeholder-image.png";
+            }
+
+            var fileName = $"{Guid.NewGuid()}{extension}";
+
+            var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var uploadsPath = Path.Combine(webRootPath, "Storage", "Servicios");
+
+            if (!Directory.Exists(uploadsPath))
+            {
+                Directory.CreateDirectory(uploadsPath);
+                Console.WriteLine($"📁 Directorio creado: {uploadsPath}");
+            }
+
+            var fullPath = Path.Combine(uploadsPath, fileName);
+            Console.WriteLine($"💾 Ruta completa del archivo: {fullPath}");
+
+            using (var stream = new FileStream(fullPath, FileMode.Create))
+            {
+                await archivoSeleccionado.OpenReadStream(maxFileSize).CopyToAsync(stream);
+            }
+
+            Console.WriteLine($"✅ Imagen guardada en: {fullPath}");
+
+            if (File.Exists(fullPath))
+            {
+                var fileInfo = new FileInfo(fullPath);
+                Console.WriteLine($"✅ Verificación OK: {fileInfo.Length} bytes");
+            }
+
+            var imageUrl = $"/Storage/Servicios/{fileName}";
+            Console.WriteLine($"🔗 URL de la imagen: {imageUrl}");
+
+            return imageUrl;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"💥 Error al subir imagen: {ex.Message}");
+            Console.WriteLine($"Stack: {ex.StackTrace}");
+            return "/placeholder-image.png";
+        }
+    }
+
+    private async Task SeleccionarImagen(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            if (e.FileCount == 0) return;
+
+            archivoSeleccionado = e.File;
+            nombreArchivoSeleccionado = archivoSeleccionado.Name;
+            tamanoArchivoKB = Math.Round(archivoSeleccionado.Size / 1024.0, 1);
+
+            const long maxFileSize = 5 * 1024 * 1024;
+            if (archivoSeleccionado.Size > maxFileSize)
+            {
+                mensajeError = $"La imagen es demasiado grande ({tamanoArchivoKB}KB). Máximo 5MB.";
+                ResetearImagen();
+                StateHasChanged();
+                return;
+            }
+
+            try
+            {
+                var format = "image/jpeg";
+                var resizedImage = await archivoSeleccionado.RequestImageFileAsync(
+                    format, 400, 400); 
+
+                var buffer = new byte[resizedImage.Size];
+                await resizedImage.OpenReadStream(maxFileSize).ReadAsync(buffer);
+                previewImageUrl = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+            }
+            catch
+            {
+                previewImageUrl = "/placeholder-image.png";
+            }
+
+            mensajeError = "";
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            mensajeError = $"Error al seleccionar imagen: {ex.Message}";
+            ResetearImagen();
+            StateHasChanged();
+        }
+    }
+
+    private void EliminarImagenSeleccionada()
+    {
+        ResetearImagen();
+        StateHasChanged();
+    }
+
+    private void ResetearImagen()
+    {
+        archivoSeleccionado = null;
+        nombreArchivoSeleccionado = null;
+        previewImageUrl = null;
+        tamanoArchivoKB = 0;
+    }
+
+    private void CancelarSubida()
+    {
+        isUploading = false;
+        ResetearImagen();
+        mensajeError = "Subida de imagen cancelada";
+        StateHasChanged();
+    }
+
+    private void CerrarModal()
+    {
+        mostrarModal = false;
+        servicio = new Servicio();
+        ResetearImagen();
+    }
+
+    private void MostrarModalEliminar(Servicio s)
+    {
+        servicioAEliminar = s;
+        mostrarModalEliminar = true;
         StateHasChanged();
     }
 
     private void CancelarEliminacion()
     {
         servicioAEliminar = null;
-        showConfirmacionEliminar = false;
+        mostrarModalEliminar = false;
         StateHasChanged();
     }
 
     private async Task ConfirmarEliminacion()
     {
-        if (servicioAEliminar == null)
-        {
-            Console.WriteLine("❌ [FRONT] servicioAEliminar es NULL");
-            return;
-        }
-
-        Console.WriteLine($"🔍 [FRONT] Confirmando eliminación de servicio ID: {servicioAEliminar.Id}");
-        Console.WriteLine($"🔍 [FRONT] Nombre del servicio: {servicioAEliminar.Nombre}");
+        if (servicioAEliminar == null) return;
 
         try
         {
-            bool eliminado = await ServicioService.EliminarServicioAsync(servicioAEliminar.Id);
-
-            Console.WriteLine($"📊 [FRONT] Resultado de eliminación: {eliminado}");
-
-            if (eliminado)
+            if (!string.IsNullOrEmpty(servicioAEliminar.ImagenUrl) && servicioAEliminar.ImagenUrl.StartsWith("/Storage/Servicios/"))
             {
-                Console.WriteLine($"✅ [FRONT] Servicio eliminado exitosamente");
+                try
+                {
+                    var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                    var fullPath = Path.Combine(webRootPath, servicioAEliminar.ImagenUrl.TrimStart('/'));
+                    if (File.Exists(fullPath))
+                    {
+                        File.Delete(fullPath);
+                        Console.WriteLine($"🗑️ Imagen eliminada: {fullPath}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Error al eliminar imagen: {ex.Message}");
+                }
+            }
+
+            if (await ServicioService.EliminarServicioAsync(servicioAEliminar.Id))
+            {
                 mensajeExito = $"Servicio '{servicioAEliminar.Nombre}' eliminado correctamente";
-                mensajeError = string.Empty;
-
-                servicioAEliminar = null;
-                showConfirmacionEliminar = false;
-
-                await LoadServicios();
-
-                // Auto-ocultar mensaje después de 3 segundos
-                await Task.Delay(3000);
-                mensajeExito = string.Empty;
+                await CargarDatos();
             }
             else
             {
-                Console.WriteLine($"❌ [FRONT] No se pudo eliminar el servicio");
                 mensajeError = "No se pudo eliminar el servicio. Verifica que no tenga citas asociadas.";
-                mensajeExito = string.Empty;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"💥 [FRONT] ERROR: {ex.Message}");
-            mensajeError = $"Error: {ex.Message}";
+            mensajeError = $"Error al eliminar servicio: {ex.Message}";
         }
-
-        StateHasChanged();
+        finally
+        {
+            servicioAEliminar = null;
+            mostrarModalEliminar = false;
+            StateHasChanged();
+        }
     }
 
-    private void CloseModal()
+    private void LimpiarMensajeExito() => mensajeExito = "";
+    private void LimpiarMensajeError() => mensajeError = "";
+
+    private static string Truncate(string value, int maxLength)
     {
-        showModal = false;
+        if (string.IsNullOrEmpty(value)) return value;
+        return value.Length <= maxLength ? value : value.Substring(0, maxLength) + "...";
     }
 }
-
-
-
-
-
-

@@ -70,7 +70,7 @@
     margin-bottom: 40px;
 }
 
-/* Grupos de formulario */
+/*formulario */
 .form-group {
     margin-bottom: 25px;
 }
@@ -238,7 +238,6 @@
     }
 }
 
-/* Estilo alternativo si no hay imagen */
 .login-container.simple {
     min-height: 100vh;
     display: flex;

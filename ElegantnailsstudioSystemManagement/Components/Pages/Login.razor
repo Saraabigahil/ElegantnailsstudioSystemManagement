@@ -7,9 +7,7 @@
 
 <PageTitle>Login - Elegant Nails</PageTitle>
 
-<!-- CONTAINER PRINCIPAL -->
 <div class="login-container">
-    <!-- LADO IZQUIERDO CON IMAGEN -->
     <div class="login-image-side">
         <div class="login-welcome">
             <h1>Bienvenido a Elegant Nails</h1>
@@ -18,7 +16,6 @@
         </div>
     </div>
 
-    <!-- LADO DERECHO CON FORMULARIO -->
     <div class="login-form-side">
         <div class="login-form-container">
             <h2 class="login-title">
@@ -26,38 +23,35 @@
             </h2>
             <p class="login-subtitle">Ingresa tus credenciales para continuar</p>
 
-            <!-- CORREO ELECTRÓNICO -->
             <div class="form-group">
                 <label class="form-label">
                     <i class="bi bi-envelope-at"></i>Correo Electrónico
                 </label>
                 <input type="email"
-                       @bind="email"
-                       @bind:event="oninput"
-                       placeholder="ejemplo@correo.com"
-                       class="form-input"
-                       @onfocus="OnInputFocus"
-                       @onblur="OnInputBlur" />
+                @bind="email"
+                @bind:event="oninput"
+                placeholder="ejemplo@correo.com"
+                class="form-input"
+                @onfocus="OnInputFocus"
+                @onblur="OnInputBlur" />
             </div>
 
-            <!-- CONTRASEÑA -->
             <div class="form-group">
                 <label class="form-label">
                     <i class="bi bi-key"></i>Contraseña
                 </label>
                 <input type="password"
-                       @bind="password"
-                       @bind:event="oninput"
-                       placeholder="••••••••"
-                       class="form-input"
-                       @onfocus="OnInputFocus"
-                       @onblur="OnInputBlur" />
+                @bind="password"
+                @bind:event="oninput"
+                placeholder="••••••••"
+                class="form-input"
+                @onfocus="OnInputFocus"
+                @onblur="OnInputBlur" />
             </div>
 
-            <!-- BOTÓN INGRESAR -->
             <button @onclick="ValidarLogin"
-                    class="login-button"
-                    disabled="@isLoading">
+            class="login-button"
+            disabled="@isLoading">
                 @if (isLoading)
                 {
                     <span class="loading-text">
@@ -74,7 +68,6 @@
                 }
             </button>
 
-            <!-- ENLACE A REGISTRO -->
             <div class="register-section">
                 <p class="register-text">
                     ¿No tienes una cuenta?
@@ -85,7 +78,6 @@
                 </a>
             </div>
 
-            <!-- MENSAJES DE ERROR/ÉXITO -->
             @if (!string.IsNullOrEmpty(errorMessage))
             {
                 <div class="error-message">
@@ -223,12 +215,12 @@
 
     private void OnInputFocus()
     {
-        // Puedes agregar efectos de focus aquí si lo necesitas
+
     }
 
     private void OnInputBlur()
     {
-        // Puedes agregar efectos de blur aquí si lo necesitas
+        
     }
 }
 

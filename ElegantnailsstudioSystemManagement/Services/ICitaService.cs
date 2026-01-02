@@ -30,13 +30,11 @@ namespace ElegantnailsstudioSystemManagement.Services
             _cupoService = cupoService;
         }
 
-        // En tu CitaService.cs, AÑADE estos métodos si no los tienes:
-        // En CitaService.cs - Corrige el método completo
         public async Task<bool> CreateCitaAsync(Cita cita)
         {
             try
             {
-                // 1. Validar que el servicio exista
+
                 var servicio = await _context.Servicios.FindAsync(cita.ServicioId);
                 if (servicio == null)
                 {
@@ -44,14 +42,14 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-                // 2. Validar que la fecha no sea pasada
+                // Valida que la fecha no sea pasada
                 if (cita.FechaCita.Date < DateTime.Today)
                 {
                     Console.WriteLine($"❌ No se pueden agendar citas en fechas pasadas: {cita.FechaCita.Date}");
                     return false;
                 }
 
-                // 3. Validar que el cupo esté habilitado
+                // Valida que el cupo esté habilitado
                 var cupo = await _cupoService.GetCupoByFechaTurnoAsync(cita.FechaCita, cita.Turno);
                 if (cupo == null || !cupo.Habilitado)
                 {
@@ -59,8 +57,6 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-                // 4. Verificar disponibilidad considerando la duración del servicio
-                // CORREGIDO: Ahora pasamos la duración requerida
                 var disponible = await _cupoService.CheckDisponibilidadAsync(
                     cita.FechaCita,
                     cita.Turno,
@@ -73,7 +69,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-                // 5. Reservar cupo
+                //Reservacion del cupo
                 var cupoReservado = await _cupoService.ReservarCupoAsync(cita.FechaCita, cita.Turno);
                 if (!cupoReservado)
                 {
@@ -81,7 +77,6 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-                // 6. Crear la cita
                 cita.Estado = "pendiente";
                 cita.FechaCreacion = DateTime.Now;
                 _context.Citas.Add(cita);
@@ -106,10 +101,9 @@ namespace ElegantnailsstudioSystemManagement.Services
                 var cita = await _context.Citas.FindAsync(id);
                 if (cita == null) return false;
 
-                // Solo se pueden cancelar citas pendientes
                 if (cita.Estado != "pendiente") return false;
 
-                // Liberar el cupo
+                // Libera el cupo
                 await _cupoService.LiberarCupoAsync(cita.FechaCita, cita.Turno);
 
                 cita.Estado = "cancelada";
@@ -178,14 +172,14 @@ namespace ElegantnailsstudioSystemManagement.Services
                 var existing = await _context.Citas.FindAsync(cita.Id);
                 if (existing == null) return false;
 
-                // Obtener el servicio para la duración
+                // Obtiene el servicio para la duración
                 var servicio = await _context.Servicios.FindAsync(cita.ServicioId);
                 if (servicio == null) return false;
 
                 // Si cambia la fecha o turno, verificar cupo
                 if (existing.FechaCita.Date != cita.FechaCita.Date || existing.Turno != cita.Turno)
                 {
-                    // CORRECCIÓN: Agregar la duración del servicio
+                 
                     var disponible = await _cupoService.CheckDisponibilidadAsync(
                         cita.FechaCita,
                         cita.Turno,
@@ -193,10 +187,8 @@ namespace ElegantnailsstudioSystemManagement.Services
 
                     if (!disponible) return false;
 
-                    // Liberar cupo anterior
                     await _cupoService.LiberarCupoAsync(existing.FechaCita, existing.Turno);
 
-                    // Reservar nuevo cupo
                     var cupoReservado = await _cupoService.ReservarCupoAsync(cita.FechaCita, cita.Turno);
                     if (!cupoReservado) return false;
                 }
@@ -224,7 +216,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                 var cita = await _context.Citas.FindAsync(id);
                 if (cita == null) return false;
 
-                // Liberar cupo
+                // Libera cupo
                 await _cupoService.LiberarCupoAsync(cita.FechaCita, cita.Turno);
 
                 _context.Citas.Remove(cita);

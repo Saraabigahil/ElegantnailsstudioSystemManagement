@@ -2,55 +2,83 @@
 @using ElegantnailsstudioSystemManagement.Models
 @inject ICategoriaService CategoriaService
 
-<PageTitle>Crear Categoría</PageTitle>
+<PageTitle>Crear Categoría - Elegant Nails</PageTitle>
 
-<div style="padding: 20px;">
-    <h1 style="color: darkblue;">CREAR NUEVA CATEGORÍA</h1>
+<div class="admin-agregar-categoria-container">
+    <div class="agregar-categoria-header">
+        <i class="bi bi-plus-circle-fill header-icon"></i>
+        <h1>CREAR NUEVA CATEGORÍA</h1>
+    </div>
 
     <EditForm Model="nuevaCategoria" OnValidSubmit="Guardar">
-        <div style="margin: 20px 0;">
-            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Nombre:</label>
-            <InputText @bind-Value="nuevaCategoria.Nombre"
-                       style="width: 300px; padding: 8px; font-size: 16px;" />
-        </div>
+        <div class="categoria-form-container">
+            <div class="form-group-custom">
+                <label class="form-label-custom">
+                    <i class="bi bi-tag"></i>Nombre de la Categoría
+                </label>
+                <InputText @bind-Value="nuevaCategoria.Nombre"
+                           class="input-categoria-nombre"
+                           placeholder="Ej: Pestañas, Uñas, Maquillaje..." />
+            </div>
 
-        <button type="submit" style="background: green; color: white; padding: 10px 20px; font-size: 16px; border: none; cursor: pointer;">
-            Guardar Categoría
-        </button>
+            @if (!string.IsNullOrEmpty(mensaje))
+            {
+                <div class="mensaje-container">
+                    <div class="@(error ? "mensaje-error" : "mensaje-exito")">
+                        <i class="bi @(error ? "bi-exclamation-circle" : "bi-check-circle")"></i>
+                        <span>@mensaje</span>
+                    </div>
+                </div>
+            }
+
+            <button type="submit" class="btn-guardar-categoria">
+                <i class="bi bi-save"></i>
+                <span>Guardar Categoría</span>
+            </button>
+        </div>
     </EditForm>
 
-    @if (!string.IsNullOrEmpty(mensaje))
-    {
-        <div style="margin: 20px; padding: 10px; background: @(error ? "#ffe6e6" : "#e6ffe6");">
-            @mensaje
-        </div>
-    }
-    <div class="mt-3">
-        <a href="/admin/categorias" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Atrás
+    <div class="btn-atras-container">
+        <a href="/admin/categorias" class="btn btn-atras">
+            <i class="bi bi-arrow-left"></i>
+            <span>Volver a Categorías</span>
         </a>
+    </div>
+
+    <div class="categorias-existente-container">
+        <h3 class="categorias-existente-titulo">
+            <i class="bi bi-list-check"></i>
+            <span>Categorías existentes</span>
+        </h3>
+
+        @if (categorias.Any())
+        {
+            <ul class="lista-categorias">
+                @foreach (var cat in categorias.OrderByDescending(c => c.Id))
+                {
+                    <li class="categoria-item">
+                        <span class="categoria-id">@cat.Id</span>
+                        <span class="categoria-nombre">@cat.Nombre</span>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <div class="text-center py-4">
+                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                <p class="text-muted mt-3">No hay categorías registradas aún</p>
+            </div>
+        }
     </div>
 </div>
 
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 20px;">
-    <h3>Categorías existentes:</h3>
-    <ul>
-        @foreach (var cat in categorias)
-        {
-            <li>@cat.Id - @cat.Nombre</li>
-        }
-    </ul>
-</div>
-
 @code {
-    // 🔹 Acá va el objeto que representa la nueva categoría
     private Categoria nuevaCategoria = new Categoria();
-
     private string mensaje = "";
     private bool error = false;
     private List<Categoria> categorias = new();
 
-    // 🔹 Cargar categorías al iniciar
     protected override async Task OnInitializedAsync()
     {
         await CargarCategorias();
@@ -61,14 +89,13 @@
         categorias = await CategoriaService.GetCategoriasAsync();
     }
 
-    // 🔹 Método que se ejecuta al enviar el formulario
     private async Task Guardar()
     {
         try
         {
             if (string.IsNullOrWhiteSpace(nuevaCategoria.Nombre))
             {
-                mensaje = "Por favor, ingresa un nombre";
+                mensaje = "Por favor, ingresa un nombre para la categoría";
                 error = true;
                 return;
             }
@@ -80,9 +107,11 @@
                 mensaje = "¡Categoría guardada correctamente!";
                 error = false;
 
-                // Reiniciar formulario
                 nuevaCategoria = new Categoria();
                 await CargarCategorias();
+
+                await Task.Delay(3000);
+                mensaje = "";
             }
             else
             {
@@ -92,14 +121,8 @@
         }
         catch (Exception ex)
         {
-            mensaje = "Error: " + ex.Message;
+            mensaje = $"Error: {ex.Message}";
             error = true;
         }
     }
 }
-
-
-
-
-
-
