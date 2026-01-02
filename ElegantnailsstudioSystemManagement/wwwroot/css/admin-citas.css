@@ -1,0 +1,414 @@
+﻿/* admin-citas.css */
+
+/* Variables de colores */
+:root {
+    --morado-oscuro: #2d0b3d;
+    --morado-medio: #4a1e6e;
+    --morado-claro: #7b3fe4;
+    --rosa: #e83e8c;
+    --rosa-claro: #ff6b9d;
+    --negro: #121212;
+    --gris-oscuro: #1e1e1e;
+    --gris-medio: #333333;
+    --blanco: #ffffff;
+    --texto-claro: #f8f9fa;
+}
+
+/* Estilos generales */
+.admin-citas-container {
+    background-color: var(--negro);
+    color: var(--texto-claro);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Encabezado */
+.admin-citas-header {
+    background: linear-gradient(135deg, var(--morado-oscuro) 0%, var(--morado-medio) 100%);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--morado-claro);
+}
+
+    .admin-citas-header h1 {
+        color: var(--rosa-claro);
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .admin-citas-header .subtitle {
+        color: var(--rosa);
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+/* Alertas */
+.admin-citas-alert {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 25px;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #1a3c1a 0%, #2e7d32 100%);
+    color: #c8e6c9;
+    border-left: 5px solid #4caf50;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #3c1a1a 0%, #d32f2f 100%);
+    color: #ffcdd2;
+    border-left: 5px solid #f44336;
+}
+
+.admin-citas-table-container {
+    background: var(--gris-oscuro);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--morado-medio);
+    margin-bottom: 30px;
+}
+
+.admin-citas-table {
+    background: transparent;
+    color: var(--texto-claro);
+    margin: 0;
+}
+
+    .admin-citas-table thead {
+        background: linear-gradient(135deg, var(--morado-oscuro) 0%, var(--rosa) 100%);
+        border-bottom: 3px solid var(--morado-claro);
+    }
+
+        .admin-citas-table thead th {
+            color: var(--blanco);
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 20px 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+        }
+
+    .admin-citas-table tbody tr {
+        background: var(--gris-oscuro);
+        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--gris-medio);
+    }
+
+        .admin-citas-table tbody tr:hover {
+            background: var(--gris-medio);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+    .admin-citas-table tbody td {
+        padding: 20px 15px;
+        vertical-align: middle;
+        border: none;
+    }
+
+.cita-id {
+    color: var(--rosa-claro);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.cliente-id {
+    color: var(--morado-claro);
+    font-weight: 600;
+}
+
+.servicio-info {
+    background: rgba(123, 63, 228, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    border-left: 3px solid var(--morado-claro);
+}
+
+.servicio-nombre {
+    color: var(--rosa-claro);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.servicio-precio {
+    color: var(--morado-claro);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.fecha-info {
+    background: rgba(42, 157, 143, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.fecha-cita {
+    color: #2a9d8f;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.hora-cita {
+    color: #76c7c0;
+    font-size: 0.9rem;
+}
+
+.badge-turno {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.badge-mañana {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    color: var(--morado-oscuro);
+}
+
+.badge-tarde {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    color: var(--morado-oscuro);
+}
+
+.badge-noche {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--blanco);
+}
+
+.badge-estado {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    min-width: 120px;
+    text-align: center;
+}
+
+.badge-pendiente {
+    background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+    color: var(--morado-oscuro);
+}
+
+.badge-completada {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+    color: var(--blanco);
+}
+
+.badge-cancelada {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+    color: var(--blanco);
+}
+
+/* Botones de acciones */
+.acciones-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-accion {
+    border-radius: 10px;
+    padding: 8px 20px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 120px;
+}
+
+.btn-completar {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+    color: var(--blanco);
+    box-shadow: 0 4px 6px rgba(86, 171, 47, 0.3);
+}
+
+    .btn-completar:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(86, 171, 47, 0.4);
+        border-color: #56ab2f;
+    }
+
+.btn-cancelar {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+    color: var(--blanco);
+    box-shadow: 0 4px 6px rgba(255, 65, 108, 0.3);
+}
+
+    .btn-cancelar:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(255, 65, 108, 0.4);
+        border-color: #ff416c;
+    }
+
+
+.card-stats {
+    border: none;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+    .card-stats:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-stats .card-body {
+        padding: 25px;
+    }
+
+    .card-stats h6 {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 10px;
+    }
+
+    .card-stats h3 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+.stats-icon {
+    font-size: 2.5rem;
+    opacity: 0.8;
+}
+
+/* Botón atrás */
+.btn-atras {
+    background: linear-gradient(135deg, var(--morado-medio) 0%, var(--morado-claro) 100%);
+    color: var(--blanco);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 30px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 200px;
+}
+
+    .btn-atras:hover {
+        transform: translateX(-5px);
+        box-shadow: 0 8px 15px rgba(123, 63, 228, 0.4);
+        background: linear-gradient(135deg, var(--morado-claro) 0%, var(--rosa) 100%);
+        color: white;
+        text-decoration: none;
+    }
+
+.admin-citas-spinner {
+    width: 100px;
+    height: 100px;
+    color: var(--rosa);
+    border-width: 5px;
+}
+
+.no-data-message {
+    background: linear-gradient(135deg, var(--morado-oscuro) 0%, var(--morado-medio) 100%);
+    color: var(--rosa-claro);
+    border-radius: 15px;
+    padding: 60px 40px;
+    text-align: center;
+    border: 2px dashed var(--morado-claro);
+    margin: 50px auto;
+    max-width: 600px;
+}
+
+.no-data-icon {
+    font-size: 4rem;
+    color: var(--rosa);
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+
+.no-data-message h3 {
+    color: var(--rosa-claro);
+    margin-bottom: 15px;
+}
+
+.no-data-message p {
+    color: var(--morado-claro);
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.admin-citas-container ~ .nav-container,
+.admin-citas-container ~ header {
+    display: none !important;
+}
+
+.admin-citas-container ~ .header,
+.admin-citas-container ~ .nav-menu,
+.admin-citas-container ~ nav {
+    display: none !important;
+}
+
+.admin-citas-container {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-citas-header h1 {
+        font-size: 2rem;
+    }
+
+    .admin-citas-table thead {
+        display: none;
+    }
+
+    .admin-citas-table tbody tr {
+        display: block;
+        margin-bottom: 20px;
+        background: var(--gris-medio);
+        border-radius: 10px;
+        padding: 15px;
+    }
+
+    .admin-citas-table tbody td {
+        display: block;
+        text-align: right;
+        padding: 10px 15px;
+        border-bottom: 1px solid var(--gris-oscuro);
+    }
+
+        .admin-citas-table tbody td:before {
+            content: attr(data-label);
+            float: left;
+            font-weight: 700;
+            color: var(--rosa);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .admin-citas-table tbody td:last-child {
+            border-bottom: none;
+        }
+
+    .acciones-container {
+        justify-content: center;
+    }
+
+    .card-stats {
+        margin-bottom: 20px;
+    }
+}

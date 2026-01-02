@@ -10,7 +10,6 @@
 <div class="container mt-4">
     <h1 class="mb-4"><i class="bi bi-palette me-2"></i>Gestión del Logo</h1>
 
-    <!-- Mensajes de error/éxito -->
     @if (!string.IsNullOrEmpty(mensajeError))
     {
         <div class="alert alert-danger alert-dismissible fade show">
@@ -65,7 +64,6 @@
             </div>
         </div>
 
-        <!-- Subir Nuevo Logo -->
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-success text-white">
@@ -75,7 +73,6 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Seleccionar archivo de imagen</label>
 
-                        <!-- Input File SIMPLIFICADO -->
                         <div class="mb-3">
                             <input type="file"
                                    id="fileInput"
@@ -195,7 +192,6 @@
             logoActual = LogoService.ObtenerLogoActual();
             if (!string.IsNullOrEmpty(logoActual))
             {
-                // Agregar timestamp para evitar cache
                 logoActual += "?t=" + DateTime.Now.Ticks;
             }
         }
@@ -205,7 +201,6 @@
         }
     }
 
-    // MÉTODO SIMPLIFICADO - usa InputFileChangeEventArgs
     private async Task HandleFileSelected(ChangeEventArgs e)
     {
         try
@@ -221,7 +216,6 @@
             if (file == null)
                 return;
 
-            // Validar tamaño (5MB máximo)
             if (file.Size > 5 * 1024 * 1024)
             {
                 mensajeError = "El archivo es demasiado grande (Máx. 5MB)";
@@ -230,12 +224,10 @@
                 return;
             }
 
-            // Guardar el archivo
             archivoSeleccionado = file;
             fileName = file.Name;
             fileSize = (file.Size / 1024).ToString("N0");
 
-            // Crear vista previa
             var format = "image/png";
             var imageFile = await file.RequestImageFileAsync(format, 800, 600);
             var buffer = new byte[imageFile.Size];
@@ -265,21 +257,16 @@
 
         try
         {
-            // Leer el archivo como stream
             var stream = archivoSeleccionado.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
 
-            // Subir archivo usando el servicio
             var nuevaRuta = await LogoService.GuardarLogoAsync(stream, fileName);
 
-            // Actualizar logo actual
             logoActual = nuevaRuta;
 
             mensajeExito = "¡Logo subido exitosamente!";
 
-            // Limpiar formulario
             ResetearFormulario();
 
-            // Recargar después de 2 segundos
             await Task.Delay(2000);
             mensajeExito = null;
         }

@@ -1,4 +1,5 @@
 ﻿@page "/unas"
+@layout MainLayout
 @using ElegantnailsstudioSystemManagement.Models
 @using ElegantnailsstudioSystemManagement.Services
 @inject IServicioService ServicioService
@@ -7,53 +8,161 @@
 
 <PageTitle>Elegant Nails - Uñas</PageTitle>
 
-<div class="container mt-4">
-    <h1 class="mb-4">Servicios de Uñas</h1>
-
-    @if (serviciosUnas.Count == 0)
-    {
-        <div class="alert alert-info">
-            <h4>No hay servicios de uñas disponibles</h4>
-            <p>Próximamente agregaremos nuestros servicios de uñas.</p>
+<header class="unas-header">
+    <div class="container">
+        <div class="unas-header-content">
+            <h1 class="unas-title">
+                <i class="bi bi-brush me-2"></i>Servicios de Uñas
+            </h1>
+            <p class="unas-subtitle">Cuida y embellece tus uñas con nuestros servicios especializados</p>
         </div>
-    }
-    else
-    {
-        <div class="row g-4">
-            @foreach (var servicio in serviciosUnas)
-            {
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            @if (!string.IsNullOrEmpty(servicio.ImagenUrl))
-                            {
-                                <img src="@servicio.ImagenUrl" alt="@servicio.Nombre"
-                                     class="card-img-top mb-3" style="height: 200px; object-fit: cover;" />
-                            }
-                            <h5 class="card-title">@servicio.Nombre</h5>
-                            <p class="card-text text-muted">@servicio.Descripcion</p>
+    </div>
+</header>
 
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="h5 text-primary fw-bold">@servicio.Precio.ToString("C")</span>
-                                <span class="badge bg-secondary">
-                                    <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
-                                </span>
+<!-- CONTENIDO PRINCIPAL -->
+<main class="unas-main">
+    <div class="container">
+        @if (serviciosUnas.Count == 0)
+        {
+            <div class="alert alert-info">
+                <h4><i class="bi bi-info-circle me-2"></i>No hay servicios disponibles</h4>
+                <p>Próximamente agregaremos nuestros servicios de uñas.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var servicio in serviciosUnas)
+                {
+                    <div class="col-md-4">
+                        <div class="card unas-card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-stars me-2"></i>@servicio.Nombre
+                                </h5>
                             </div>
+                            <div class="card-body">
+                                @if (!string.IsNullOrEmpty(servicio.ImagenUrl))
+                                {
+                                    <div class="servicio-imagen mb-3">
+                                        <img src="@servicio.ImagenUrl" alt="@servicio.Nombre"
+                                             class="img-fluid rounded" />
+                                    </div>
+                                }
 
-                            <div class="d-grid">
-                                <button class="btn btn-primary" @onclick="() => AgendarServicio(servicio.Id)">
-                                    <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-                                </button>
+                                <p class="card-text servicio-descripcion">@servicio.Descripcion</p>
+
+                                <div class="servicio-info">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="servicio-precio">
+                                            <i class="bi bi-currency-dollar me-1"></i>@servicio.Precio.ToString("C")
+                                        </span>
+                                        <span class="servicio-duracion">
+                                            <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <a href="/citas/agendar?servicioId=@servicio.Id" class="btn unas-btn-agendar">
+                                        <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                }
+            </div>
+        }
+
+        <!-- SERVICIOS DESTACADOS -->
+        <div class="row g-4 mt-5">
+            <div class="col-md-4">
+                <div class="card unas-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-stars me-2"></i>Esmalte
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text servicio-descripcion">Cortas, transparente. Aplicación profesional de esmalte.</p>
+                        <div class="servicio-info">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="servicio-precio">
+                                    <i class="bi bi-currency-dollar me-1"></i>$15.00
+                                </span>
+                                <span class="servicio-duracion">
+                                    <i class="bi bi-clock me-1"></i>45 min
+                                </span>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <a href="/citas/agendar?tipo=esmalte" class="btn unas-btn-agendar">
+                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            }
+            </div>
+
+            <div class="col-md-4">
+                <div class="card unas-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-magic me-2"></i>Pintura Baño
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text servicio-descripcion">Tratamiento completo de pintura y baño para uñas.</p>
+                        <div class="servicio-info">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="servicio-precio">
+                                    <i class="bi bi-currency-dollar me-1"></i>$60.00
+                                </span>
+                                <span class="servicio-duracion">
+                                    <i class="bi bi-clock me-1"></i>90 min
+                                </span>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <a href="/citas/agendar?tipo=pintura-bano" class="btn unas-btn-agendar">
+                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card unas-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-heart me-2"></i>Pintura Acrílica
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text servicio-descripcion">Pintura de acrílico con diseño bifilo adicional.</p>
+                        <div class="servicio-info">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="servicio-precio">
+                                    <i class="bi bi-currency-dollar me-1"></i>$35.00
+                                </span>
+                                <span class="servicio-duracion">
+                                    <i class="bi bi-clock me-1"></i>75 min
+                                </span>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <a href="/citas/agendar?tipo=acrilica" class="btn unas-btn-agendar">
+                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    }
-
-
-</div>
+    </div>
+</main>
 
 @code {
     private List<Servicio> serviciosUnas = new();
@@ -68,7 +177,7 @@
     {
         try
         {
-            // Buscar categoría "Uñas"
+            // Busca categoría "Uñas"
             categoriaUnas = await CategoriaService.GetCategoriaByNombreAsync("Uñas");
 
             if (categoriaUnas != null)
@@ -77,7 +186,7 @@
             }
             else
             {
-                // Si no existe la categoría, mostrar todos los servicios relacionados con uñas
+                // Si no existe la categoría, muestra todos los servicios relacionados con uñas
                 var todosServicios = await ServicioService.GetServiciosActivosAsync();
                 serviciosUnas = todosServicios
                     .Where(s => s.Nombre.ToLower().Contains("uña") ||
@@ -91,15 +200,4 @@
             Console.WriteLine($"❌ Error cargando servicios de uñas: {ex.Message}");
         }
     }
-
-    private void AgendarServicio(int servicioId)
-    {
-        Navigation.NavigateTo($"/citas?servicioId={servicioId}");
-    }
 }
-
-
-
-
-
-

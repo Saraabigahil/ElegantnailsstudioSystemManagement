@@ -1,5 +1,4 @@
 ﻿@page "/admin/turnos"
-@layout AdminLayout
 @using ElegantnailsstudioSystemManagement.Models
 @using ElegantnailsstudioSystemManagement.Services
 @inject ICupoService CupoService
@@ -7,97 +6,128 @@
 
 <PageTitle>Habilitar Turnos</PageTitle>
 
-<div class="container mt-4">
-    <h1>Habilitar Turnos</h1>
+<div class="admin-turnos-habilitar-container">
+    <div class="turnos-main-header">
+        <i class="bi bi-calendar-plus-fill header-icon"></i>
+        <h1>Habilitar Turnos</h1>
+    </div>
 
     @if (!string.IsNullOrEmpty(mensajeError))
     {
-        <div class="alert alert-danger">@mensajeError</div>
+        <div class="mensaje-container">
+            <div class="mensaje-error">
+                <i class="bi bi-exclamation-circle"></i>
+                <span>@mensajeError</span>
+            </div>
+        </div>
     }
     @if (!string.IsNullOrEmpty(mensajeExito))
     {
-        <div class="alert alert-success">@mensajeExito</div>
+        <div class="mensaje-container">
+            <div class="mensaje-exito">
+                <i class="bi bi-check-circle"></i>
+                <span>@mensajeExito</span>
+            </div>
+        </div>
     }
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5>Habilitar Turno</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">Fecha</label>
-                        <input type="date" value="@fechaString"
-                               @onchange="OnFechaChange"
-                               class="form-control"
-                               min="@DateTime.Today.ToString("yyyy-MM-dd")" />
-                    </div>
+    <div class="turnos-dashboard">
+        <div class="habilitar-turno-section">
+            <h2><i class="bi bi-plus-circle"></i> Habilitar Turno</h2>
 
-                    <div class="mb-3">
-                        <label class="form-label">Turno</label>
-                        <select @onchange="OnTurnoChange" class="form-select">
-                            <option value="mañana" selected="@(turnoSeleccionado == "mañana")">
-                                Mañana (8:00 AM - 12:00 PM)
-                            </option>
-                            <option value="tarde" selected="@(turnoSeleccionado == "tarde")">
-                                Tarde (1:00 PM - 5:00 PM)
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Cupos disponibles</label>
-                        <input type="number" value="@cuposMaximos"
-                               @onchange="OnCuposChange"
-                               class="form-control" min="1" max="20" />
-                        <small class="text-muted">Número de citas permitidas en este turno</small>
-                    </div>
-
-                    <button class="btn btn-primary w-100" @onclick="HabilitarTurno">
-                        Habilitar Turno
-                    </button>
-                </div>
+            <div class="turno-form-group">
+                <label class="turno-form-label">
+                    <i class="bi bi-calendar"></i> Fecha
+                </label>
+                <input type="date"
+                       value="@fechaString"
+                       @onchange="OnFechaChange"
+                       class="turno-form-control"
+                       min="@DateTime.Today.ToString("yyyy-MM-dd")" />
             </div>
+
+            <div class="turno-form-group">
+                <label class="turno-form-label">
+                    <i class="bi bi-clock"></i> Turno
+                </label>
+                <select @onchange="OnTurnoChange" class="turno-form-control">
+                    <option value="mañana" selected="@(turnoSeleccionado == "mañana")">
+                        Mañana (8:00 AM - 12:00 PM)
+                    </option>
+                    <option value="tarde" selected="@(turnoSeleccionado == "tarde")">
+                        Tarde (1:00 PM - 5:00 PM)
+                    </option>
+                </select>
+            </div>
+
+            <div class="turno-form-group">
+                <label class="turno-form-label">
+                    <i class="bi bi-people"></i> Cupos disponibles
+                </label>
+                <input type="number"
+                       value="@cuposMaximos"
+                       @onchange="OnCuposChange"
+                       class="turno-form-control"
+                       min="1"
+                       max="20" />
+                <small class="text-muted mt-2 d-block">
+                    <i class="bi bi-info-circle"></i> Número de citas permitidas en este turno
+                </small>
+            </div>
+
+            <button class="btn-habilitar-turno" @onclick="HabilitarTurno">
+                <i class="bi bi-check-circle"></i>
+                <span>Habilitar Turno</span>
+            </button>
         </div>
 
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h5>Turnos Habilitados (Próximos 7 días)</h5>
+        <div class="turnos-habilitados-section">
+            <h2><i class="bi bi-calendar-check"></i> Turnos Habilitados</h2>
+            <h3>Próximos 7 días</h3>
+
+            @if (cuposHabilitados.Count == 0)
+            {
+                <div class="turnos-vacio">
+                    <i class="bi bi-calendar-x"></i>
+                    <h4>No hay turnos habilitados</h4>
+                    <p>Comienza habilitando tu primer turno</p>
                 </div>
-                <div class="card-body">
-                    @if (cuposHabilitados.Count == 0)
+            }
+            else
+            {
+                <ul class="lista-turnos-habilitados">
+                    @foreach (var cupo in cuposHabilitados)
                     {
-                        <p>No hay turnos habilitados.</p>
-                    }
-                    else
-                    {
-                        <div class="list-group">
-                            @foreach (var cupo in cuposHabilitados)
-                            {
-                                <div class="list-group-item">
-                                    <strong>@cupo.Fecha.ToString("dd/MM/yyyy")</strong> -
-                                    <span class="badge @(cupo.Turno == "mañana" ? "bg-info" : "bg-warning")">
-                                        @cupo.Turno
-                                    </span>
-                                    <div class="text-muted small">
-                                        Cupos: @cupo.CupoReservado/@cupo.CupoMaximo
-                                    </div>
+                        <li class="turno-habilitado-item">
+                            <div class="turno-info">
+                                <div class="turno-fecha">
+                                    <i class="bi bi-calendar3 me-2"></i>
+                                    @cupo.Fecha.ToString("dd/MM/yyyy")
                                 </div>
-                            }
-                        </div>
+                                <span class="turno-horario">
+                                    @(cupo.Turno == "mañana" ? "🌅 Mañana" : "☀️ Tarde")
+                                </span>
+                            </div>
+
+                            <div class="turno-detalles">
+                                <div class="turno-cupos">
+                                    <i class="bi bi-person-check"></i>
+                                    <span>Cupos: @cupo.CupoReservado/@cupo.CupoMaximo</span>
+                                </div>
+                               
+                            </div>
+                        </li>
                     }
-                </div>
-
-                <div class="mt-3">
-                <a href="/admin" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Atrás
-                </a>
-            </div>
-
-            </div>
+                </ul>
+            }
         </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="/admin" class="btn-atras-turnos">
+            <i class="bi bi-arrow-left"></i>
+            <span>Volver al Panel</span>
+        </a>
     </div>
 </div>
 
@@ -137,7 +167,7 @@
     {
         if (int.TryParse(e.Value?.ToString(), out int cupos))
         {
-            cuposMaximos = cupos;
+            cuposMaximos = Math.Clamp(cupos, 1, 20);
         }
     }
 
@@ -158,23 +188,21 @@
 
             if (exito)
             {
-                mensajeExito = $"Turno habilitado: {fecha:dd/MM/yyyy} - {turnoSeleccionado}";
+                mensajeExito = $"✅ Turno habilitado: {fecha:dd/MM/yyyy} - {turnoSeleccionado}";
                 mensajeError = "";
                 await CargarTurnosHabilitados();
+
+                await Task.Delay(3000);
+                mensajeExito = "";
             }
             else
             {
-                mensajeError = "Error al habilitar el turno";
+                mensajeError = "⚠️ Error al habilitar el turno. Ya existe un turno para esa fecha y horario.";
             }
         }
         catch (Exception ex)
         {
-            mensajeError = $"Error: {ex.Message}";
+            mensajeError = $"❌ Error: {ex.Message}";
         }
     }
 }
-
-
-
-
-

@@ -12,7 +12,6 @@ namespace ElegantnailsstudioSystemManagement.Models
         public bool Habilitado { get; set; } = true;
         public DateTime? FechaHabilitacion { get; set; }
 
-        // Propiedades calculadas
         [NotMapped]
         public int CuposDisponibles => CupoMaximo - CupoReservado;
 

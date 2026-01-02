@@ -1,5 +1,4 @@
 ﻿@page "/admin/servicios/modificar/{id:int}"
-@layout AdminLayout
 @using ElegantnailsstudioSystemManagement.Models
 @using ElegantnailsstudioSystemManagement.Services
 @inject IServicioService ServicioService
@@ -34,7 +33,6 @@
                         <EditForm Model="servicio" OnValidSubmit="ActualizarServicio" FormName="servicioForm">
                             <DataAnnotationsValidator />
 
-                            <!-- Agregar Foto -->
                             <div class="mb-4 text-center">
                                 <div class="mb-3">
                                     <i class="bi bi-image text-primary" style="font-size: 3rem;"></i>

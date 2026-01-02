@@ -10,8 +10,7 @@ namespace ElegantnailsstudioSystemManagement.Services
         bool EliminarLogo();
         string ObtenerLogoActual();
         string ObtenerRutaLogo();
-        // ELIMINA O COMENTA ESTA LÍNEA:
-        // string ObtenerRutaLogoPorDefecto(); // <-- BORRAR ESTA FUNCIÓN
+      
     }
 
     public class LogoService : ILogoService
@@ -20,15 +19,14 @@ namespace ElegantnailsstudioSystemManagement.Services
         private readonly ILogger<LogoService> _logger;
         private const string LogoFileName = "logo_custom.jpg";
         private const string LogoFolder = "uploads/logos";
-        // ELIMINA O COMENTA ESTA LÍNEA:
-        // private const string DefaultLogo = "/static/Logo.jpg"; // <-- BORRAR ESTO
+        
 
         public LogoService(IWebHostEnvironment environment, ILogger<LogoService> logger)
         {
             _environment = environment;
             _logger = logger;
 
-            // Crear carpeta de logos si no existe
+            
             var uploadsFolder = Path.Combine(_environment.WebRootPath, LogoFolder);
             if (!Directory.Exists(uploadsFolder))
             {
@@ -46,14 +44,14 @@ namespace ElegantnailsstudioSystemManagement.Services
 
                 _logger.LogInformation($"Guardando logo en: {filePath}");
 
-                // Eliminar logo anterior si existe
+                
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
                     _logger.LogInformation($"Logo anterior eliminado: {filePath}");
                 }
 
-                // Guardar nuevo archivo
+                
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await fileStream.CopyToAsync(stream);
@@ -102,11 +100,11 @@ namespace ElegantnailsstudioSystemManagement.Services
 
                 if (File.Exists(filePath))
                 {
-                    // Logo personalizado existe
+                   
                     return relativePath + "?t=" + DateTime.Now.Ticks;
                 }
 
-                // SI NO HAY LOGO - DEVUELVE STRING VACÍO
+            
                 return "";
             }
             catch (Exception ex)
@@ -121,13 +119,7 @@ namespace ElegantnailsstudioSystemManagement.Services
             return Path.Combine(_environment.WebRootPath, LogoFolder, LogoFileName);
         }
 
-        // ELIMINA O COMENTA ESTE MÉTODO COMPLETO:
-        /*
-        public string ObtenerRutaLogoPorDefecto()
-        {
-            return DefaultLogo;
-        }
-        */
+     
     }
 }
 
