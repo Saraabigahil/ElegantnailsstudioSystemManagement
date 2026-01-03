@@ -11,13 +11,14 @@ namespace ElegantnailsstudioSystemManagement.Services
         Task<bool> CreateCitaAsync(Cita cita);
         Task<bool> UpdateCitaAsync(Cita cita);
         Task<bool> DeleteCitaAsync(int id);
-        Task<bool> CancelarCitaAsync(int id);
+        Task<bool> CancelarCitaAsync(int id, int clienteId);
         Task<bool> CompletarCitaAsync(int id);
+        Task<bool> CancelarCitaAdminAsync(int citaId);
+
         Task<List<Cita>> GetCitasByFechaAsync(DateTime fecha);
         Task<List<Cita>> GetCitasByClienteAsync(int clienteId);
         Task<List<Cita>> GetCitasByEstadoAsync(string estado);
     }
-
 
     public class CitaService : ICitaService
     {
@@ -34,7 +35,6 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-
                 var servicio = await _context.Servicios.FindAsync(cita.ServicioId);
                 if (servicio == null)
                 {
@@ -42,14 +42,21 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-                // Valida que la fecha no sea pasada
+                // VALIDA que la fecha no sea pasada
                 if (cita.FechaCita.Date < DateTime.Today)
                 {
                     Console.WriteLine($"❌ No se pueden agendar citas en fechas pasadas: {cita.FechaCita.Date}");
                     return false;
                 }
 
-                // Valida que el cupo esté habilitado
+                // VALIDA que el turno no haya pasado
+                var turnoPasado = await _cupoService.IsTurnoPasadoAsync(cita.FechaCita, cita.Turno);
+                if (turnoPasado)
+                {
+                    Console.WriteLine($"❌ No se pueden agendar citas en turnos que ya pasaron: {cita.FechaCita.Date} - {cita.Turno}");
+                    return false;
+                }
+
                 var cupo = await _cupoService.GetCupoByFechaTurnoAsync(cita.FechaCita, cita.Turno);
                 if (cupo == null || !cupo.Habilitado)
                 {
@@ -69,7 +76,6 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-                //Reservacion del cupo
                 var cupoReservado = await _cupoService.ReservarCupoAsync(cita.FechaCita, cita.Turno);
                 if (!cupoReservado)
                 {
@@ -93,23 +99,24 @@ namespace ElegantnailsstudioSystemManagement.Services
             }
         }
 
-
-        public async Task<bool> CancelarCitaAsync(int id)
+        public async Task<bool> CancelarCitaAsync(int citaId, int clienteId)
         {
             try
             {
-                var cita = await _context.Citas.FindAsync(id);
+                var cita = await _context.Citas.FindAsync(citaId);
                 if (cita == null) return false;
+
+                if (cita.ClienteId != clienteId)
+                    return false;
 
                 if (cita.Estado != "pendiente") return false;
 
-                // Libera el cupo
                 await _cupoService.LiberarCupoAsync(cita.FechaCita, cita.Turno);
 
                 cita.Estado = "cancelada";
                 cita.FechaCancelacion = DateTime.Now;
-                await _context.SaveChangesAsync();
 
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -124,6 +131,8 @@ namespace ElegantnailsstudioSystemManagement.Services
             try
             {
                 return await _context.Citas
+                    .Include(c => c.Cliente)
+                    .Include(c => c.Servicio)
                     .OrderByDescending(c => c.FechaCita)
                     .ThenBy(c => c.Turno)
                     .ToListAsync();
@@ -140,6 +149,8 @@ namespace ElegantnailsstudioSystemManagement.Services
             try
             {
                 return await _context.Citas
+                    .Include(c => c.Cliente)
+                    .Include(c => c.Servicio)
                     .Where(c => c.Estado != "cancelada" && c.Estado != "completada")
                     .OrderBy(c => c.FechaCita)
                     .ThenBy(c => c.Turno)
@@ -172,14 +183,16 @@ namespace ElegantnailsstudioSystemManagement.Services
                 var existing = await _context.Citas.FindAsync(cita.Id);
                 if (existing == null) return false;
 
-                // Obtiene el servicio para la duración
                 var servicio = await _context.Servicios.FindAsync(cita.ServicioId);
                 if (servicio == null) return false;
 
-                // Si cambia la fecha o turno, verificar cupo
+                // Si cambia la fecha o turno, verifica cupo
                 if (existing.FechaCita.Date != cita.FechaCita.Date || existing.Turno != cita.Turno)
                 {
-                 
+                    // Valida que el nuevo turno no haya pasado
+                    var turnoPasado = await _cupoService.IsTurnoPasadoAsync(cita.FechaCita, cita.Turno);
+                    if (turnoPasado) return false;
+
                     var disponible = await _cupoService.CheckDisponibilidadAsync(
                         cita.FechaCita,
                         cita.Turno,
@@ -269,6 +282,8 @@ namespace ElegantnailsstudioSystemManagement.Services
             try
             {
                 return await _context.Citas
+                    .Include(c => c.Servicio)
+                    .Include(c => c.Cliente)
                     .Where(c => c.ClienteId == clienteId)
                     .OrderByDescending(c => c.FechaCita)
                     .ThenBy(c => c.Turno)
@@ -297,11 +312,29 @@ namespace ElegantnailsstudioSystemManagement.Services
                 return new List<Cita>();
             }
         }
+
+        public async Task<bool> CancelarCitaAdminAsync(int citaId)
+        {
+            try
+            {
+                var cita = await _context.Citas.FindAsync(citaId);
+                if (cita == null) return false;
+
+                if (cita.Estado != "pendiente") return false;
+
+                await _cupoService.LiberarCupoAsync(cita.FechaCita, cita.Turno);
+
+                cita.Estado = "cancelada";
+                cita.FechaCancelacion = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR CancelarCitaAdminAsync: {ex.Message}");
+                return false;
+            }
+        }
     }
 }
-
-
-
-
-
-

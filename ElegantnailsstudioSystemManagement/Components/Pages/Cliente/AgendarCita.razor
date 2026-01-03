@@ -143,11 +143,18 @@ else
                                                name="turno"
                                                id="manana"
                                                @onchange="@(() => OnTurnoChange("mañana"))"
-                                               checked="@(turnoSeleccionado == "mañana")">
-                                        <label class="form-check-label" for="manana">
-                                            <i class="bi bi-sun-fill me-2 text-warning"></i>
+                                               checked="@(turnoSeleccionado == "mañana")"
+                                               disabled="@(IsTurnoDeshabilitado("mañana"))">
+                                        <label class="form-check-label @(IsTurnoDeshabilitado("mañana") ? "text-muted" : "")" for="manana">
+                                            <i class="bi bi-sun-fill me-2 @(IsTurnoDeshabilitado("mañana") ? "text-muted" : "text-warning")"></i>
                                             Mañana <br>
                                             <small class="text-muted-custom">8:00 AM - 12:00 PM</small>
+                                            @if (IsTurnoDeshabilitado("mañana"))
+                                            {
+                                                <br>
+
+                                                <small class="text-danger"><i class="bi bi-exclamation-circle"></i> Turno no disponible</small>
+                                            }
                                         </label>
                                     </div>
                                 </div>
@@ -158,11 +165,18 @@ else
                                                name="turno"
                                                id="tarde"
                                                @onchange="@(() => OnTurnoChange("tarde"))"
-                                               checked="@(turnoSeleccionado == "tarde")">
-                                        <label class="form-check-label" for="tarde">
-                                            <i class="bi bi-moon-stars-fill me-2 text-info"></i>
+                                               checked="@(turnoSeleccionado == "tarde")"
+                                               disabled="@(IsTurnoDeshabilitado("tarde"))">
+                                        <label class="form-check-label @(IsTurnoDeshabilitado("tarde") ? "text-muted" : "")" for="tarde">
+                                            <i class="bi bi-moon-stars-fill me-2 @(IsTurnoDeshabilitado("tarde") ? "text-muted" : "text-info")"></i>
                                             Tarde <br>
                                             <small class="text-muted-custom">1:00 PM - 5:00 PM</small>
+                                            @if (IsTurnoDeshabilitado("tarde"))
+                                            {
+                                                <br>
+
+                                                <small class="text-danger"><i class="bi bi-exclamation-circle"></i> Turno no disponible</small>
+                                            }
                                         </label>
                                     </div>
                                 </div>
@@ -188,7 +202,7 @@ else
                                     <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
                                     <div>
                                         <h5 class="mb-1">Cupo no disponible</h5>
-                                        <p class="mb-0">Por favor selecciona otra fecha u otro turno.</p>
+                                        <p class="mb-0">@mensajeError</p>
                                     </div>
                                 }
                             </div>
@@ -232,7 +246,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        // VERIFICAR QUE EL USUARIO ESTÉ LOGUEADO
         if (!AuthService.IsLoggedIn)
         {
             Navigation.NavigateTo("/login?returnUrl=/citas/agendar");
@@ -281,6 +294,7 @@ else
         servicioId = 0;
         hayDisponibilidad = false;
         mostrarVerificar = false;
+        mensajeError = "";
         Navigation.NavigateTo("/citas/agendar", replace: true);
     }
 
@@ -296,8 +310,31 @@ else
 
     private async Task OnTurnoChange(string turno)
     {
+        if (IsTurnoDeshabilitado(turno))
+        {
+            mensajeError = $"El turno de {turno} ya finalizó para hoy. Selecciona otro turno.";
+            return;
+        }
+
         turnoSeleccionado = turno;
         await VerificarDisponibilidad();
+    }
+
+    private bool IsTurnoDeshabilitado(string turno)
+    {
+        if (fechaSeleccionada.Date != DateTime.Today.Date)
+            return false;
+
+        var ahora = DateTime.Now;
+        TimeSpan finManana = new TimeSpan(12, 0, 0);  
+        TimeSpan finTarde = new TimeSpan(17, 0, 0);   
+
+        if (turno == "mañana" && ahora.TimeOfDay >= finManana)
+            return true;
+        else if (turno == "tarde" && ahora.TimeOfDay >= finTarde)
+            return true;
+
+        return false;
     }
 
     private async Task VerificarDisponibilidad()
@@ -305,6 +342,7 @@ else
         if (servicioId == 0)
         {
             mostrarVerificar = false;
+            mensajeError = "";
             return;
         }
 
@@ -312,16 +350,45 @@ else
         if (servicio == null)
         {
             mostrarVerificar = false;
+            mensajeError = "";
             return;
         }
 
         try
         {
+            // Valida si la fecha es pasada
+            if (fechaSeleccionada.Date < DateTime.Today.Date)
+            {
+                hayDisponibilidad = false;
+                mensajeError = "No puedes agendar citas en fechas pasadas.";
+                mostrarVerificar = true;
+                return;
+            }
+
+            var turnoPasado = await CupoService.IsTurnoPasadoAsync(fechaSeleccionada, turnoSeleccionado);
+            if (turnoPasado)
+            {
+                hayDisponibilidad = false;
+                mensajeError = $"El turno de {turnoSeleccionado} ya finalizó. Selecciona otro turno o fecha.";
+                mostrarVerificar = true;
+                return;
+            }
+
+            // Verifica disponibilidad en el servicio
             hayDisponibilidad = await CupoService.CheckDisponibilidadAsync(
                 fechaSeleccionada,
                 turnoSeleccionado,
                 servicio.DuracionMinutos
             );
+
+            if (!hayDisponibilidad)
+            {
+                mensajeError = "No hay cupo disponible. Por favor selecciona otra fecha u otro turno.";
+            }
+            else
+            {
+                mensajeError = "";
+            }
 
             mostrarVerificar = true;
         }
@@ -337,7 +404,7 @@ else
 
     private async Task OnAgendarCita()
     {
-        // VERIFICAR QUE EL USUARIO ESTÉ LOGUEADO
+        // VERIFICA QUE EL USUARIO ESTÉ LOGUEADO
         if (!AuthService.IsLoggedIn || AuthService.CurrentUser == null)
         {
             Navigation.NavigateTo("/login?returnUrl=/citas/agendar");
@@ -358,10 +425,10 @@ else
             return;
         }
 
-        // USAR EL ID DEL USUARIO LOGUEADO
+        // USA el id del un usuario logueados
         var nuevaCita = new Cita
             {
-                ClienteId = AuthService.CurrentUser.Id, 
+                ClienteId = AuthService.CurrentUser.Id,
                 ServicioId = servicioId,
                 FechaCita = fechaSeleccionada,
                 Turno = turnoSeleccionado,

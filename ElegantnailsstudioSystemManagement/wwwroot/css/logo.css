@@ -1,0 +1,396 @@
+﻿/* =============================================
+   VARIABLES DE COLOR - TEMA MORADO/ELEGANTE
+============================================= */
+:root {
+    --logo-primary-purple: #8A2BE2; /* Morado vibrante */
+    --logo-light-purple: #E6E6FA; /* Lila claro */
+    --logo-dark-purple: #4B0082; /* Morado oscuro */
+    --logo-pale-purple: #D8BFD8; /* Morado pálido */
+    --logo-white: #FFFFFF; /* Blanco puro */
+    --logo-black: #1A1A1A; /* Negro suave */
+    --logo-gray-light: #F5F5F5; /* Gris muy claro */
+    --logo-shadow: rgba(138, 43, 226, 0.1); /* Sombra morada suave */
+}
+
+/* =============================================
+   ESTILOS BASE Y CONTENEDOR
+============================================= */
+.logo-admin-page {
+    background-color: var(--logo-white);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* =============================================
+   TÍTULO DE PÁGINA
+============================================= */
+.logo-page-title {
+    color: var(--logo-dark-purple);
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--logo-light-purple);
+}
+
+    .logo-page-title i {
+        color: var(--logo-primary-purple);
+    }
+
+/* =============================================
+   TARJETAS PRINCIPALES
+============================================= */
+.logo-card-container {
+    background: var(--logo-white);
+    border: 1px solid var(--logo-light-purple);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--logo-shadow);
+    height: 100%;
+    overflow: hidden;
+}
+
+/* =============================================
+   ENCABEZADOS DE TARJETAS
+============================================= */
+.logo-card-header-current {
+    background: linear-gradient(135deg, var(--logo-primary-purple), var(--logo-dark-purple));
+    color: var(--logo-white);
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.logo-card-header-upload {
+    background: linear-gradient(135deg, var(--logo-light-purple), var(--logo-pale-purple));
+    color: var(--logo-dark-purple);
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.logo-card-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.logo-card-header-current i,
+.logo-card-header-upload i {
+    margin-right: 0.5rem;
+}
+
+/* =============================================
+   CUERPO DE TARJETAS
+============================================= */
+.logo-card-body-content {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =============================================
+   PREVIEW DEL LOGO
+============================================= */
+.logo-image-container {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--logo-gray-light);
+    border-radius: 8px;
+    border: 2px dashed var(--logo-pale-purple);
+    width: 100%;
+    text-align: center;
+}
+
+.logo-current-image {
+    max-height: 200px;
+    width: auto;
+    max-width: 100%;
+    border-radius: 6px;
+    object-fit: contain;
+}
+
+/* =============================================
+   ESTADO VACÍO
+============================================= */
+.logo-empty-container {
+    padding: 3rem 1rem;
+    text-align: center;
+    color: var(--logo-dark-purple);
+}
+
+.logo-empty-icon {
+    font-size: 4rem;
+    color: var(--logo-pale-purple);
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.logo-empty-title {
+    color: var(--logo-dark-purple);
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.logo-empty-description {
+    color: var(--logo-dark-purple);
+    opacity: 0.7;
+    font-size: 0.95rem;
+    margin-top: 0;
+}
+
+/* =============================================
+   FORMULARIO
+============================================= */
+.logo-upload-form {
+    width: 100%;
+}
+
+.logo-form-label {
+    font-weight: 600;
+    color: var(--logo-dark-purple);
+    margin-bottom: 0.75rem;
+    display: block;
+    font-size: 1rem;
+}
+
+.logo-file-input {
+    border: 2px solid var(--logo-light-purple);
+    border-radius: 8px;
+    padding: 0.75rem;
+    background: var(--logo-white);
+    width: 100%;
+    display: block;
+}
+
+.logo-form-help {
+    color: var(--logo-dark-purple);
+    opacity: 0.8;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+    .logo-form-help i {
+        color: var(--logo-primary-purple);
+    }
+
+.logo-form-buttons {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+/* =============================================
+   BOTONES
+============================================= */
+.logo-btn-upload {
+    background: linear-gradient(135deg, var(--logo-primary-purple), var(--logo-dark-purple));
+    border: none;
+    color: var(--logo-white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.logo-btn-cancel {
+    background: transparent;
+    border: 2px solid var(--logo-light-purple);
+    color: var(--logo-black);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.logo-btn-delete {
+    background: linear-gradient(135deg, var(--logo-dark-purple), var(--logo-primary-purple));
+    border: none;
+    color: var(--logo-white);
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* =============================================
+   ALERTAS
+============================================= */
+.logo-alert {
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-alert-error {
+    background: var(--logo-light-purple);
+    color: var(--logo-dark-purple);
+    border-left: 4px solid var(--logo-primary-purple);
+}
+
+.logo-alert-success {
+    background: var(--logo-pale-purple);
+    color: var(--logo-dark-purple);
+    border-left: 4px solid var(--logo-dark-purple);
+}
+
+.logo-alert i {
+    margin-right: 0.5rem;
+}
+
+.logo-alert-close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+/* =============================================
+   MODAL
+============================================= */
+.logo-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-modal-wrapper {
+    width: 100%;
+    max-width: 500px;
+    margin: 1.75rem;
+}
+
+.logo-modal-card {
+    background: var(--logo-white);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.logo-modal-header-danger {
+    background: linear-gradient(135deg, var(--logo-dark-purple), var(--logo-primary-purple));
+    color: var(--logo-white);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-modal-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.logo-modal-close {
+    background: none;
+    border: none;
+    color: var(--logo-white);
+    font-size: 1.8rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.logo-modal-body-content {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+}
+
+.logo-modal-icon {
+    font-size: 4rem;
+    color: var(--logo-primary-purple);
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.logo-modal-question {
+    color: var(--logo-dark-purple);
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.logo-modal-text {
+    color: var(--logo-dark-purple);
+    opacity: 0.8;
+    margin-top: 0;
+    font-size: 0.95rem;
+}
+
+.logo-modal-footer-buttons {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--logo-light-purple);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.logo-btn-modal-cancel {
+    background: transparent;
+    border: 2px solid var(--logo-light-purple);
+    color: var(--logo-black);
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.logo-btn-modal-delete {
+    background: linear-gradient(135deg, var(--logo-dark-purple), var(--logo-primary-purple));
+    border: none;
+    color: var(--logo-white);
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+/* =============================================
+   RESPONSIVE
+============================================= */
+@media (max-width: 768px) {
+    .logo-card-body-content {
+        padding: 1.5rem;
+    }
+
+    .logo-modal-wrapper {
+        margin: 1rem;
+    }
+
+    .logo-page-title {
+        font-size: 1.8rem;
+    }
+
+    .logo-modal-body-content {
+        padding: 2rem 1rem;
+    }
+}

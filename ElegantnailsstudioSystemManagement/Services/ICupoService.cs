@@ -13,6 +13,8 @@ namespace ElegantnailsstudioSystemManagement.Services
         Task<bool> HayCupoDisponibleAsync(DateTime fechaCita, string turno);
         Task<bool> HabilitarTurnoAsync(DateTime fecha, string turno, int cuposMaximos);
         Task<List<Cupo>> GetCuposHabilitadosAsync(DateTime desde, DateTime hasta);
+        Task<bool> IsTurnoPasadoAsync(DateTime fecha, string turno);
+        Task<bool> DeshabilitarTurnosPasadosAsync();
     }
 
     public class CupoService : ICupoService
@@ -24,7 +26,34 @@ namespace ElegantnailsstudioSystemManagement.Services
             _context = context;
         }
 
-        // Crear o actualizar cupos 
+        private bool IsTurnoPasado(DateTime fecha, string turno)
+        {
+            var ahora = DateTime.Now;
+            var fechaTurno = fecha.Date;
+
+            TimeSpan finManana = new TimeSpan(12, 0, 0);  
+            TimeSpan finTarde = new TimeSpan(17, 0, 0);  
+
+            if (fechaTurno < ahora.Date)
+                return true;
+
+            if (fechaTurno == ahora.Date)
+            {
+                if (turno == "mañana")
+                    return ahora.TimeOfDay >= finManana;
+                else if (turno == "tarde")
+                    return ahora.TimeOfDay >= finTarde;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> IsTurnoPasadoAsync(DateTime fecha, string turno)
+        {
+            return await Task.FromResult(IsTurnoPasado(fecha, turno));
+        }
+
+        // Crea o actualiza cupos 
         public async Task<bool> HabilitarTurnoAsync(DateTime fecha, string turno, int cuposMaximos)
         {
             try
@@ -33,16 +62,16 @@ namespace ElegantnailsstudioSystemManagement.Services
 
                 if (cupoExistente != null)
                 {
-                    // Actualizar
+                    // Actualiza
                     cupoExistente.CupoMaximo = cuposMaximos;
                     cupoExistente.Habilitado = true;
                 }
                 else
                 {
-                    // Crear nuevo
+                    // Crea nuevo
                     var nuevoCupo = new Cupo
                     {
-                        Fecha = fecha.Date, 
+                        Fecha = fecha.Date,
                         Turno = turno,
                         CupoMaximo = cuposMaximos,
                         CupoReservado = 0,
@@ -62,11 +91,18 @@ namespace ElegantnailsstudioSystemManagement.Services
             }
         }
 
-        // verificar disponibilidad
         public async Task<bool> CheckDisponibilidadAsync(DateTime fecha, string turno, int duracionRequerida)
         {
             try
             {
+                
+                if (IsTurnoPasado(fecha, turno))
+                {
+                    Console.WriteLine($"❌ Turno ya pasó: {fecha:dd/MM/yyyy} - {turno}");
+                    return false;
+                }
+
+               
                 var cupo = await GetCupoByFechaTurnoAsync(fecha, turno);
 
                 if (cupo == null || !cupo.Habilitado)
@@ -75,7 +111,6 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-               
                 bool disponible = cupo.CuposDisponibles > 0;
 
                 Console.WriteLine($"📊 Fecha: {fecha:dd/MM/yyyy} - Turno: {turno}");
@@ -161,19 +196,21 @@ namespace ElegantnailsstudioSystemManagement.Services
                 .ToListAsync();
         }
 
-       
         public async Task<List<Cupo>> GetCuposHabilitadosAsync(DateTime desde, DateTime hasta)
         {
-            return await _context.Cupos
+            var todosCupos = await _context.Cupos
                 .Where(c => c.Fecha.Date >= desde.Date &&
                            c.Fecha.Date <= hasta.Date &&
                            c.Habilitado)
                 .OrderBy(c => c.Fecha)
                 .ThenBy(c => c.Turno)
                 .ToListAsync();
+
+                 return todosCupos
+                .Where(c => !IsTurnoPasado(c.Fecha, c.Turno))
+                .ToList();
         }
 
-       
         public async Task<bool> HayCupoDisponibleAsync(DateTime fechaCita, string turno)
         {
             try
@@ -193,11 +230,45 @@ namespace ElegantnailsstudioSystemManagement.Services
                 return false;
             }
         }
+
+        public async Task<bool> DeshabilitarTurnosPasadosAsync()
+        {
+            try
+            {
+                var ahora = DateTime.Now;
+                var hoy = ahora.Date;
+
+                // Obtiene todos los cupos 
+                var cuposPasados = await _context.Cupos
+                    .Where(c => c.Fecha <= hoy && c.Habilitado)
+                    .ToListAsync();
+
+                bool cambios = false;
+
+                foreach (var cupo in cuposPasados)
+                {
+                    var turnoPasado = IsTurnoPasado(cupo.Fecha, cupo.Turno);
+
+                    if (turnoPasado)
+                    {
+                        cupo.Habilitado = false;
+                        cambios = true;
+                        Console.WriteLine($"✅ Turno deshabilitado: {cupo.Fecha:dd/MM/yyyy} - {cupo.Turno}");
+                    }
+                }
+
+                if (cambios)
+                {
+                    await _context.SaveChangesAsync();
+                }
+
+                return cambios;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"💥 ERROR DeshabilitarTurnosPasadosAsync: {ex.Message}");
+                return false;
+            }
+        }
     }
 }
-
-
-
-
-
-

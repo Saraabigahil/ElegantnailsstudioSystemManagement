@@ -51,7 +51,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Cliente ID</th>
+                        <th>Cliente</th>
                         <th>Servicio</th>
                         <th>Fecha</th>
                         <th>Turno</th>
@@ -66,7 +66,26 @@
 
                         <tr>
                             <td class="cita-id">#@cita.Id</td>
-                            <td class="cliente-id">@cita.ClienteId</td>
+
+                            <td class="cliente-id">
+                                @if (cita.Cliente != null)
+                                {
+                                    <strong>@cita.Cliente.Nombre</strong>
+                                    <br />
+                                    <small class="text-muted">@cita.Cliente.Email</small>
+                                    <br />
+                                    <small class="text-muted">
+                                        <i class="bi bi-telephone me-1"></i>
+                                        @cita.Cliente.telefono
+                                    </small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Cliente no disponible</span>
+                                }
+                            </td>
+
+
                             <td>
                                 <div class="servicio-info">
                                     @if (servicio != null)
@@ -200,7 +219,7 @@
 
     private async Task CancelarCita(int id)
     {
-        if (await CitaService.CancelarCitaAsync(id))
+        if (await CitaService.CancelarCitaAdminAsync(id))
         {
             mensajeExito = "Cita cancelada";
             await CargarCitas();
