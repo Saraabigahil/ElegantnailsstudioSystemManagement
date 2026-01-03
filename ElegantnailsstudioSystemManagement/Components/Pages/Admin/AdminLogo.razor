@@ -7,84 +7,84 @@
 
 <PageTitle>Elegant Nails - Logo</PageTitle>
 
-<div class="container mt-4">
-    <h1 class="mb-4"><i class="bi bi-palette me-2"></i>Gestión del Logo</h1>
+<div class="logo-admin-page">
+    <div class="container mt-4">
+        <h1 class="logo-page-title"><i class="bi bi-palette me-2"></i>Gestión del Logo</h1>
 
-    <!-- Mensajes -->
-    @if (!string.IsNullOrEmpty(mensajeError))
-    {
-        <div class="alert alert-danger alert-dismissible fade show">
-            <i class="bi bi-exclamation-triangle me-2"></i>@mensajeError
-            <button type="button" class="btn-close" @onclick="LimpiarMensajes"></button>
-        </div>
-    }
+        <!-- Mensajes -->
+        @if (!string.IsNullOrEmpty(mensajeError))
+        {
+            <div class="logo-alert logo-alert-error">
+                <i class="bi bi-exclamation-triangle me-2"></i>@mensajeError
+                <button type="button" class="logo-alert-close" @onclick="LimpiarMensajes">×</button>
+            </div>
+        }
 
-    @if (!string.IsNullOrEmpty(mensajeExito))
-    {
-        <div class="alert alert-success alert-dismissible fade show">
-            <i class="bi bi-check-circle me-2"></i>@mensajeExito
-            <button type="button" class="btn-close" @onclick="LimpiarMensajes"></button>
-        </div>
-    }
+        @if (!string.IsNullOrEmpty(mensajeExito))
+        {
+            <div class="logo-alert logo-alert-success">
+                <i class="bi bi-check-circle me-2"></i>@mensajeExito
+                <button type="button" class="logo-alert-close" @onclick="LimpiarMensajes">×</button>
+            </div>
+        }
 
-    <div class="row">
-        <!-- Logo Actual -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-image me-2"></i>Logo Actual</h5>
-                </div>
-                <div class="card-body text-center">
-                    @if (!string.IsNullOrEmpty(logoActual))
-                    {
-                        <div class="mb-3">
-                            <img src="@logoActual" alt="Logo" class="img-fluid rounded" style="max-height: 200px;" />
-                        </div>
-                        <button class="btn btn-danger btn-sm" @onclick="MostrarModalEliminar">
-                            <i class="bi bi-trash me-1"></i>Eliminar Logo
-                        </button>
-                    }
-                    else
-                    {
-                        <div class="py-4 text-muted">
-                            <i class="bi bi-image display-4 d-block mb-3"></i>
-                            <h5>No hay logo cargado</h5>
-                            <p class="small mb-0">Sube un logo para personalizar tu sitio</p>
-                        </div>
-                    }
+        <div class="row">
+            <!-- Logo Actual -->
+            <div class="col-md-6 mb-4">
+                <div class="logo-card-container">
+                    <div class="logo-card-header-current">
+                        <h5 class="logo-card-title"><i class="bi bi-image me-2"></i>Logo Actual</h5>
+                    </div>
+                    <div class="logo-card-body-content">
+                        @if (!string.IsNullOrEmpty(logoActual))
+                        {
+                            <div class="logo-image-container">
+                                <img src="@logoActual" alt="Logo" class="logo-current-image" />
+                            </div>
+                            <button class="logo-btn-delete" @onclick="MostrarModalEliminar">
+                                <i class="bi bi-trash me-1"></i>Eliminar Logo
+                            </button>
+                        }
+                        else
+                        {
+                            <div class="logo-empty-container">
+                                <i class="bi bi-image logo-empty-icon"></i>
+                                <h5 class="logo-empty-title">No hay logo cargado</h5>
+                                <p class="logo-empty-description">Sube un logo para personalizar tu sitio</p>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Subir Logo -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-cloud-arrow-up me-2"></i>Subir Nuevo Logo</h5>
-                </div>
-                <div class="card-body">
-                    <!-- FORMULARIO TRADICIONAL -->
-                    <form method="post" enctype="multipart/form-data" action="/uploadlogo">
-               
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Seleccionar archivo de imagen</label>
-                            <input type="file" class="form-control" name="logoFile"
-                                   accept=".png,.jpg,.jpeg,.gif,.webp" required />
-                            <div class="form-text">
-                                <i class="bi bi-info-circle me-1"></i>Formatos: PNG, JPG, JPEG, GIF, WEBP (Máx. 5MB)
+            <!-- Subir Logo -->
+            <div class="col-md-6 mb-4">
+                <div class="logo-card-container">
+                    <div class="logo-card-header-upload">
+                        <h5 class="logo-card-title"><i class="bi bi-cloud-arrow-up me-2"></i>Subir Nuevo Logo</h5>
+                    </div>
+                    <div class="logo-card-body-content">
+                        <!-- FORMULARIO TRADICIONAL -->
+                        <form method="post" enctype="multipart/form-data" action="/uploadlogo" class="logo-upload-form">
+                            <div class="mb-3">
+                                <label class="logo-form-label">Seleccionar archivo de imagen</label>
+                                <input type="file" class="logo-file-input" name="logoFile"
+                                       accept=".png,.jpg,.jpeg,.gif,.webp" required />
+                                <div class="logo-form-help">
+                                    <i class="bi bi-info-circle me-1"></i>Formatos: PNG, JPG, JPEG, GIF, WEBP (Máx. 5MB)
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-upload me-2"></i>Subir Logo
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="this.form.reset()">
-                                <i class="bi bi-x-circle me-2"></i>Cancelar
-                            </button>
-                        </div>
-                    </form>
+                            <div class="logo-form-buttons">
+                                <button type="submit" class="logo-btn-upload">
+                                    <i class="bi bi-upload me-2"></i>Subir Logo
+                                </button>
+                                <button type="button" class="logo-btn-cancel" onclick="this.form.reset()">
+                                    <i class="bi bi-x-circle me-2"></i>Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -94,21 +94,21 @@
 <!-- Modal Eliminar -->
 @if (mostrarModalEliminar)
 {
-    <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar</h5>
-                    <button type="button" class="btn-close btn-close-white" @onclick="CerrarModal"></button>
+    <div class="logo-modal-overlay">
+        <div class="logo-modal-wrapper">
+            <div class="logo-modal-card">
+                <div class="logo-modal-header-danger">
+                    <h5 class="logo-modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar</h5>
+                    <button type="button" class="logo-modal-close" @onclick="CerrarModal">×</button>
                 </div>
-                <div class="modal-body text-center">
-                    <i class="bi bi-trash text-danger display-4 d-block mb-3"></i>
-                    <h5>¿Eliminar el logo actual?</h5>
-                    <p class="text-muted">Esta acción no se puede deshacer.</p>
+                <div class="logo-modal-body-content">
+                    <i class="bi bi-trash logo-modal-icon"></i>
+                    <h5 class="logo-modal-question">¿Eliminar el logo actual?</h5>
+                    <p class="logo-modal-text">Esta acción no se puede deshacer.</p>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="CerrarModal">Cancelar</button>
-                    <button class="btn btn-danger" @onclick="EliminarLogo">Sí, Eliminar</button>
+                <div class="logo-modal-footer-buttons">
+                    <button class="logo-btn-modal-cancel" @onclick="CerrarModal">Cancelar</button>
+                    <button class="logo-btn-modal-delete" @onclick="EliminarLogo">Sí, Eliminar</button>
                 </div>
             </div>
         </div>

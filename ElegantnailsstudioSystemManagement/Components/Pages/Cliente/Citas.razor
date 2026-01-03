@@ -5,6 +5,8 @@
 @inject ICitaService CitaService
 @inject IServicioService ServicioService
 @inject NavigationManager Navigation
+@inject AuthService AuthService
+
 
 <PageTitle>Mis Citas - Elegant Nails</PageTitle>
 
@@ -211,7 +213,14 @@
     {
         try
         {
-            citasCliente = await CitaService.GetCitasAsync();
+            if (!AuthService.IsLoggedIn || AuthService.CurrentUser == null)
+            {
+                Navigation.NavigateTo("/login");
+                return;
+            }
+
+            citasCliente = await CitaService
+                .GetCitasByClienteAsync(AuthService.CurrentUser.Id);
 
             servicios = await ServicioService.GetServiciosActivosAsync();
         }
@@ -220,6 +229,7 @@
             Console.WriteLine($"❌ Error cargando citas: {ex.Message}");
         }
     }
+
 
     private Servicio? GetServicioInfo(int servicioId)
     {
@@ -247,7 +257,10 @@
         {
             if (citaSeleccionada != null)
             {
-                var resultado = await CitaService.CancelarCitaAsync(citaSeleccionada.Id);
+                var resultado = await CitaService.CancelarCitaAsync(
+                    citaSeleccionada.Id,
+                    AuthService.CurrentUser.Id
+                );
 
                 if (resultado)
                 {
