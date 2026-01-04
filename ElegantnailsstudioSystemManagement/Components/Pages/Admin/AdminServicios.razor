@@ -1,15 +1,11 @@
 ﻿@page "/admin/servicios"
 @using ElegantnailsstudioSystemManagement.Models
 @using ElegantnailsstudioSystemManagement.Services
-@using Microsoft.AspNetCore.Components.Forms
-@using System.Net.Http.Headers
-@using System.Text.Json
-@using System.IO
 @inject IServicioService ServicioService
 @inject ICategoriaService CategoriaService
-@inject NavigationManager Navigation
-@inject IJSRuntime JSRuntime
-@inject IWebHostEnvironment HostEnvironment
+@inject IWebHostEnvironment Env
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
 
 <PageTitle>Gestión de Servicios</PageTitle>
 
@@ -23,310 +19,185 @@
 
     @if (!string.IsNullOrEmpty(mensajeExito))
     {
-        <div class="alert alert-success alert-servicio alert-dismissible fade show">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            @mensajeExito
-            <button type="button" class="btn-close" @onclick="LimpiarMensajeExito"></button>
-        </div>
+        <div class="alert alert-success">@mensajeExito</div>
     }
 
     @if (!string.IsNullOrEmpty(mensajeError))
     {
-        <div class="alert alert-danger alert-servicio alert-dismissible fade show">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            @mensajeError
-            <button type="button" class="btn-close" @onclick="LimpiarMensajeError"></button>
-        </div>
+        <div class="alert alert-danger">@mensajeError</div>
     }
 
-    @if (isUploading)
-    {
-        <div class="alert alert-info alert-servicio">
-            <div class="d-flex align-items-center">
-                <div class="spinner-border spinner-border-sm me-3"></div>
-                <div>
-                    <strong>Subiendo imagen...</strong>
-                    <div class="small">Por favor espera un momento.</div>
-                </div>
-            </div>
-        </div>
-    }
-
-    <!-- servicios -->
     @if (servicios.Any())
     {
         <div class="services-grid">
             @foreach (var s in servicios)
             {
                 <div class="service-card">
-                    <div class="card-img-container">
-                        @if (!string.IsNullOrEmpty(s.ImagenUrl) && !s.ImagenUrl.Contains("placeholder"))
-                        {
-                            <img src="@s.ImagenUrl"
-                                 alt="@s.Nombre"
-                                 onerror="this.onerror=null; this.src='/placeholder-image.png';" />
-                        }
-                        else
-                        {
-                            <div class="no-image-placeholder">
-                                <i class="bi bi-scissors"></i>
-                                <span>@s.Nombre</span>
-                            </div>
-                        }
-                    </div>
+                    <img src="@(!string.IsNullOrEmpty(s.ImagenUrl) ? s.ImagenUrl : "/placeholder-image.png")"
+                         onerror="this.src='/placeholder-image.png'" />
 
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5 class="card-title">@s.Nombre</h5>
-                            <span class="badge badge-category">@(s.Categoria?.Nombre ?? "Sin categoría")</span>
-                        </div>
+                        <h5>@s.Nombre</h5>
+                        <p>@(s.Categoria?.Nombre ?? "Sin categoría")</p>
+                        <p>$ @s.Precio.ToString("0.00")</p>
 
-                        @if (!string.IsNullOrEmpty(s.Descripcion))
-                        {
-                            <p class="card-text service-description">@Truncate(s.Descripcion, 100)</p>
-                        }
-
-                        <div class="service-info">
-                            <div>
-                                <span class="service-price">S/ @s.Precio.ToString("0.00")</span>
-                            </div>
-                            <span class="service-duration">
-                                <i class="bi bi-clock"></i>@s.DuracionMinutos min
-                            </span>
-                        </div>
-
-                        <div class="card-actions">
-                            <button class="btn btn-card-action btn-edit-service"
-                                    @onclick="() => Editar(s)"
-                                    title="Editar servicio">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-card-action btn-delete-service"
-                                    @onclick="() => MostrarModalEliminar(s)"
-                                    title="Eliminar servicio">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                        <button class="btn btn-sm btn-primary" @onclick="() => Editar(s)">Editar</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => MostrarModalEliminar(s)">Eliminar</button>
                     </div>
                 </div>
             }
         </div>
     }
-    else
-    {
-        <div class="empty-state">
-            <i class="bi bi-scissors empty-icon"></i>
-            <h4>No hay servicios registrados</h4>
-            <p class="mb-4">Comienza agregando tu primer servicio para ofrecer a tus clientes.</p>
-            <button class="btn btn-new-service" @onclick="AbrirNuevo">
-                <i class="bi bi-plus-circle me-2"></i>Crear Primer Servicio
-            </button>
-        </div>
-    }
 </div>
 
-<!-- MODAL para Crear/Editar Servicio -->
+<!-- MODAL SERVICIO -->
 @if (mostrarModal)
 {
-    <div class="modal show d-block modal-servicio" tabindex="-1">
+    <div class="modal show d-block">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content modal-content-servicio">
-                <div class="modal-header modal-header-servicio">
-                    <h5 class="modal-title modal-title-servicio">
-                        <i class="bi bi-scissors"></i>
-                        @(servicio.Id == 0 ? "Nuevo Servicio" : "Editar Servicio")
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" @onclick="CerrarModal"></button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>@(servicio.Id == 0 ? "Nuevo Servicio" : "Editar Servicio")</h5>
+                    <button class="btn-close" @onclick="CerrarModalHandler"></button>
                 </div>
 
-                <EditForm Model="servicio" OnValidSubmit="@GuardarServicio">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary />
+                <!-- FORMULARIO PARA SERVICIO -->
+                <form method="post" onsubmit="return false;">
+                    <div class="modal-body">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nombre *</label>
+                            <input type="text" class="form-control"
+                                   @bind="servicio.Nombre"
+                                   @bind:event="oninput"
+                                   required />
+                        </div>
 
-                    <div class="modal-body modal-body-servicio">
-                        <div class="form-section">
-                            <h6 class="form-section-title">
-                                <i class="bi bi-info-circle"></i>Información del Servicio
-                            </h6>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control" rows="3"
+                                      @bind="servicio.Descripcion"
+                                      @bind:event="oninput"></textarea>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Nombre del Servicio *</label>
-                                    <InputText @bind-Value="servicio.Nombre"
-                                               class="form-control"
-                                               placeholder="Ej: Manicure Francés" />
-                                    <ValidationMessage For="@(() => servicio.Nombre)" />
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Categoría *</label>
-                                    <select @bind="servicio.CategoriaId" class="form-select">
-                                        <option value="0">-- Seleccionar Categoría --</option>
-                                        @foreach (var cat in categorias)
-                                        {
-                                            <option value="@cat.Id">@cat.Nombre</option>
-                                        }
-                                    </select>
-                                    <ValidationMessage For="@(() => servicio.CategoriaId)" />
-                                </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Precio *</label>
+                                <input type="number" class="form-control"
+                                       step="0.01"
+                                       @bind="servicio.Precio"
+                                       @bind:event="oninput"
+                                       required />
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Precio (S/) *</label>
-                                    <InputNumber @bind-Value="servicio.Precio"
-                                                 class="form-control"
-                                                 placeholder="Ej: 45.00" />
-                                    <ValidationMessage For="@(() => servicio.Precio)" />
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Duración (minutos) *</label>
-                                    <InputNumber @bind-Value="servicio.DuracionMinutos"
-                                                 class="form-control"
-                                                 placeholder="Ej: 60" />
-                                    <ValidationMessage For="@(() => servicio.DuracionMinutos)" />
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Descripción</label>
-                                <InputTextArea @bind-Value="servicio.Descripcion"
-                                               class="form-control"
-                                               rows="3"
-                                               placeholder="Describe el servicio en detalle..." />
-                                <ValidationMessage For="@(() => servicio.Descripcion)" />
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Duración (minutos) *</label>
+                                <input type="number" class="form-control"
+                                       @bind="servicio.DuracionMinutos"
+                                       @bind:event="oninput"
+                                       required />
                             </div>
                         </div>
 
-                        <div class="form-section">
-                            <h6 class="form-section-title">
-                                <i class="bi bi-image"></i>Imagen del Servicio *
-                            </h6>
-
-                            <!-- Vista previa de imagen -->
-                            <div class="image-preview-container text-center mb-4">
-                                @if (!string.IsNullOrEmpty(previewImageUrl))
+                        <div class="mb-3">
+                            <label class="form-label">Categoría *</label>
+                            <select class="form-select" @bind="servicio.CategoriaId">
+                                <option value="0">Seleccione categoría</option>
+                                @foreach (var c in categorias)
                                 {
-                                    <img src="@previewImageUrl"
-                                         class="img-fluid image-preview"
-                                         alt="Vista previa" />
-                                    <div class="mt-3">
-                                        <button type="button" class="btn btn-remove-image" @onclick="EliminarImagenSeleccionada">
-                                            <i class="bi bi-trash"></i> Quitar imagen
-                                        </button>
-                                    </div>
+                                    <option value="@c.Id">@c.Nombre</option>
                                 }
-                                else if (!string.IsNullOrEmpty(servicio.ImagenUrl))
-                                {
-                                    <img src="@servicio.ImagenUrl"
-                                         class="img-fluid image-preview"
-                                         alt="Imagen actual" />
-                                    <div class="mt-2 text-muted">
-                                        <small><i class="bi bi-info-circle me-1"></i>Imagen actual</small>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="text-center py-4">
-                                        <i class="bi bi-image text-muted mb-3" style="font-size: 4rem;"></i>
-                                        <p class="text-muted">No hay imagen seleccionada</p>
-                                    </div>
-                                }
-                            </div>
-
-                            <!-- Selector de archivo -->
-                            <div class="mb-3">
-                                <label class="form-label">Seleccionar imagen:</label>
-                                <InputFile type="file"
-                                           accept="image/*"
-                                           class="form-control"
-                                           OnChange="@SeleccionarImagen" />
-                                <div class="form-text text-muted mt-2">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Formatos: JPG, PNG, GIF, BMP, WebP. Tamaño máximo: 5MB
-                                </div>
-
-                                @if (!string.IsNullOrEmpty(nombreArchivoSeleccionado))
-                                {
-                                    <div class="file-info-success">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                        <div>
-                                            <strong>Imagen lista:</strong> @nombreArchivoSeleccionado
-                                            <div class="small">(@((tamanoArchivoKB).ToString("0.0")) KB)</div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
+                            </select>
                         </div>
-                    </div>
 
-                    <div class="modal-footer modal-footer-servicio">
-                        <button type="submit" class="btn btn-save-service" disabled="@(isGuardando || isUploading)">
-                            @if (isGuardando || isUploading)
+                        <!-- SECCIÓN DE IMAGEN -->
+                        <div class="mb-3">
+                            <label class="form-label">Imagen del Servicio</label>
+
+                            @if (!string.IsNullOrEmpty(servicio.ImagenUrl) && !servicio.ImagenUrl.Contains("placeholder"))
                             {
-                                <span class="spinner-border spinner-border-sm me-2"></span>
-                                <span>@(isUploading ? "Subiendo imagen..." : "Guardando...")</span>
+                                <div class="text-center mb-2">
+                                    <img src="@servicio.ImagenUrl"
+                                         class="img-fluid rounded"
+                                         style="max-height: 200px;"
+                                         onerror="this.src='/placeholder-image.png'" />
+                                </div>
                             }
                             else
                             {
-                                <i class="bi bi-save me-2"></i>
+                                <div class="text-center mb-2">
+                                    <img src="/placeholder-image.png"
+                                         class="img-fluid rounded"
+                                         style="max-height: 200px;" />
+                                </div>
+                            }
+
+                            <!-- FORMULARIO PARA SUBIR IMAGEN -->
+                            @if (servicio.Id > 0)
+                            {
+                                <div class="border p-3 rounded bg-light">
+                                    <h6 class="mb-3">Subir nueva imagen</h6>
+                                    <form method="post" enctype="multipart/form-data"
+                                          action="/uploadservicio">
+                                        <input type="hidden" name="servicioId" value="@servicio.Id" />
+                                        <div class="input-group">
+                                            <input type="file" name="file"
+                                                   class="form-control"
+                                                   accept=".jpg,.jpeg,.png,.gif,.webp"
+                                                   required />
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-upload me-1"></i>Subir
+                                            </button>
+                                        </div>
+                                        <small class="text-muted">Formatos permitidos: JPG, PNG, GIF, WEBP (Máx. 5MB)</small>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Primero guarde el servicio para poder subir una imagen.
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success"
+                                @onclick="GuardarServicioAsync"
+                                disabled="@isGuardando">
+                            @if (isGuardando)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>Guardando...</span>
+                            }
+                            else
+                            {
                                 <span>Guardar Servicio</span>
                             }
                         </button>
-                        <button type="button" class="btn btn-cancel-service" @onclick="CerrarModal">
-                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                        <button type="button" class="btn btn-secondary"
+                                @onclick="CerrarModalHandler"
+                                disabled="@isGuardando">
+                            Cancelar
                         </button>
                     </div>
-                </EditForm>
+                </form>
             </div>
         </div>
     </div>
 }
 
-<!-- MODAL de Confirmación para Eliminar -->
 @if (mostrarModalEliminar && servicioAEliminar != null)
 {
-    <div class="modal show d-block modal-eliminar" tabindex="-1">
+    <div class="modal show d-block">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content modal-content-eliminar">
-                <div class="modal-header modal-header-eliminar">
-                    <h5 class="modal-title modal-title-eliminar">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        Confirmar Eliminación
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" @onclick="CancelarEliminacion"></button>
-                </div>
-
-                <div class="modal-body modal-body-eliminar text-center">
-                    <div class="mb-4">
-                        <i class="bi bi-trash-fill" style="font-size: 4rem; color: #e91e63;"></i>
-                    </div>
-
-                    <h4 class="mb-3">¿Estás segura de eliminar este servicio?</h4>
-
-                    <div class="servicio-detalle-eliminar">
-                        <h5 class="mb-2">"@servicioAEliminar.Nombre"</h5>
-                        <div class="detalles-eliminar">
-                            <p><strong>Categoría:</strong> @(servicioAEliminar.Categoria?.Nombre ?? "Sin categoría")</p>
-                            <p><strong>Precio:</strong> S/ @servicioAEliminar.Precio.ToString("0.00")</p>
-                            <p><strong>Duración:</strong> @servicioAEliminar.DuracionMinutos minutos</p>
-                        </div>
-                    </div>
-
-                    <div class="alert alert-warning mt-4">
-                        <i class="bi bi-exclamation-circle me-2"></i>
-                        <strong>Esta acción no se puede deshacer.</strong> El servicio desaparecerá permanentemente.
-                    </div>
-                </div>
-
-                <div class="modal-footer modal-footer-eliminar">
-                    <button type="button" class="btn btn-cancel-eliminar" @onclick="CancelarEliminacion">
-                        <i class="bi bi-x-circle me-2"></i>Cancelar
-                    </button>
-                    <button type="button" class="btn btn-confirm-eliminar" @onclick="ConfirmarEliminacion">
-                        <i class="bi bi-trash me-2"></i>Eliminar Servicio
-                    </button>
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <p>¿Eliminar <strong>@servicioAEliminar.Nombre</strong>?</p>
+                    <button class="btn btn-danger" @onclick="ConfirmarEliminacionAsync">Sí</button>
+                    <button class="btn btn-secondary" @onclick="CancelarEliminacion">No</button>
                 </div>
             </div>
         </div>
@@ -334,51 +205,83 @@
 }
 
 @code {
-    private List<Servicio> servicios = new();
-    private List<Categoria> categorias = new();
-    private Servicio servicio = new();
-    private bool mostrarModal = false;
-    private bool mostrarModalEliminar = false;
-    private Servicio servicioAEliminar = null;
-    private string mensajeExito = "";
-    private string mensajeError = "";
-    private bool isGuardando = false;
-    private bool isUploading = false;
-
-    // Variables para imágenes
-    private IBrowserFile? archivoSeleccionado;
-    private string? nombreArchivoSeleccionado;
-    private string? previewImageUrl;
-    private double tamanoArchivoKB = 0;
+    List<Servicio> servicios = new();
+    List<Categoria> categorias = new();
+    Servicio servicio = new();
+    Servicio? servicioAEliminar;
+    bool mostrarModal;
+    bool mostrarModalEliminar;
+    bool isGuardando = false;
+    string mensajeExito = "";
+    string mensajeError = "";
 
     protected override async Task OnInitializedAsync()
     {
-        await CargarDatos();
+        await CargarDatosAsync();
+        await ProcesarParametrosUrl();
     }
 
-    private async Task CargarDatos()
+    private async Task ProcesarParametrosUrl()
     {
         try
         {
-            servicios = await ServicioService.GetServiciosActivosAsync();
-            categorias = await CategoriaService.GetCategoriasAsync();
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            if (uri.Query.Contains("img="))
+            {
+                var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                var imgUrl = query["img"];
+                var servicioIdStr = query["servicioId"];
+
+                if (!string.IsNullOrEmpty(imgUrl) && !string.IsNullOrEmpty(servicioIdStr)
+                    && int.TryParse(servicioIdStr, out int servicioId))
+                {
+                    if (servicioId > 0)
+                    {
+                        // Busca el servicio y abre modal de edición
+                        var serv = await ServicioService.GetServicioByIdAsync(servicioId);
+                        if (serv != null)
+                        {
+                            servicio = new Servicio
+                                {
+                                    Id = serv.Id,
+                                    Nombre = serv.Nombre,
+                                    Descripcion = serv.Descripcion,
+                                    Precio = serv.Precio,
+                                    DuracionMinutos = serv.DuracionMinutos,
+                                    CategoriaId = serv.CategoriaId,
+                                    ImagenUrl = imgUrl 
+                                };
+                            mostrarModal = true;
+                            mensajeExito = "Imagen actualizada correctamente";
+
+                            // Limpia URL
+                            NavigationManager.NavigateTo("/admin/servicios", replace: true);
+                        }
+                    }
+                }
+            }
         }
         catch (Exception ex)
         {
-            mensajeError = $"Error al cargar datos: {ex.Message}";
+            mensajeError = $"Error procesando imagen: {ex.Message}";
         }
     }
 
-    private void AbrirNuevo()
+    private async Task CargarDatosAsync()
     {
-        servicio = new Servicio();
-        ResetearImagen();
-        mostrarModal = true;
-        mensajeError = "";
-        mensajeExito = "";
+        servicios = await ServicioService.GetServiciosActivosAsync();
+        categorias = await CategoriaService.GetCategoriasAsync();
+        StateHasChanged();
     }
 
-    private void Editar(Servicio s)
+    void AbrirNuevo()
+    {
+        servicio = new Servicio();
+        mostrarModal = true;
+        mensajeError = mensajeExito = "";
+    }
+
+    void Editar(Servicio s)
     {
         servicio = new Servicio
             {
@@ -390,320 +293,105 @@
                 CategoriaId = s.CategoriaId,
                 ImagenUrl = s.ImagenUrl
             };
-
-        if (!string.IsNullOrEmpty(servicio.ImagenUrl))
-        {
-            previewImageUrl = servicio.ImagenUrl;
-        }
-
-        ResetearImagen();
         mostrarModal = true;
-        mensajeError = "";
-        mensajeExito = "";
+        mensajeError = mensajeExito = "";
     }
 
-    private async Task GuardarServicio()
+    private async Task GuardarServicioAsync()
     {
-        Console.WriteLine($"=== INICIANDO GUARDAR SERVICIO ===");
-
-        if (servicio.CategoriaId == 0)
-        {
-            mensajeError = "Debe seleccionar una categoría";
-            return;
-        }
-
-        isGuardando = true;
-        mensajeError = "";
-        mensajeExito = "";
-        StateHasChanged();
-
         try
         {
-            Console.WriteLine("=== PASO 1: MANEJANDO IMAGEN ===");
+            isGuardando = true;
+            mensajeError = mensajeExito = "";
 
-            if (archivoSeleccionado != null)
+            // Validaciones
+            if (string.IsNullOrWhiteSpace(servicio.Nombre))
             {
-                isUploading = true;
+                mensajeError = "El nombre es requerido";
+                isGuardando = false;
+                return;
+            }
+
+            if (servicio.CategoriaId == 0)
+            {
+                mensajeError = "Debe seleccionar una categoría";
+                isGuardando = false;
+                return;
+            }
+
+            bool ok = servicio.Id == 0
+                ? await ServicioService.CrearServicio(servicio)
+                : await ServicioService.ActualizarServicio(servicio);
+
+            if (ok)
+            {
+                if (servicio.Id == 0)
+                {
+                    var nuevosServicios = await ServicioService.GetServiciosActivosAsync();
+                    var nuevoServicio = nuevosServicios.FirstOrDefault(s => s.Nombre == servicio.Nombre);
+                    if (nuevoServicio != null)
+                    {
+                        servicio.Id = nuevoServicio.Id;
+                    }
+                }
+
+                mensajeExito = "Servicio guardado correctamente";
+
+                if (servicio.Id == 0)
+                {
+                    mensajeExito += ". Ahora puede subir una imagen para el servicio.";
+                }
+                else
+                {
+                    await CargarDatosAsync();
+                }
+
                 StateHasChanged();
-
-                try
-                {
-                    var imageUrl = await SubirImagenLocalmente();
-                    if (!string.IsNullOrEmpty(imageUrl))
-                    {
-                        servicio.ImagenUrl = imageUrl;
-                        Console.WriteLine($"✅ Imagen subida: {imageUrl}");
-                    }
-                    else
-                    {
-                        servicio.ImagenUrl = "/placeholder-image.png";
-                        Console.WriteLine($"⚠️ Usando imagen placeholder");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"⚠️ Error al subir imagen: {ex.Message}");
-                    servicio.ImagenUrl = "/placeholder-image.png";
-                }
-                finally
-                {
-                    isUploading = false;
-                }
-            }
-            else if (string.IsNullOrEmpty(servicio.ImagenUrl))
-            {
-                servicio.ImagenUrl = "/placeholder-image.png";
-            }
-
-            Console.WriteLine($"Imagen URL resultante: {servicio.ImagenUrl}");
-
-            Console.WriteLine("=== PASO 2: GUARDANDO EN BD ===");
-            bool exito;
-            if (servicio.Id == 0)
-            {
-                Console.WriteLine("Creando nuevo servicio...");
-                exito = await ServicioService.CrearServicio(servicio);
             }
             else
             {
-                Console.WriteLine("Actualizando servicio existente...");
-                exito = await ServicioService.ActualizarServicio(servicio);
-            }
-
-            if (exito)
-            {
-                Console.WriteLine("¡Servicio guardado exitosamente!");
-                mensajeExito = servicio.Id == 0 ? "Servicio creado exitosamente" : "Servicio actualizado exitosamente";
-                mostrarModal = false;
-                ResetearImagen();
-                await CargarDatos();
-            }
-            else
-            {
-                Console.WriteLine("ERROR: No se pudo guardar en BD");
-                mensajeError = "Error al guardar el servicio en la base de datos";
+                mensajeError = "Error al guardar servicio";
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"=== EXCEPCIÓN EN GUARDAR SERVICIO ===");
-            Console.WriteLine($"Mensaje: {ex.Message}");
             mensajeError = $"Error: {ex.Message}";
         }
         finally
         {
-            Console.WriteLine("=== FINALIZANDO GUARDADO ===");
             isGuardando = false;
-            isUploading = false;
             StateHasChanged();
         }
     }
 
-    private async Task<string> SubirImagenLocalmente()
+    private async Task CerrarModalHandler()
     {
-        if (archivoSeleccionado == null)
-            return "/placeholder-image.png";
-
-        try
-        {
-            Console.WriteLine($"📤 Subiendo imagen localmente...");
-            Console.WriteLine($"📄 Archivo: {archivoSeleccionado.Name} ({archivoSeleccionado.Size} bytes)");
-
-            const long maxFileSize = 5 * 1024 * 1024;
-            if (archivoSeleccionado.Size > maxFileSize)
-            {
-                Console.WriteLine($"❌ Archivo demasiado grande: {archivoSeleccionado.Size} bytes");
-                return "/placeholder-image.png";
-            }
-
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
-            var extension = Path.GetExtension(archivoSeleccionado.Name).ToLowerInvariant();
-            if (!allowedExtensions.Contains(extension))
-            {
-                Console.WriteLine($"❌ Extensión no permitida: {extension}");
-                return "/placeholder-image.png";
-            }
-
-            var fileName = $"{Guid.NewGuid()}{extension}";
-
-            var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-            var uploadsPath = Path.Combine(webRootPath, "Storage", "Servicios");
-
-            if (!Directory.Exists(uploadsPath))
-            {
-                Directory.CreateDirectory(uploadsPath);
-                Console.WriteLine($"📁 Directorio creado: {uploadsPath}");
-            }
-
-            var fullPath = Path.Combine(uploadsPath, fileName);
-            Console.WriteLine($"💾 Ruta completa del archivo: {fullPath}");
-
-            using (var stream = new FileStream(fullPath, FileMode.Create))
-            {
-                await archivoSeleccionado.OpenReadStream(maxFileSize).CopyToAsync(stream);
-            }
-
-            Console.WriteLine($"✅ Imagen guardada en: {fullPath}");
-
-            if (File.Exists(fullPath))
-            {
-                var fileInfo = new FileInfo(fullPath);
-                Console.WriteLine($"✅ Verificación OK: {fileInfo.Length} bytes");
-            }
-
-            var imageUrl = $"/Storage/Servicios/{fileName}";
-            Console.WriteLine($"🔗 URL de la imagen: {imageUrl}");
-
-            return imageUrl;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"💥 Error al subir imagen: {ex.Message}");
-            Console.WriteLine($"Stack: {ex.StackTrace}");
-            return "/placeholder-image.png";
-        }
+        await CerrarModal();
     }
 
-    private async Task SeleccionarImagen(InputFileChangeEventArgs e)
-    {
-        try
-        {
-            if (e.FileCount == 0) return;
-
-            archivoSeleccionado = e.File;
-            nombreArchivoSeleccionado = archivoSeleccionado.Name;
-            tamanoArchivoKB = Math.Round(archivoSeleccionado.Size / 1024.0, 1);
-
-            const long maxFileSize = 5 * 1024 * 1024;
-            if (archivoSeleccionado.Size > maxFileSize)
-            {
-                mensajeError = $"La imagen es demasiado grande ({tamanoArchivoKB}KB). Máximo 5MB.";
-                ResetearImagen();
-                StateHasChanged();
-                return;
-            }
-
-            try
-            {
-                var format = "image/jpeg";
-                var resizedImage = await archivoSeleccionado.RequestImageFileAsync(
-                    format, 400, 400); 
-
-                var buffer = new byte[resizedImage.Size];
-                await resizedImage.OpenReadStream(maxFileSize).ReadAsync(buffer);
-                previewImageUrl = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
-            }
-            catch
-            {
-                previewImageUrl = "/placeholder-image.png";
-            }
-
-            mensajeError = "";
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            mensajeError = $"Error al seleccionar imagen: {ex.Message}";
-            ResetearImagen();
-            StateHasChanged();
-        }
-    }
-
-    private void EliminarImagenSeleccionada()
-    {
-        ResetearImagen();
-        StateHasChanged();
-    }
-
-    private void ResetearImagen()
-    {
-        archivoSeleccionado = null;
-        nombreArchivoSeleccionado = null;
-        previewImageUrl = null;
-        tamanoArchivoKB = 0;
-    }
-
-    private void CancelarSubida()
-    {
-        isUploading = false;
-        ResetearImagen();
-        mensajeError = "Subida de imagen cancelada";
-        StateHasChanged();
-    }
-
-    private void CerrarModal()
+    //cerrar modal
+    private async Task CerrarModal()
     {
         mostrarModal = false;
         servicio = new Servicio();
-        ResetearImagen();
+        await CargarDatosAsync();
     }
 
-    private void MostrarModalEliminar(Servicio s)
+    void MostrarModalEliminar(Servicio s)
     {
         servicioAEliminar = s;
         mostrarModalEliminar = true;
-        StateHasChanged();
     }
 
-    private void CancelarEliminacion()
+    private async Task ConfirmarEliminacionAsync()
     {
-        servicioAEliminar = null;
+        if (servicioAEliminar != null)
+        {
+            await ServicioService.EliminarServicioAsync(servicioAEliminar.Id);
+            await CargarDatosAsync();
+        }
         mostrarModalEliminar = false;
-        StateHasChanged();
     }
 
-    private async Task ConfirmarEliminacion()
-    {
-        if (servicioAEliminar == null) return;
-
-        try
-        {
-            if (!string.IsNullOrEmpty(servicioAEliminar.ImagenUrl) && servicioAEliminar.ImagenUrl.StartsWith("/Storage/Servicios/"))
-            {
-                try
-                {
-                    var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                    var fullPath = Path.Combine(webRootPath, servicioAEliminar.ImagenUrl.TrimStart('/'));
-                    if (File.Exists(fullPath))
-                    {
-                        File.Delete(fullPath);
-                        Console.WriteLine($"🗑️ Imagen eliminada: {fullPath}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"⚠️ Error al eliminar imagen: {ex.Message}");
-                }
-            }
-
-            if (await ServicioService.EliminarServicioAsync(servicioAEliminar.Id))
-            {
-                mensajeExito = $"Servicio '{servicioAEliminar.Nombre}' eliminado correctamente";
-                await CargarDatos();
-            }
-            else
-            {
-                mensajeError = "No se pudo eliminar el servicio. Verifica que no tenga citas asociadas.";
-            }
-        }
-        catch (Exception ex)
-        {
-            mensajeError = $"Error al eliminar servicio: {ex.Message}";
-        }
-        finally
-        {
-            servicioAEliminar = null;
-            mostrarModalEliminar = false;
-            StateHasChanged();
-        }
-    }
-
-    private void LimpiarMensajeExito() => mensajeExito = "";
-    private void LimpiarMensajeError() => mensajeError = "";
-
-    private static string Truncate(string value, int maxLength)
-    {
-        if (string.IsNullOrEmpty(value)) return value;
-        return value.Length <= maxLength ? value : value.Substring(0, maxLength) + "...";
-    }
+    void CancelarEliminacion() => mostrarModalEliminar = false;
 }
