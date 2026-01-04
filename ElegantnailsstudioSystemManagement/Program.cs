@@ -36,16 +36,16 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(optio
     options.MultipartHeadersLengthLimit = 1024 * 1024; 
 });
 
-// Configurar Kestrel
+// Configuracion
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.Limits.MaxRequestBodySize = 50 * 1024 * 1024; 
 });
 
 // Configuración de base de datos
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 //servicios
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
@@ -87,7 +87,7 @@ if (!Directory.Exists(serviciosPath))
     Console.WriteLine($"Carpeta Servicios creada: {serviciosPath}");
 }
 
-// Configurar acceso a imágenes almacenadas en Storage
+// Configuracion acceso a imágenes almacenadas en Storage
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(storagePath),
@@ -105,23 +105,15 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
 
-
-
-
-// Agrega esto ANTES de app.Run();
-
-// Middleware para manejar la subida del logo
 app.Use(async (context, next) =>
 {
-    // Verificar si es la ruta de upload del logo
+    
     if (context.Request.Path == "/uploadlogo" && context.Request.Method == "POST")
     {
         try
         {
-            // Verificar que sea multipart/form-data
+            
             if (!context.Request.HasFormContentType)
             {
                 context.Response.StatusCode = 400;
@@ -139,10 +131,10 @@ app.Use(async (context, next) =>
                 return;
             }
 
-            // Obtener el servicio desde DI
+            
             var logoService = context.RequestServices.GetRequiredService<ILogoService>();
 
-            // Guardar el logo
+            
             var ruta = await logoService.GuardarLogoAsync(file);
 
             if (string.IsNullOrEmpty(ruta))
@@ -152,7 +144,7 @@ app.Use(async (context, next) =>
                 return;
             }
 
-            // Redirigir de vuelta a la página del logo
+            
             context.Response.Redirect("/admin/logo?success=true");
             return;
         }
@@ -166,6 +158,113 @@ app.Use(async (context, next) =>
 
     await next();
 });
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/uploadservicio" &&
+        context.Request.Method == "POST")
+    {
+        try
+        {
+            Console.WriteLine("📸 Iniciando subida de imagen para servicio...");
+
+            if (!context.Request.HasFormContentType)
+            {
+                Console.WriteLine("❌ No es form-data");
+                context.Response.StatusCode = 400;
+                return;
+            }
+
+            var form = await context.Request.ReadFormAsync();
+            var file = form.Files["file"];
+            var servicioIdStr = form["servicioId"].ToString();
+
+            Console.WriteLine($"📋 Servicio ID recibido: {servicioIdStr}");
+            Console.WriteLine($"📁 Archivo recibido: {(file != null ? file.FileName : "NULL")}");
+
+            if (file == null || file.Length == 0)
+            {
+                Console.WriteLine("❌ Archivo vacío o nulo");
+                context.Response.StatusCode = 400;
+                return;
+            }
+
+            var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+            var ext = Path.GetExtension(file.FileName).ToLower();
+            Console.WriteLine($"📄 Extensión: {ext}");
+
+            if (!allowed.Contains(ext))
+            {
+                Console.WriteLine("❌ Extensión no permitida");
+                context.Response.StatusCode = 400;
+                return;
+            }
+
+            var folder = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "Storage",
+                "Servicios"
+            );
+
+            Console.WriteLine($"📂 Carpeta destino: {folder}");
+
+            Directory.CreateDirectory(folder);
+
+            var fileName = $"{Guid.NewGuid()}{ext}";
+            var path = Path.Combine(folder, fileName);
+
+            Console.WriteLine($"💾 Guardando archivo: {path}");
+
+            await using var fs = new FileStream(path, FileMode.Create);
+            await file.CopyToAsync(fs);
+
+            var url = $"/Storage/Servicios/{fileName}";
+            Console.WriteLine($"🌐 URL generada: {url}");
+
+         
+            if (!string.IsNullOrEmpty(servicioIdStr) && int.TryParse(servicioIdStr, out int servicioId))
+            {
+                Console.WriteLine($"🔍 Buscando servicio ID {servicioId} en BD...");
+
+                using var scope = context.RequestServices.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                var servicio = await dbContext.Servicios.FindAsync(servicioId);
+                if (servicio != null)
+                {
+                    Console.WriteLine($"✅ Servicio encontrado: {servicio.Nombre}");
+                    servicio.ImagenUrl = url;
+                    await dbContext.SaveChangesAsync();
+                    Console.WriteLine($"🖼️ Imagen actualizada en BD para servicio ID: {servicioId}");
+                }
+                else
+                {
+                    Console.WriteLine($"⚠️ Servicio ID {servicioId} no encontrado en BD");
+                }
+            }
+
+           
+            Console.WriteLine($"🔄 Redirigiendo a /admin/servicios con imagen: {url}");
+            context.Response.Redirect($"/admin/servicios?img={url}&servicioId={servicioIdStr}&updated=true");
+            return;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"💥 ERROR en uploadservicio: {ex.Message}");
+            Console.WriteLine($"💥 StackTrace: {ex.StackTrace}");
+            context.Response.StatusCode = 500;
+            return;
+        }
+    }
+
+    await next();
+});
+
+
+app.MapBlazorHub();
+app.MapFallbackToPage("/_Host");
+
 app.Run();
 
 

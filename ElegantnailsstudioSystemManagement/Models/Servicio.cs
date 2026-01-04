@@ -24,8 +24,8 @@ namespace ElegantnailsstudioSystemManagement.Models
         [Required(ErrorMessage = "La categoría es requerida")]
         public int CategoriaId { get; set; }
 
-        public string ImagenUrl { get; set; } = string.Empty;
+        public string ImagenUrl { get; set; } = "/placeholder-image.png";
 
-        public Categoria Categoria { get; set; } = null!;
+        public Categoria? Categoria { get; set; }
     }
 }

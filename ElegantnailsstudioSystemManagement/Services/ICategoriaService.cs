@@ -15,18 +15,19 @@ namespace ElegantnailsstudioSystemManagement.Services
 
     public class CategoriaService : ICategoriaService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
 
-        public CategoriaService(ApplicationDbContext context)
+        public CategoriaService(IDbContextFactory<ApplicationDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public async Task<List<Categoria>> GetCategoriasAsync()
         {
             try
             {
-                return await _context.Categorias
+                using var context = _contextFactory.CreateDbContext();
+                return await context.Categorias
                     .OrderBy(c => c.Nombre)
                     .ToListAsync();
             }
@@ -41,7 +42,8 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-                return await _context.Categorias.FindAsync(id);
+                using var context = _contextFactory.CreateDbContext();
+                return await context.Categorias.FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -54,7 +56,8 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-                return await _context.Categorias
+                using var context = _contextFactory.CreateDbContext();
+                return await context.Categorias
                     .FirstOrDefaultAsync(c => c.Nombre.ToLower() == nombre.ToLower());
             }
             catch (Exception ex)
@@ -68,11 +71,16 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-                if (await _context.Categorias.AnyAsync(c => c.Nombre.ToLower() == categoria.Nombre.ToLower()))
+                using var context = _contextFactory.CreateDbContext();
+
+                bool existe = await context.Categorias
+                    .AnyAsync(c => c.Nombre.ToLower() == categoria.Nombre.ToLower());
+
+                if (existe)
                     return false;
 
-                _context.Categorias.Add(categoria);
-                await _context.SaveChangesAsync();
+                context.Categorias.Add(categoria);
+                await context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -86,11 +94,13 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-                var existing = await _context.Categorias.FindAsync(categoria.Id);
+                using var context = _contextFactory.CreateDbContext();
+
+                var existing = await context.Categorias.FindAsync(categoria.Id);
                 if (existing == null) return false;
 
                 existing.Nombre = categoria.Nombre;
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -104,11 +114,13 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-                var categoria = await _context.Categorias.FindAsync(id);
+                using var context = _contextFactory.CreateDbContext();
+
+                var categoria = await context.Categorias.FindAsync(id);
                 if (categoria == null) return false;
 
-                _context.Categorias.Remove(categoria);
-                await _context.SaveChangesAsync();
+                context.Categorias.Remove(categoria);
+                await context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -119,8 +131,3 @@ namespace ElegantnailsstudioSystemManagement.Services
         }
     }
 }
-
-
-
-
-
