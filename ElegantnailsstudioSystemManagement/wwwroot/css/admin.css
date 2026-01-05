@@ -3,9 +3,10 @@
     background: linear-gradient(135deg, #000000 0%, #2d2d2d 100%);
     padding: 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    border-bottom: 3px solid #e91e63; 
+    border-bottom: 3px solid #e91e63;
+    .fila-superior-admin
 
-.fila-superior-admin {
+{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -13,7 +14,6 @@
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Logo a la izquierda */
 .logo-izquierda-admin {
     text-align: left;
 }
@@ -27,7 +27,7 @@
     }
 
     .logo-izquierda-admin .slogan-admin {
-        color: #e91e63; 
+        color: #e91e63;
         font-size: 0.9rem;
         font-weight: 400;
         margin: 5px 0 0 0;
@@ -40,9 +40,9 @@
 }
 
 .btn-sitio-publico {
-    background: rgba(233, 30, 99, 0.15); 
-    border: 2px solid rgba(233, 30, 99, 0.4); 
-    color: #f48fb1; 
+    background: rgba(233, 30, 99, 0.15);
+    border: 2px solid rgba(233, 30, 99, 0.4);
+    color: #f48fb1;
     padding: 10px 18px;
     border-radius: 25px;
     font-weight: 600;
@@ -85,9 +85,9 @@
     }
 
 .fila-inferior-admin {
-    background: #4a1e7c; 
+    background: #4a1e7c;
     padding: 10px 0;
-    border-top: 1px solid rgba(233, 30, 99, 0.2); 
+    border-top: 1px solid rgba(233, 30, 99, 0.2);
 }
 
 .menu-lista-admin {
@@ -114,18 +114,18 @@
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
-        background: rgba(255, 255, 255, 0.1); 
+        background: rgba(255, 255, 255, 0.1);
     }
 
         .menu-lista-admin a:hover {
-            background: rgba(233, 30, 99, 0.4); 
+            background: rgba(233, 30, 99, 0.4);
             color: white;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
         }
 
         .menu-lista-admin a.activo {
-            background: linear-gradient(135deg, #e91e63, #f06292); 
+            background: linear-gradient(135deg, #e91e63, #f06292);
             color: white;
             font-weight: 600;
             box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
@@ -151,7 +151,6 @@
             width: 70%;
         }
 
-/* ===== CONTENIDO ADMIN ===== */
 .admin-page {
     min-height: 100vh;
     background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
@@ -232,20 +231,20 @@
         box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3);
     }
 
-/* ===== CARDS DE SERVICIOS===== */
+/* ===== CARDS DE SERVICIO===== */
 .servicio-card {
-    border: 2px solid #e1bee7 !important; 
+    border: 2px solid #e1bee7 !important;
     border-radius: 15px !important;
     overflow: hidden;
     transition: all 0.3s ease;
-    background: white !important; 
+    background: white !important;
     box-shadow: 0 4px 15px rgba(156, 39, 176, 0.1) !important;
     height: 100%;
 }
 
     .servicio-card:hover {
         transform: translateY(-5px);
-        border-color: #e91e63 !important; 
+        border-color: #e91e63 !important;
         box-shadow: 0 12px 30px rgba(233, 30, 99, 0.15) !important;
     }
 
@@ -254,7 +253,7 @@
     height: 200px;
     overflow: hidden;
     position: relative;
-    background: linear-gradient(135deg, #6a1b9a, #9c27b0) !important; 
+    background: linear-gradient(135deg, #6a1b9a, #9c27b0) !important;
 }
 
 .servicio-img {
@@ -303,19 +302,19 @@
 }
 
 .card-body.p-4 {
-    background: white !important; 
-    color: #333333 !important; 
+    background: white !important;
+    color: #333333 !important;
 }
 
 .servicio-title {
-    color: #6a1b9a !important; 
+    color: #6a1b9a !important;
     font-weight: 700;
     font-size: 1.25rem;
     margin: 10px 0;
 }
 
 .servicio-descripcion {
-    color: #666666 !important; 
+    color: #666666 !important;
     font-size: 0.95rem;
     line-height: 1.5;
     height: 72px;
@@ -326,7 +325,7 @@
 }
 
 .servicio-precio {
-    color: #e91e63 !important; 
+    color: #e91e63 !important;
     font-weight: 800;
     font-size: 1.5rem;
 }
@@ -337,13 +336,13 @@
 }
 
     .servicio-duracion i {
-        color: #9c27b0 !important; 
+        color: #9c27b0 !important;
     }
 
 /* BOTONES DE EDITAR Y ELIMINAR */
 .btn-editar-servicio {
-    background: rgba(156, 39, 176, 0.1) !important; 
-    color: #9c27b0 !important; 
+    background: rgba(156, 39, 176, 0.1) !important;
+    color: #9c27b0 !important;
     border: 2px solid #9c27b0 !important;
     border-radius: 8px;
     padding: 10px 20px;
@@ -356,14 +355,14 @@
 }
 
     .btn-editar-servicio:hover {
-        background: #9c27b0 !important; 
+        background: #9c27b0 !important;
         color: white !important;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
     }
 
 .btn-eliminar-servicio {
-    background: rgba(233, 30, 99, 0.1) !important; 
+    background: rgba(233, 30, 99, 0.1) !important;
     color: #e91e63 !important;
     border: 2px solid #e91e63 !important;
     border-radius: 8px;
@@ -377,7 +376,7 @@
 }
 
     .btn-eliminar-servicio:hover {
-        background: #e91e63 !important; 
+        background: #e91e63 !important;
         color: white !important;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
@@ -393,7 +392,6 @@
     padding-bottom: 1.5rem !important;
 }
 
-/* ===== ESTILOS COMPLEMENTARIOS ===== */
 .img-preview-container {
     border: 2px dashed #dee2e6;
     border-radius: 8px;
@@ -406,8 +404,8 @@
 }
 
 .file-upload-info {
-    background-color: #f3e5f5; 
-    border-left: 4px solid #9c27b0; 
+    background-color: #f3e5f5;
+    border-left: 4px solid #9c27b0;
     padding: 10px;
     border-radius: 4px;
     color: #6a1b9a;
@@ -434,7 +432,7 @@
 }
 
     .form-control:focus, .form-select:focus {
-        border-color: #e91e63; 
+        border-color: #e91e63;
         box-shadow: 0 0 0 0.2rem rgba(233, 30, 99, 0.25);
     }
 
@@ -445,7 +443,7 @@
 }
 
 .btn-outline-primary {
-    color: #e91e63; 
+    color: #e91e63;
     border-color: #e91e63;
 }
 
@@ -546,3 +544,44 @@
             }
 }
 
+.botones-admin-horizontal {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+    .botones-admin-horizontal .btn-admin-editar {
+        flex: 1;
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+   
+    .botones-admin-horizontal .btn-admin-eliminar {
+        flex: 1;
+        background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .botones-admin-horizontal .btn-admin-editar:hover {
+        background: linear-gradient(135deg, #ba68c8 0%, #ab47bc 100%) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(171, 71, 188, 0.3) !important;
+    }
+
+    .botones-admin-horizontal .btn-admin-eliminar:hover {
+        background: linear-gradient(135deg, #8e24aa 0%, #7b1fa2 100%) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(142, 36, 170, 0.3) !important;
+    }

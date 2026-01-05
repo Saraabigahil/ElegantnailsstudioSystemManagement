@@ -5,8 +5,39 @@
 @inject IServicioService ServicioService
 @inject ICategoriaService CategoriaService
 @inject NavigationManager Navigation
+@inject AuthService AuthService
 
 <PageTitle>Elegant Nails - Pestañas</PageTitle>
+
+<!-- ALERTA PARA USUARIOS NO LOGUEADOS -->
+@if (mostrarAlertaNoLogueado)
+{
+    <div class="modal-overlay" @onclick="CerrarAlertaNoLogueado">
+        <div class="modal-alerta" @onclick:stopPropagation>
+            <div class="modal-alerta-header bg-danger">
+                <h5><i class="bi bi-exclamation-triangle me-2"></i>¡Acceso Restringido!</h5>
+                <button type="button" class="btn-close" @onclick="CerrarAlertaNoLogueado"></button>
+            </div>
+            <div class="modal-alerta-body text-center">
+                <i class="bi bi-person-x" style="font-size: 4rem; color: #dc3545;"></i>
+                <h4 class="mt-3">Sesión Requerida</h4>
+                <p>Para agendar una cita necesitas tener una cuenta.</p>
+                <p class="text-muted">Inicia sesión o regístrate para continuar.</p>
+            </div>
+            <div class="modal-alerta-footer">
+                <button class="btn btn-secondary" @onclick="CerrarAlertaNoLogueado">
+                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                </button>
+                <button class="btn btn-danger" @onclick="IrALogin">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+                </button>
+                <button class="btn btn-success" @onclick="IrARegistro">
+                    <i class="bi bi-person-plus me-1"></i>Registrarse
+                </button>
+            </div>
+        </div>
+    </div>
+}
 
 <header class="pestanas-header">
     <div class="container">
@@ -22,6 +53,7 @@
 <!-- CONTENIDO PRINCIPAL -->
 <main class="pestanas-main">
     <div class="container">
+        <!-- En la sección donde muestras serviciosPestanas -->
         @if (serviciosPestanas.Count == 0)
         {
             <div class="alert alert-info">
@@ -35,31 +67,48 @@
                 @foreach (var servicio in serviciosPestanas)
                 {
                     <div class="col-md-4">
-                        <div class="card pestanas-card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">
+                        <div class="tarjeta-unificada">
+                            <!-- IMAGEN DEL SERVICIO -->
+                            <div class="contenedor-imagen-tarjeta">
+                                @if (!string.IsNullOrEmpty(servicio.ImagenUrl) && !servicio.ImagenUrl.Contains("placeholder"))
+                                {
+                                    <img src="@servicio.ImagenUrl"
+                                         alt="@servicio.Nombre"
+                                         class="img-fluid"
+                                         onerror="this.src='/placeholder-image.png'" />
+                                }
+                                else
+                                {
+                                    <div class="placeholder-imagen-unificado">
+                                        <i class="bi bi-eye"></i>
+                                        <p>@servicio.Nombre</p>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="encabezado-tarjeta">
+                                <h5 class="titulo-tarjeta">
                                     <i class="bi bi-stars me-2"></i>@servicio.Nombre
                                 </h5>
                             </div>
-                            <div class="card-body">
-                                <p class="card-text servicio-descripcion">@servicio.Descripcion</p>
 
-                                <div class="servicio-info">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span class="servicio-precio">
+                            <div class="cuerpo-tarjeta">
+                                <p class="descripcion-tarjeta">@servicio.Descripcion</p>
+
+                                <div class="info-servicio">
+                                    <div class="contenedor-precio-duracion">
+                                        <span class="precio-tarjeta">
                                             <i class="bi bi-currency-dollar me-1"></i>@servicio.Precio.ToString("C")
                                         </span>
-                                        <span class="servicio-duracion">
+                                        <span class="duracion-tarjeta">
                                             <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
                                         </span>
                                     </div>
                                 </div>
 
-                                <div class="d-grid">
-                                    <a href="/citas/agendar?servicioId=@servicio.Id" class="btn pestanas-btn-agendar">
-                                        <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-                                    </a>
-                                </div>
+                                <button class="boton-agendar-unificado" @onclick="() => VerificarSesionYAgendar(servicio.Id, servicio.Nombre)">
+                                    <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -70,95 +119,100 @@
         <!-- SERVICIOS DESTACADOS -->
         <div class="row g-4 mt-5">
             <div class="col-md-4">
-                <div class="card pestanas-card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
+                <div class="tarjeta-unificada">
+                    <div class="encabezado-tarjeta">
+                        <h5 class="titulo-tarjeta">
                             <i class="bi bi-stars me-2"></i>Pestañas individuales
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text servicio-descripcion">Extensiones de efecto natural para un look sofisticado.</p>
-                        <div class="servicio-info">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="servicio-precio">
+
+                    <div class="cuerpo-tarjeta">
+                        <p class="descripcion-tarjeta">Extensiones de efecto natural para un look sofisticado.</p>
+
+                        <div class="info-servicio">
+                            <div class="contenedor-precio-duracion">
+                                <span class="precio-tarjeta">
                                     <i class="bi bi-currency-dollar me-1"></i>$30.00
                                 </span>
-                                <span class="servicio-duracion">
+                                <span class="duracion-tarjeta">
                                     <i class="bi bi-clock me-1"></i>120 min
                                 </span>
                             </div>
                         </div>
-                        <div class="d-grid">
-                            <a href="/citas/agendar?tipo=pestanas-individuales" class="btn pestanas-btn-agendar">
-                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-                            </a>
-                        </div>
+
+                        <button class="boton-agendar-unificado" @onclick='() => VerificarSesionYAgendar(0, "Pestañas individuales")'>
+                            <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4">
-                <div class="card pestanas-card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
+                <div class="tarjeta-unificada">
+                    <div class="encabezado-tarjeta">
+                        <h5 class="titulo-tarjeta">
                             <i class="bi bi-magic me-2"></i>Extensiones efecto rímel
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text servicio-descripcion">Efecto voluminoso como si usaras rímel.</p>
-                        <div class="servicio-info">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="servicio-precio">
+
+                    <div class="cuerpo-tarjeta">
+                        <p class="descripcion-tarjeta">Efecto voluminoso como si usaras rímel.</p>
+
+                        <div class="info-servicio">
+                            <div class="contenedor-precio-duracion">
+                                <span class="precio-tarjeta">
                                     <i class="bi bi-currency-dollar me-1"></i>$45.00
                                 </span>
-                                <span class="servicio-duracion">
+                                <span class="duracion-tarjeta">
                                     <i class="bi bi-clock me-1"></i>120 min
                                 </span>
                             </div>
                         </div>
-                        <div class="d-grid">
-                            <a href="/citas/agendar?tipo=pestanas-rimel" class="btn pestanas-btn-agendar">
-                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-                            </a>
-                        </div>
+
+                        <button class="boton-agendar-unificado" @onclick='() => VerificarSesionYAgendar(0, "Extensiones efecto rímel")'>
+                            <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4">
-                <div class="card pestanas-card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
+                <div class="tarjeta-unificada">
+                    <div class="encabezado-tarjeta">
+                        <h5 class="titulo-tarjeta">
                             <i class="bi bi-heart me-2"></i>Pestañas magnéticas
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text servicio-descripcion">Fácil aplicación y remoción, sin daño a tus pestañas naturales.</p>
-                        <div class="servicio-info">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="servicio-precio">
+
+                    <div class="cuerpo-tarjeta">
+                        <p class="descripcion-tarjeta">Fácil aplicación y remoción, sin daño a tus pestañas naturales.</p>
+
+                        <div class="info-servicio">
+                            <div class="contenedor-precio-duracion">
+                                <span class="precio-tarjeta">
                                     <i class="bi bi-currency-dollar me-1"></i>$35.00
                                 </span>
-                                <span class="servicio-duracion">
+                                <span class="duracion-tarjeta">
                                     <i class="bi bi-clock me-1"></i>90 min
                                 </span>
                             </div>
                         </div>
-                        <div class="d-grid">
-                            <a href="/citas/agendar?tipo=pestanas-magneticas" class="btn pestanas-btn-agendar">
-                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-                            </a>
-                        </div>
+
+                        <button class="boton-agendar-unificado" @onclick='() => VerificarSesionYAgendar(0, "Pestañas magnéticas")'>
+                            <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </main>
 
 @code {
     private List<Servicio> serviciosPestanas = new();
     private Categoria? categoriaPestanas;
+    private bool mostrarAlertaNoLogueado = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -190,5 +244,44 @@
         {
             Console.WriteLine($"❌ Error cargando servicios de pestañas: {ex.Message}");
         }
+    }
+
+    private async void VerificarSesionYAgendar(int servicioId, string nombreServicio = "")
+    {
+        // Verificar si el usuario está logueado
+        if (!AuthService.IsLoggedIn)
+        {
+            // Mostrar alerta si NO está logueado
+            mostrarAlertaNoLogueado = true;
+            StateHasChanged();
+        }
+        else
+        {
+            // Si está logueado, redirigir normalmente
+            if (servicioId > 0)
+            {
+                Navigation.NavigateTo($"/citas/agendar?servicioId={servicioId}");
+            }
+            else
+            {
+                Navigation.NavigateTo("/citas/agendar");
+            }
+        }
+    }
+
+    private void CerrarAlertaNoLogueado()
+    {
+        mostrarAlertaNoLogueado = false;
+        StateHasChanged();
+    }
+
+    private void IrALogin()
+    {
+        Navigation.NavigateTo("/login");
+    }
+
+    private void IrARegistro()
+    {
+        Navigation.NavigateTo("/registro");
     }
 }

@@ -6,17 +6,13 @@
 @inject IServicioService ServicioService
 @inject NavigationManager Navigation
 @inject AuthService AuthService
-@inject ILogoService LogoService 
+@inject ILogoService LogoService
 
 <PageTitle>Elegant Nails Studio</PageTitle>
 <link rel="stylesheet" href="css/admin-panel.css">
 
-
-
 <header class="navbar-morado">
-
     <div class="fila-superior">
-        <!-- Logo a la izquierda - MODIFICADO -->
         <div class="logo-izquierda">
             @if (!string.IsNullOrEmpty(logoPath))
             {
@@ -62,19 +58,45 @@
             @foreach (var servicio in servicios)
             {
                 <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">@servicio.Nombre</h5>
-                            <p class="card-text text-muted">@servicio.Descripcion</p>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="h5 text-primary fw-bold">@servicio.Precio.ToString("C")</span>
-                                <span class="badge bg-secondary">
-                                    <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
-                                </span>
+                    <div class="tarjeta-unificada">
+                        <!-- IMAGEN DEL SERVICIO -->
+                        <div class="contenedor-imagen-tarjeta">
+                            @if (!string.IsNullOrEmpty(servicio.ImagenUrl) && !servicio.ImagenUrl.Contains("placeholder"))
+                            {
+                                <img src="@servicio.ImagenUrl"
+                                     alt="@servicio.Nombre"
+                                     class="img-fluid"
+                                     onerror="this.src='/placeholder-image.png'" />
+                            }
+                            else
+                            {
+                                <div class="placeholder-imagen-unificado">
+                                    <i class="bi bi-scissors"></i>
+                                    <p>@servicio.Nombre</p>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="cuerpo-tarjeta">
+                            <h5 class="titulo-tarjeta">
+                                <i class="bi bi-stars me-2"></i>@servicio.Nombre
+                            </h5>
+
+                            <p class="descripcion-tarjeta">@servicio.Descripcion</p>
+
+                            <div class="info-servicio">
+                                <div class="contenedor-precio-duracion">
+                                    <span class="precio-tarjeta">
+                                        <i class="bi bi-currency-dollar me-1"></i>@servicio.Precio.ToString("C")
+                                    </span>
+                                    <span class="duracion-tarjeta">
+                                        <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
+                                    </span>
+                                </div>
                             </div>
 
-                            <button class="btn btn-index-primary w-100 mt-3"
-                                    @onclick="MostrarAlertaCitas">
+                            <!-- CAMBIÉ ESTE BOTÓN: de <a> a <button> -->
+                            <button class="boton-agendar-unificado" @onclick="() => VerificarSesionYAgendar(servicio.Id)">
                                 <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
                             </button>
                         </div>
@@ -84,7 +106,6 @@
         </div>
     }
 </main>
-
 <!-- MODAL DE ALERTA PARA USUARIOS NO LOGUEADOS -->
 @if (mostrarAlertaNoLogueado)
 {
@@ -134,17 +155,12 @@
 
 @code {
     private List<Servicio> servicios = new();
-
-    private string logoPath = string.Empty; // AGREGAR ESTA LÍNEA
-
-    private bool mostrarAlertaNoLogueado = false; 
-
+    private string logoPath = string.Empty;
+    private bool mostrarAlertaNoLogueado = false;
 
     protected override async Task OnInitializedAsync()
     {
-        // AGREGAR ESTA LÍNEA:
         logoPath = LogoService.ObtenerLogoActual();
-
         await CargarServicios();
     }
 
@@ -155,7 +171,6 @@
 
     private void MostrarAlertaCitas()
     {
-
         Console.WriteLine($"⚠️ Usuario no logueado - Mostrando alerta de citas");
         mostrarAlertaNoLogueado = true;
         StateHasChanged();
@@ -165,6 +180,25 @@
     {
         mostrarAlertaNoLogueado = false;
         StateHasChanged();
+    }
+
+    // AGREGAR ESTA NUEVA FUNCIÓN
+    private void VerificarSesionYAgendar(int servicioId)
+    {
+        // Verificar si el usuario está logueado
+        if (!AuthService.IsLoggedIn)
+        {
+            // Mostrar alerta si NO está logueado
+            Console.WriteLine($"⚠️ Usuario no logueado - Mostrando alerta");
+            mostrarAlertaNoLogueado = true;
+            StateHasChanged();
+        }
+        else
+        {
+            // Si está logueado, redirigir normalmente
+            Console.WriteLine($"✅ Usuario logueado - Redirigiendo a cita");
+            Navigation.NavigateTo($"/citas/agendar?servicioId={servicioId}");
+        }
     }
 
     private void AgendarCita(int servicioId)

@@ -5,8 +5,39 @@
 @inject IServicioService ServicioService
 @inject ICategoriaService CategoriaService
 @inject NavigationManager Navigation
+@inject AuthService AuthService
 
 <PageTitle>Elegant Nails - Uñas</PageTitle>
+
+<!-- ALERTA PARA USUARIOS NO LOGUEADOS -->
+@if (mostrarAlertaNoLogueado)
+{
+    <div class="modal-overlay" @onclick="CerrarAlertaNoLogueado">
+        <div class="modal-alerta" @onclick:stopPropagation>
+            <div class="modal-alerta-header bg-danger">
+                <h5><i class="bi bi-exclamation-triangle me-2"></i>¡Acceso Restringido!</h5>
+                <button type="button" class="btn-close" @onclick="CerrarAlertaNoLogueado"></button>
+            </div>
+            <div class="modal-alerta-body text-center">
+                <i class="bi bi-person-x" style="font-size: 4rem; color: #dc3545;"></i>
+                <h4 class="mt-3">Sesión Requerida</h4>
+                <p>Para agendar una cita necesitas tener una cuenta.</p>
+                <p class="text-muted">Inicia sesión o regístrate para continuar.</p>
+            </div>
+            <div class="modal-alerta-footer">
+                <button class="btn btn-secondary" @onclick="CerrarAlertaNoLogueado">
+                    <i class="bi bi-x-circle me-1"></i>Cancelar
+                </button>
+                <button class="btn btn-danger" @onclick="IrALogin">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+                </button>
+                <button class="btn btn-success" @onclick="IrARegistro">
+                    <i class="bi bi-person-plus me-1"></i>Registrarse
+                </button>
+            </div>
+        </div>
+    </div>
+}
 
 <header class="unas-header">
     <div class="container">
@@ -22,6 +53,7 @@
 <!-- CONTENIDO PRINCIPAL -->
 <main class="unas-main">
     <div class="container">
+        <!-- En la sección donde muestras serviciosUnas -->
         @if (serviciosUnas.Count == 0)
         {
             <div class="alert alert-info">
@@ -35,39 +67,48 @@
                 @foreach (var servicio in serviciosUnas)
                 {
                     <div class="col-md-4">
-                        <div class="card unas-card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">
+                        <div class="tarjeta-unificada">
+                            <!-- IMAGEN DEL SERVICIO -->
+                            <div class="contenedor-imagen-tarjeta">
+                                @if (!string.IsNullOrEmpty(servicio.ImagenUrl) && !servicio.ImagenUrl.Contains("placeholder"))
+                                {
+                                    <img src="@servicio.ImagenUrl"
+                                         alt="@servicio.Nombre"
+                                         class="img-fluid"
+                                         onerror="this.src='/placeholder-image.png'" />
+                                }
+                                else
+                                {
+                                    <div class="placeholder-imagen-unificado">
+                                        <i class="bi bi-brush"></i>
+                                        <p>@servicio.Nombre</p>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="encabezado-tarjeta">
+                                <h5 class="titulo-tarjeta">
                                     <i class="bi bi-stars me-2"></i>@servicio.Nombre
                                 </h5>
                             </div>
-                            <div class="card-body">
-                                @if (!string.IsNullOrEmpty(servicio.ImagenUrl))
-                                {
-                                    <div class="servicio-imagen mb-3">
-                                        <img src="@servicio.ImagenUrl" alt="@servicio.Nombre"
-                                             class="img-fluid rounded" />
-                                    </div>
-                                }
 
-                                <p class="card-text servicio-descripcion">@servicio.Descripcion</p>
+                            <div class="cuerpo-tarjeta">
+                                <p class="descripcion-tarjeta">@servicio.Descripcion</p>
 
-                                <div class="servicio-info">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span class="servicio-precio">
+                                <div class="info-servicio">
+                                    <div class="contenedor-precio-duracion">
+                                        <span class="precio-tarjeta">
                                             <i class="bi bi-currency-dollar me-1"></i>@servicio.Precio.ToString("C")
                                         </span>
-                                        <span class="servicio-duracion">
+                                        <span class="duracion-tarjeta">
                                             <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
                                         </span>
                                     </div>
                                 </div>
 
-                                <div class="d-grid">
-                                    <a href="/citas/agendar?servicioId=@servicio.Id" class="btn unas-btn-agendar">
-                                        <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-                                    </a>
-                                </div>
+                                <button class="boton-agendar-unificado" @onclick="() => VerificarSesionYAgendar(servicio.Id, servicio.Nombre)">
+                                    <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -78,85 +119,88 @@
         <!-- SERVICIOS DESTACADOS -->
         <div class="row g-4 mt-5">
             <div class="col-md-4">
-                <div class="card unas-card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
+                <div class="tarjeta-unificada">
+                    <div class="encabezado-tarjeta">
+                        <h5 class="titulo-tarjeta">
                             <i class="bi bi-stars me-2"></i>Esmalte
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text servicio-descripcion">Cortas, transparente. Aplicación profesional de esmalte.</p>
-                        <div class="servicio-info">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="servicio-precio">
+
+                    <div class="cuerpo-tarjeta">
+                        <p class="descripcion-tarjeta">Cortas, transparente. Aplicación profesional de esmalte.</p>
+
+                        <div class="info-servicio">
+                            <div class="contenedor-precio-duracion">
+                                <span class="precio-tarjeta">
                                     <i class="bi bi-currency-dollar me-1"></i>$15.00
                                 </span>
-                                <span class="servicio-duracion">
+                                <span class="duracion-tarjeta">
                                     <i class="bi bi-clock me-1"></i>45 min
                                 </span>
                             </div>
                         </div>
-                        <div class="d-grid">
-                            <a href="/citas/agendar?tipo=esmalte" class="btn unas-btn-agendar">
-                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-                            </a>
-                        </div>
+
+                        <button class="boton-agendar-unificado" @onclick='() => VerificarSesionYAgendar(0, "Esmalte")'>
+                            <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4">
-                <div class="card unas-card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
+                <div class="tarjeta-unificada">
+                    <div class="encabezado-tarjeta">
+                        <h5 class="titulo-tarjeta">
                             <i class="bi bi-magic me-2"></i>Pintura Baño
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text servicio-descripcion">Tratamiento completo de pintura y baño para uñas.</p>
-                        <div class="servicio-info">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="servicio-precio">
+
+                    <div class="cuerpo-tarjeta">
+                        <p class="descripcion-tarjeta">Tratamiento completo de pintura y baño para uñas.</p>
+
+                        <div class="info-servicio">
+                            <div class="contenedor-precio-duracion">
+                                <span class="precio-tarjeta">
                                     <i class="bi bi-currency-dollar me-1"></i>$60.00
                                 </span>
-                                <span class="servicio-duracion">
+                                <span class="duracion-tarjeta">
                                     <i class="bi bi-clock me-1"></i>90 min
                                 </span>
                             </div>
                         </div>
-                        <div class="d-grid">
-                            <a href="/citas/agendar?tipo=pintura-bano" class="btn unas-btn-agendar">
-                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-                            </a>
-                        </div>
+
+                        <button class="boton-agendar-unificado" @onclick='() => VerificarSesionYAgendar(0, "Pintura Baño")'>
+                            <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div class="col-md-4">
-                <div class="card unas-card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">
+                <div class="tarjeta-unificada">
+                    <div class="encabezado-tarjeta">
+                        <h5 class="titulo-tarjeta">
                             <i class="bi bi-heart me-2"></i>Pintura Acrílica
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text servicio-descripcion">Pintura de acrílico con diseño bifilo adicional.</p>
-                        <div class="servicio-info">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="servicio-precio">
+
+                    <div class="cuerpo-tarjeta">
+                        <p class="descripcion-tarjeta">Pintura de acrílico con diseño bifilo adicional.</p>
+
+                        <div class="info-servicio">
+                            <div class="contenedor-precio-duracion">
+                                <span class="precio-tarjeta">
                                     <i class="bi bi-currency-dollar me-1"></i>$35.00
                                 </span>
-                                <span class="servicio-duracion">
+                                <span class="duracion-tarjeta">
                                     <i class="bi bi-clock me-1"></i>75 min
                                 </span>
                             </div>
                         </div>
-                        <div class="d-grid">
-                            <a href="/citas/agendar?tipo=acrilica" class="btn unas-btn-agendar">
-                                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-                            </a>
-                        </div>
+
+                        <button class="boton-agendar-unificado" @onclick='() => VerificarSesionYAgendar(0, "Pintura Acrílica")'>
+                            <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
+                        </button>
                     </div>
                 </div>
             </div>
@@ -167,6 +211,7 @@
 @code {
     private List<Servicio> serviciosUnas = new();
     private Categoria? categoriaUnas;
+    private bool mostrarAlertaNoLogueado = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -199,5 +244,44 @@
         {
             Console.WriteLine($"❌ Error cargando servicios de uñas: {ex.Message}");
         }
+    }
+
+    private async void VerificarSesionYAgendar(int servicioId, string nombreServicio = "")
+    {
+        // Verificar si el usuario está logueado
+        if (!AuthService.IsLoggedIn)
+        {
+            // Mostrar alerta si NO está logueado
+            mostrarAlertaNoLogueado = true;
+            StateHasChanged();
+        }
+        else
+        {
+            // Si está logueado, redirigir normalmente
+            if (servicioId > 0)
+            {
+                Navigation.NavigateTo($"/citas/agendar?servicioId={servicioId}");
+            }
+            else
+            {
+                Navigation.NavigateTo("/citas/agendar");
+            }
+        }
+    }
+
+    private void CerrarAlertaNoLogueado()
+    {
+        mostrarAlertaNoLogueado = false;
+        StateHasChanged();
+    }
+
+    private void IrALogin()
+    {
+        Navigation.NavigateTo("/login");
+    }
+
+    private void IrARegistro()
+    {
+        Navigation.NavigateTo("/registro");
     }
 }

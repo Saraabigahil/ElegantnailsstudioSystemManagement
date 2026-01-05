@@ -100,13 +100,64 @@
     }
 }
 
+/* ===== ELIMINAR COMPLETAMENTE ESPACIO BLANCO SUPERIOR ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+/* Reset completo para html y body */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh;
+}
 
+/* Quitar cualquier padding/margin por defecto */
+body {
+    position: relative;
+}
 
+/* Eliminar espacio ANTES del navbar */
+.navbar-morado::before,
+.navbar-negro-admin::before,
+.navbar-morado::after,
+.navbar-negro-admin::after {
+    content: none !important;
+    display: none !important;
+}
 
+/* Asegurar que navbar esté pegado al top */
+.navbar-morado,
+.navbar-negro-admin {
+    position: relative;
+    top: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
 
+/* Quitar cualquier espacio en el contenedor principal */
+.container,
+.container-fluid,
+main,
+#app,
+.blazor-app {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
 
+/* Solución específica si el espacio viene de un elemento invisible */
+div[style*="height"],
+div[style*="padding"],
+div[style*="margin"]:empty {
+    display: none !important;
+}
 
-
-
-
+/* Si hay un div vacío creando espacio */
+body > div:empty,
+body > div:first-child:not(.navbar-morado):not(.navbar-negro-admin) {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+}

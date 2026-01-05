@@ -1,26 +1,17 @@
-﻿/* wwwroot/css/home.css */
-
-/* ===== VARIABLES CON COLORES EXACTOS ===== */
+﻿/* ===== VARIABLES CON COLORES EXACTOS ===== */
 :root {
-    --header-black: #000000; 
-    --menu-dark-purple: #2A0B5E; 
-    --card-soft-purple: #9575CD; 
+    --header-black: #000000;
+    --menu-dark-purple: #2A0B5E;
     --text-dark: #333333;
     --text-light: #666666;
     --white: #ffffff;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    --morado-oscuro: #6a1b9a;
     --lila: #9c27b0;
-    --lila-claro: #e1bee7;
-    --rosado: #e91e63;
-    --rosado-claro: #f06292;
     --gris-claro: #f5f5f5;
-    --morado-tierno: #9575CD; 
-    --morado-tierno-claro: #B39DDB; 
 }
 
 .navbar-morado {
-    background: var(--header-black); 
+    background: var(--header-black);
     padding: 0;
 }
 
@@ -29,7 +20,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background: var(--header-black); 
+    background: var(--header-black);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -152,7 +143,7 @@
     box-shadow: var(--shadow);
 }
 
-
+/* ===== SECCIÓN DE BIENVENIDA ===== */
 .welcome-section {
     padding: 4rem 0;
     background: white;
@@ -173,150 +164,6 @@
         margin-bottom: 40px;
     }
 
-/* ===== CARDS DE SERVICIOS===== */
-.card {
-    border: 2px solid var(--lila-claro) !important; 
-    border-radius: 15px !important;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    background: var(--white) !important; 
-    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.1) !important;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-    .card:hover {
-        transform: translateY(-5px);
-        border-color: var(--rosado) !important;
-        box-shadow: 0 12px 30px rgba(233, 30, 99, 0.15) !important;
-    }
-
-/* CONTENEDOR DE IMAGEN */
-.card-img-top-container {
-    height: 180px;
-    overflow: hidden;
-    position: relative;
-    background: linear-gradient(135deg, var(--morado-oscuro), var(--lila)) !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.card-img-top {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.card:hover .card-img-top {
-    transform: scale(1.05);
-}
-
-.no-image-placeholder {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 100% !important;
-    width: 100% !important;
-    padding: 20px;
-    text-align: center;
-    background: linear-gradient(135deg, var(--morado-oscuro), var(--lila)) !important;
-}
-
-    .no-image-placeholder i {
-        font-size: 50px !important;
-        margin-bottom: 10px;
-        color: var(--white);
-    }
-
-    .no-image-placeholder p {
-        font-size: 14px;
-        color: var(--white);
-        opacity: 0.9;
-        margin: 0;
-    }
-
-.card-body {
-    padding: 1.5rem !important;
-    background: var(--white) !important;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-.card-title {
-    color: var(--morado-oscuro) !important;
-    font-weight: 700 !important;
-    font-size: 1.25rem !important;
-    margin-bottom: 0.75rem !important;
-}
-
-.card-text.text-muted {
-    color: var(--text-light) !important;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    flex-grow: 1;
-    margin-bottom: 1rem !important;
-}
-
-.d-flex.justify-content-between {
-    margin-top: auto;
-}
-
-.text-primary {
-    color: var(--morado-tierno) !important; /* Morado tierno para precio */
-    font-weight: 800 !important;
-    font-size: 1.5rem !important;
-}
-
-.badge.bg-secondary {
-    background-color: var(--gris-claro) !important;
-    color: var(--text-light) !important;
-    font-weight: 400;
-    padding: 6px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--lila-claro);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-    .badge.bg-secondary i {
-        color: var(--lila) !important;
-    }
-
-/* ===== BOTÓN AGENDAR CITA ===== */
-.btn-index-primary {
-    background: linear-gradient(135deg, var(--morado-tierno), var(--morado-tierno-claro)) !important; /* Gradiente morado suave */
-    border: none !important;
-    color: white !important;
-    font-weight: 600 !important;
-    padding: 10px 20px !important;
-    border-radius: 8px !important;
-    transition: all 0.3s;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin-top: 1rem !important;
-    width: 100% !important;
-}
-
-    .btn-index-primary:hover {
-        background: linear-gradient(135deg, var(--morado-tierno-claro), var(--morado-tierno)) !important; 
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(149, 117, 205, 0.3); 
-    }
-
-    .btn-index-primary:active {
-        transform: translateY(0);
-    }
-
-    .btn-index-primary i {
-        margin-right: 8px;
-    }
-
 /* ===== ALERTA DE LOGIN ===== */
 .alert-warning {
     background-color: #fff8e1;
@@ -328,13 +175,13 @@
 }
 
 .alert-link {
-    color: var(--menu-dark-purple) !important; 
+    color: var(--menu-dark-purple) !important;
     font-weight: 600;
     text-decoration: none;
 }
 
     .alert-link:hover {
-        color: var(--lila) !important; 
+        color: var(--lila) !important;
         text-decoration: underline;
     }
 
@@ -353,7 +200,6 @@ footer.bg-dark {
     }
 
 /* ===== MODAL DE ALERTA ===== */
-
 .modal.show {
     backdrop-filter: blur(5px);
 }
@@ -368,7 +214,7 @@ footer.bg-dark {
 
 /* ENCABEZADO */
 .modal-header {
-    background: linear-gradient(135deg, #dc3545, #f44336) !important; 
+    background: linear-gradient(135deg, #dc3545, #f44336) !important;
     border-bottom: none !important;
     padding: 25px 30px !important;
     color: white !important;
@@ -469,7 +315,7 @@ footer.bg-dark {
     gap: 15px;
 }
 
- 
+
     .modal-footer .btn-primary {
         background: linear-gradient(135deg, #dc3545, #c82333) !important;
         border: none !important;
@@ -583,14 +429,6 @@ footer.bg-dark {
         font-size: 1rem;
     }
 
-    .card-body {
-        padding: 1.25rem !important;
-    }
-
-    .card-img-top-container {
-        height: 160px;
-    }
-
     /* RESPONSIVE PARA EL MODAL */
     .modal-dialog {
         margin: 15px !important;
@@ -662,10 +500,6 @@ footer.bg-dark {
         .menu-lista a {
             font-size: 0.8rem;
         }
-
-    .card-img-top-container {
-        height: 140px;
-    }
 
     .modal-header {
         padding: 15px !important;

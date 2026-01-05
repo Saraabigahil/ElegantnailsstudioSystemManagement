@@ -1,6 +1,6 @@
 ﻿/* ===== MENÚ PARA CLIENTE===== */
 .navbar-morado-cliente {
-    background: #000000; 
+    background: #000000;
     padding: 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
@@ -56,7 +56,7 @@
 }
 
 .menu-inferior-cliente {
-    background: #2A0B5E; 
+    background: #2A0B5E;
     padding: 10px 0;
 }
 
@@ -95,21 +95,46 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-/* ===== BOTONES AGENDAR CITA===== */
-.btn-cliente-primary {
-    background: linear-gradient(135deg, #e91e63, #f06292) !important;
-    border: none !important;
-    color: white !important;
-    font-weight: 600 !important;
-    padding: 10px 20px !important;
-    border-radius: 8px !important;
-    transition: all 0.3s;
+/* ===== CARRUSEL ===== */
+.hero-carousel {
+    margin-top: 0;
+    position: relative;
+    overflow: hidden;
 }
 
-    .btn-cliente-primary:hover {
-        background: linear-gradient(135deg, #f06292, #e91e63) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+/* ===== SECCIÓN DE BIENVENIDA ===== */
+.welcome-section {
+    padding: 4rem 0;
+    background: white;
+    text-align: center;
+}
+
+    .welcome-section h1.display-4.fw-bold {
+        color: #333333;
+        font-size: 2.5rem;
+        font-weight: 300;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+
+    .welcome-section .lead {
+        color: #666666;
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+    }
+
+/* ===== FOOTER ===== */
+footer.bg-dark {
+    background: #000000 !important;
+    color: white;
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+    footer.bg-dark p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
     }
 
 /* ===== RESPONSIVE ===== */
