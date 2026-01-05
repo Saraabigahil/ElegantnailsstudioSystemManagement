@@ -12,8 +12,6 @@
 
 <link rel="stylesheet" href="css/admin-panel.css">
 
-
-
 <header class="navbar-morado-cliente">
     <div class="fila-superior-cliente">
 
@@ -70,27 +68,51 @@
     }
     else
     {
-
         <div class="row g-4">
             @foreach (var servicio in servicios)
             {
                 <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">@servicio.Nombre</h5>
+                    <div class="tarjeta-unificada">
+                        <!-- IMAGEN DEL SERVICIO -->
+                        <div class="contenedor-imagen-tarjeta">
+                            @if (!string.IsNullOrEmpty(servicio.ImagenUrl) && !servicio.ImagenUrl.Contains("placeholder"))
+                            {
+                                <img src="@servicio.ImagenUrl"
+                                     alt="@servicio.Nombre"
+                                     class="img-fluid"
+                                     onerror="this.src='/placeholder-image.png'" />
+                            }
+                            else
+                            {
+                                <div class="placeholder-imagen-unificado">
+                                    <i class="bi bi-scissors"></i>
+                                    <p>@servicio.Nombre</p>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="cuerpo-tarjeta">
+                            <h5 class="titulo-tarjeta">
+                                <i class="bi bi-stars me-2"></i>@servicio.Nombre
+                            </h5>
+
                             @if (!string.IsNullOrEmpty(servicio.Descripcion))
                             {
-                                <p class="card-text text-muted">@servicio.Descripcion</p>
+                                <p class="descripcion-tarjeta">@servicio.Descripcion</p>
                             }
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="h5 text-primary fw-bold">@servicio.Precio.ToString("C")</span>
-                                <span class="badge bg-secondary">
-                                    <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
-                                </span>
+
+                            <div class="info-servicio">
+                                <div class="contenedor-precio-duracion">
+                                    <span class="precio-tarjeta">
+                                        <i class="bi bi-currency-dollar me-1"></i>@servicio.Precio.ToString("C")
+                                    </span>
+                                    <span class="duracion-tarjeta">
+                                        <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos min
+                                    </span>
+                                </div>
                             </div>
 
-                            <a href="/citas/agendar?servicioId=@servicio.Id"
-                               class="btn btn-cliente-primary w-100 mt-3">
+                            <a href="/citas/agendar?servicioId=@servicio.Id" class="boton-agendar-unificado">
                                 <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
                             </a>
                         </div>
@@ -99,7 +121,6 @@
             }
         </div>
     }
-
 </main>
 
 <footer class="bg-dark text-white py-4 mt-5">
@@ -110,15 +131,14 @@
 
 @code {
     private List<Servicio> servicios = new();
-    private string logoPath = string.Empty; // AGREGAR ESTA LÍNEA
+    private string logoPath = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        // AGREGAR ESTAS 2 LÍNEAS:
         logoPath = LogoService.ObtenerLogoActual();
-
         await CargarServicios();
     }
+
     private async Task CargarServicios()
     {
         try

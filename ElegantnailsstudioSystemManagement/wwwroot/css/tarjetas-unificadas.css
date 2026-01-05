@@ -1,0 +1,422 @@
+﻿/* ===== TARJETAS UNIFICADAS PARA TODAS LAS PÁGINAS ===== */
+:root {
+    --card-height: 550px;
+    --card-width: 380px;
+    --image-height: 220px; 
+    --border-radius: 18px; 
+    --morado-oscuro: #2d0036;
+    --morado-medio: #6a1b9a;
+    --morado-claro: #9c27b0;
+    --rosado: #e91e63;
+    --rosado-claro: #f06292;
+    --blanco: #ffffff;
+    --gris-claro: #f5f5f5;
+    --gris-medio: #666666;
+    --sombra: 0 8px 20px rgba(0, 0, 0, 0.1); 
+    --sombra-hover: 0 15px 30px rgba(0, 0, 0, 0.15); 
+
+.tarjeta-unificada 
+    {
+    width: 100%;
+    max-width: var(--card-width);
+    height: var(--card-height);
+    border-radius: var(--border-radius) !important;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: var(--sombra) !important;
+    position: relative;
+    border: none !important;
+    background: var(--blanco) !important;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto 25px auto; 
+}
+
+    /* BORDE SUAVIZADO*/
+    .tarjeta-unificada::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: var(--border-radius);
+        padding: 2px;
+        background: linear-gradient(135deg, rgba(233, 30, 99, 0.6) 0%, 
+        rgba(156, 39, 176, 0.5) 50%, 
+        rgba(106, 27, 154, 0.4) 100% 
+        ); 
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .tarjeta-unificada:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--sombra-hover) !important;
+    }
+
+        /* ANIMACIÓN */
+        .tarjeta-unificada:hover::before {
+            background: linear-gradient(135deg, rgba(233, 30, 99, 0.7) 0%, /* Un poco más intenso al hover */
+            rgba(156, 39, 176, 0.6) 50%, rgba(106, 27, 154, 0.5) 100% );
+            animation: border-glow-sutil 2s infinite alternate; /* Animación más lenta */
+        }
+
+/* ANIMACIÓN */
+@keyframes border-glow-sutil {
+    0% {
+        opacity: 0.6;
+        padding: 2px;
+    }
+
+    100% {
+        opacity: 0.8; 
+        padding: 3px; 
+    }
+}
+
+.contenedor-imagen-tarjeta {
+    height: var(--image-height);
+    width: 100%;
+    overflow: hidden;
+    background: var(--gris-claro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #e0e0e0; 
+    position: relative;
+}
+
+    .contenedor-imagen-tarjeta img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease; 
+    }
+
+.tarjeta-unificada:hover .contenedor-imagen-tarjeta img {
+    transform: scale(1.08); 
+}
+
+.placeholder-imagen-unificado {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(106, 27, 154, 0.9),
+    rgba(156, 39, 176, 0.85) 
+    );
+    color: var(--blanco);
+    text-align: center;
+    padding: 25px; 
+}
+
+    .placeholder-imagen-unificado i {
+        font-size: 3.5rem;
+        margin-bottom: 15px; 
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .placeholder-imagen-unificado p {
+        font-size: 1.1rem; 
+        margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+
+.encabezado-tarjeta {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+    border-bottom: 1px solid #f0f0f0 !important; 
+    padding: 18px 25px !important; 
+}
+
+.titulo-tarjeta {
+    font-weight: 700 !important;
+    font-size: 1.4rem !important; 
+    margin: 0 !important;
+    color: var(--morado-oscuro) !important;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .titulo-tarjeta i {
+        color: var(--morado-claro) !important;
+        font-size: 1.3rem; 
+    }
+
+.cuerpo-tarjeta {
+    padding: 25px !important; 
+    background: var(--blanco) !important;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.descripcion-tarjeta {
+    color: var(--gris-medio) !important;
+    font-size: 1rem !important; 
+    line-height: 1.7 !important; 
+    margin-bottom: 20px !important; 
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; 
+    -webkit-box-orient: vertical;
+}
+
+.info-servicio {
+    margin-top: auto;
+    margin-bottom: 20px; 
+}
+
+.contenedor-precio-duracion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; 
+    padding: 0 5px;
+}
+
+.precio-tarjeta {
+    color: var(--morado-oscuro) !important;
+    font-size: 2rem !important; 
+    font-weight: 800 !important;
+    display: flex;
+    align-items: center;
+    gap: 6px; 
+}
+
+    .precio-tarjeta i {
+        color: var(--rosado) !important;
+        font-size: 1.5rem; 
+    }
+
+.duracion-tarjeta {
+    background: linear-gradient(135deg, #f3e5f5 0%, #fce4ec 100%);
+    color: var(--morado-medio) !important;
+    padding: 10px 18px; 
+    border-radius: 25px; 
+    font-size: 1rem; 
+    display: flex;
+    align-items: center;
+    gap: 6px; 
+    border: 1px solid #e1bee7; 
+}
+
+    .duracion-tarjeta i {
+        color: var(--morado-claro) !important;
+        font-size: 1.1rem; 
+    }
+
+.boton-agendar-unificado {
+    background: linear-gradient(135deg, var(--rosado) 0%, var(--morado-claro) 100%) !important;
+    border: none !important;
+    color: var(--blanco) !important;
+    font-weight: 600 !important;
+    padding: 14px 25px !important; 
+    border-radius: 12px !important; 
+    transition: all 0.3s ease !important;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; 
+    position: relative;
+    overflow: hidden;
+    font-size: 1.1rem; 
+}
+
+    .boton-agendar-unificado::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent); /* Menos intenso */
+        transition: 0.5s;
+    }
+
+    .boton-agendar-unificado:hover {
+        background: linear-gradient(135deg, var(--morado-claro) 0%, var(--morado-medio) 100%) !important;
+        transform: translateY(-4px); 
+        box-shadow: 0 8px 25px rgba(233, 30, 99, 0.3) !important; 
+        color: var(--blanco) !important;
+        text-decoration: none;
+    }
+
+        .boton-agendar-unificado:hover::before {
+            left: 100%;
+        }
+
+    .boton-agendar-unificado i {
+        color: var(--blanco) !important;
+        font-size: 1.2rem; 
+    }
+
+.row.g-4 {
+    row-gap: 30px !important; 
+}
+
+    .row.g-4 .col-md-4 {
+        display: flex;
+        justify-content: center;
+        padding: 0 15px; 
+    }
+
+/* RESPONSIVE PARA TARJETAS */
+@media (max-width: 1400px) {
+    :root {
+        --card-width: 360px;
+        --card-height: 530px;
+    }
+}
+
+@media (max-width: 1200px) {
+    :root {
+        --card-width: 340px;
+        --card-height: 510px;
+    }
+
+    .row.g-4 .col-md-4 {
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 992px) {
+    .row.g-4 .col-md-4 {
+        width: 50%;
+    }
+
+    :root {
+        --card-width: 100%;
+        --card-height: auto;
+        min-height: 500px; 
+    }
+
+    .tarjeta-unificada {
+        height: auto;
+        min-height: 500px; 
+        max-width: 450px; 
+    }
+}
+
+@media (max-width: 768px) {
+    .row.g-4 .col-md-4 {
+        width: 100%;
+        max-width: 450px; 
+    }
+
+    .tarjeta-unificada {
+        max-width: 450px; 
+    }
+
+    .titulo-tarjeta {
+        font-size: 1.3rem !important; 
+    }
+
+    .precio-tarjeta {
+        font-size: 1.8rem !important;
+    }
+
+    .contenedor-imagen-tarjeta {
+        height: 200px; 
+    }
+
+    .descripcion-tarjeta {
+        -webkit-line-clamp: 3; 
+    }
+
+    .tarjeta-unificada::before {
+        padding: 1.5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .tarjeta-unificada {
+        max-width: 100%;
+        min-height: 480px; 
+    }
+
+    .titulo-tarjeta {
+        font-size: 1.2rem !important;
+    }
+
+    .contenedor-imagen-tarjeta {
+        height: 180px; 
+    }
+
+    .precio-tarjeta {
+        font-size: 1.7rem !important;
+    }
+
+    .tarjeta-unificada::before {
+        padding: 1px; 
+    }
+
+    .row.g-4 .col-md-4 {
+        padding: 0 5px;
+    }
+}
+
+@media (min-width: 1921px) {
+    :root {
+        --card-width: 420px;
+        --card-height: 580px;
+        --image-height: 240px;
+    }
+
+    .row.g-4 .col-md-4 {
+        padding: 0 20px;
+    }
+}
+
+.botones-admin-horizontal {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+    .botones-admin-horizontal .btn-admin-editar {
+        flex: 1;
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .botones-admin-horizontal .btn-admin-eliminar {
+        flex: 1;
+        background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .botones-admin-horizontal .btn-admin-editar:hover {
+        background: linear-gradient(135deg, #ba68c8 0%, #ab47bc 100%) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(171, 71, 188, 0.3) !important;
+    }
+
+    .botones-admin-horizontal .btn-admin-eliminar:hover {
+        background: linear-gradient(135deg, #8e24aa 0%, #7b1fa2 100%) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(142, 36, 170, 0.3) !important;
+    }

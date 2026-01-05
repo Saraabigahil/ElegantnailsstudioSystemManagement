@@ -89,95 +89,76 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row g-4">
         @if (servicios.Any())
         {
             @foreach (var servicio in servicios)
             {
                 var categoria = categorias.FirstOrDefault(c => c.Id == servicio.CategoriaId);
-                <div class="col-md-4 mb-4">
-                    <div class="card servicio-card">
-                        <div class="servicio-img-container">
+                <div class="col-md-4">
+                    <div class="tarjeta-unificada">
+                        <div class="contenedor-imagen-tarjeta">
                             @if (!string.IsNullOrEmpty(servicio.ImagenUrl))
                             {
-                                <img src="@servicio.ImagenUrl"
-                                     alt="@servicio.Nombre"
-                                     class="servicio-img">
+                                <img src="@servicio.ImagenUrl" alt="@servicio.Nombre" />
                             }
                             else
                             {
-                                <div class="servicio-img-container d-flex align-items-center justify-content-center">
-                                    <div class="no-image-placeholder-admin text-center">
-                                        <i class="bi bi-scissors text-white display-4"></i>
-                                        <p class="text-white mt-2 mb-0">@servicio.Nombre</p>
+                                <div class="placeholder-imagen-unificado">
+                                    <i class="bi bi-scissors"></i>
+                                    <p>@servicio.Nombre</p>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="encabezado-tarjeta">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="titulo-tarjeta mb-0">
+                                    <i class="bi bi-scissors me-2"></i>@servicio.Nombre
+                                </h5>
+                                @if (categoria != null)
+                                {
+                                    <span class="badge-categoria-admin">@categoria.Nombre</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="cuerpo-tarjeta">
+                            @if (!string.IsNullOrEmpty(servicio.Descripcion))
+                            {
+                                <p class="descripcion-tarjeta mb-4">@servicio.Descripcion</p>
+                            }
+
+                            <div class="info-servicio">
+                                <div class="contenedor-precio-duracion">
+                                    <div class="precio-tarjeta">
+                                        <i class="bi bi-currency-dollar"></i>
+                                        @servicio.Precio.ToString("0.00")
+                                    </div>
+                                    <div class="duracion-tarjeta">
+                                        <i class="bi bi-clock"></i>
+                                        @servicio.DuracionMinutos min
                                     </div>
                                 </div>
-                            }
-                        </div>
-
-                        <div class="card-body p-4">
-                            @if (categoria != null)
-                            {
-                                <span class="servicio-badge">@categoria.Nombre</span>
-                            }
-
-                            <h5 class="servicio-title mt-3">@servicio.Nombre</h5>
-
-                            <p class="servicio-descripcion">
-                                @servicio.Descripcion
-                            </p>
-
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <div>
-                                    <span class="servicio-precio">@servicio.Precio.ToString("C")</span>
-                                    <br>
-                                    <span class="servicio-duracion">
-                                        <i class="bi bi-clock me-1"></i>@servicio.DuracionMinutos minutos
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-footer bg-white border-top-0 p-4 pt-0">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <a href="/admin/servicios/modificar/@servicio.Id"
-                                       class="btn btn-editar-servicio">
-                                        <i class="bi bi-pencil me-1"></i>Editar
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <button class="btn btn-eliminar-servicio"
-                                            @onclick="() => MostrarConfirmacionEliminar(servicio)">
-                                        <i class="bi bi-trash me-1"></i>Eliminar
-                                    </button>
-                                </div>
                             </div>
 
-                            <div class="mt-3">
-                                <a href="/" class="btn btn-volver">
-                                    <i class="bi bi-arrow-left me-1"></i>Atrás
+                            <div class="botones-admin-horizontal">
+                                <a href="/admin/servicios/modificar/@servicio.Id"
+                                   class="btn btn-admin-editar">
+                                    <i class="bi bi-pencil me-1"></i>Editar
                                 </a>
+                                <button class="btn btn-admin-eliminar"
+                                        @onclick="() => MostrarConfirmacionEliminar(servicio)">
+                                    <i class="bi bi-trash me-1"></i>Eliminar
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             }
         }
-        else
-        {
-            <div class="col-12">
-                <div class="alert alert-info text-center p-5">
-                    <i class="bi bi-info-circle display-4 text-info mb-3"></i>
-                    <h4>No hay servicios disponibles</h4>
-                    <p class="mb-0">Comienza agregando tus primeros servicios para mostrarlos aquí.</p>
-                    <a href="/admin/servicios" class="btn btn-primary mt-3">
-                        <i class="bi bi-plus-circle me-1"></i>Crear Primer Servicio
-                    </a>
-                </div>
-            </div>
-        }
     </div>
+
 </div>
 
 <!-- Modal de confirmación para eliminar servicio -->
@@ -250,7 +231,7 @@
         Console.WriteLine($"🔍 AuthService.IsAdmin: {AuthService.IsAdmin}");
         Console.WriteLine($"🔍 AuthService.CurrentUser: {AuthService.CurrentUser?.Email}");
 
-        // Cargar logo
+        // Carga logo
         logoPath = LogoService.ObtenerLogoActual();
 
         await CargarDatos();
@@ -261,12 +242,12 @@
     {
         try
         {
-            // Cargar servicios
+            // Carga servicios
             servicios = await ServicioService.GetServiciosActivosAsync();
             serviciosActivos = servicios.Count;
             totalServicios = servicios.Count;
 
-            // Cargar categorías
+            // Carga categorías
             categorias = await CategoriaService.GetCategoriasAsync();
             categoriasCount = categorias.Count;
         }
