@@ -1,10 +1,10 @@
 ﻿/* ===== ESTILOS PARA PÁGINA DE PESTAÑAS ===== */
 
-/* ENCABEZADO NEGRO */
+/* ENCABEZADO NEGRO - REDUCIDO SOLO EL ENCABEZADO */
 .pestanas-header {
     background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-    padding: 50px 0;
-    margin-bottom: 40px;
+    padding: 15px 0; /* MUY REDUCIDO: de 50px a 15px */
+    margin-bottom: 20px; /* Reducido de 40px a 20px */
     border-bottom: 3px solid #8b5fbf;
 }
 
@@ -14,24 +14,26 @@
 
 .pestanas-title {
     color: white;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 15px;
-    letter-spacing: 1px;
+    font-size: 1.5rem; /* REDUCIDO: de 2.5rem a 1.5rem */
+    font-weight: 600; /* Un poco menos grueso */
+    margin-bottom: 5px; /* Reducido de 15px */
+    letter-spacing: 0.5px;
 }
 
 .pestanas-subtitle {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 1.1rem;
+    font-size: 0.9rem; /* REDUCIDO: de 1.1rem a 0.9rem */
     font-weight: 300;
     max-width: 600px;
     margin: 0 auto;
 }
 
+/* ===== EL RESTO DEL CÓDIGO PERMANECE EXACTAMENTE IGUAL ===== */
+
 /* CONTENIDO PRINCIPAL */
 .pestanas-main {
     background: white;
-    padding: 30px 0 60px 0;
+    padding: 30px 0 60px 0; /* ESTO PERMANECE IGUAL */
 }
 
 /* ALERTA */
@@ -51,28 +53,28 @@
         color: #9c27b0 !important;
     }
 
-/* RESPONSIVE */
+/* RESPONSIVE - SOLO MODIFICO LO DEL ENCABEZADO */
 @media (max-width: 768px) {
     .pestanas-header {
-        padding: 30px 0;
+        padding: 10px 0; /* Reducido para móviles */
     }
 
     .pestanas-title {
-        font-size: 2rem;
+        font-size: 1.3rem; /* Más pequeño en móviles */
     }
 
     .pestanas-subtitle {
-        font-size: 1rem;
+        font-size: 0.8rem; /* Más pequeño en móviles */
     }
 }
 
 @media (max-width: 576px) {
     .pestanas-title {
-        font-size: 1.7rem;
+        font-size: 1.1rem; /* Aún más pequeño en móviles muy pequeños */
     }
 }
 
-/* ESTILOS PARA LA ALERTA DE VERIFICACIÓN DE SESIÓN - Para agregar a pestanas.css */
+/* ESTILOS PARA LA ALERTA DE VERIFICACIÓN DE SESIÓN - PARA AGREGAR A PESTANAS.CSS */
 .modal-overlay {
     position: fixed;
     top: 0;
