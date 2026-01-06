@@ -8,6 +8,52 @@
 @inject NavigationManager Navigation
 @inject AuthService AuthService
 
+<!-- MODAL DE ÉXITO -->
+@if (mostrarModalExito)
+{
+    <div class="modal-overlay" @onclick="CerrarModalExito">
+        <div class="modal-exito" @onclick:stopPropagation>
+            <div class="modal-exito-header bg-success">
+                <h5><i class="bi bi-check-circle-fill me-2"></i>¡Cita Agendada!</h5>
+                <button type="button" class="btn-close btn-close-white" @onclick="CerrarModalExito"></button>
+            </div>
+            <div class="modal-exito-body text-center">
+                <div class="success-icon">
+                    <i class="bi bi-calendar-check" style="font-size: 4rem; color: #198754;"></i>
+                </div>
+                <h4 class="mt-3 text-success">¡Cita Confirmada!</h4>
+                <p>Tu cita ha sido agendada exitosamente.</p>
+
+                <div class="cita-details mt-4">
+                    <div class="detail-item">
+                        <i class="bi bi-scissors me-2"></i>
+                        <strong>Servicio:</strong> @servicioSeleccionado?.Nombre
+                    </div>
+                    <div class="detail-item">
+                        <i class="bi bi-calendar-date me-2"></i>
+                        <strong>Fecha:</strong> @fechaSeleccionada.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES"))
+                    </div>
+                    <div class="detail-item">
+                        <i class="bi bi-clock me-2"></i>
+                        <strong>Turno:</strong> @(turnoSeleccionado == "mañana" ? "Mañana (8:00 AM - 12:00 PM)" : "Tarde (1:00 PM - 5:00 PM)")
+                    </div>
+                    <div class="detail-item">
+                        <i class="bi bi-currency-dollar me-2"></i>
+                        <strong>Total:</strong> @servicioSeleccionado?.Precio.ToString("C")
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-exito-footer">
+                <button class="btn btn-secondary" @onclick="CerrarModalExito">
+                    <i class="bi bi-x-circle me-1"></i> Cerrar
+                </button>
+                
+            </div>
+        </div>
+    </div>
+}
+
 @if (isLoading)
 {
     <div class="loading-spinner">
@@ -152,7 +198,6 @@ else
                                             @if (IsTurnoDeshabilitado("mañana"))
                                             {
                                                 <br>
-
                                                 <small class="text-danger"><i class="bi bi-exclamation-circle"></i> Turno no disponible</small>
                                             }
                                         </label>
@@ -174,7 +219,6 @@ else
                                             @if (IsTurnoDeshabilitado("tarde"))
                                             {
                                                 <br>
-
                                                 <small class="text-danger"><i class="bi bi-exclamation-circle"></i> Turno no disponible</small>
                                             }
                                         </label>
@@ -239,6 +283,7 @@ else
     private bool mostrarVerificar = false;
     private string mensajeError = "";
     private bool isLoading = true;
+    private bool mostrarModalExito = false; // Nueva variable para controlar la modal
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "servicioId")]
@@ -326,8 +371,8 @@ else
             return false;
 
         var ahora = DateTime.Now;
-        TimeSpan finManana = new TimeSpan(12, 0, 0);  
-        TimeSpan finTarde = new TimeSpan(17, 0, 0);   
+        TimeSpan finManana = new TimeSpan(12, 0, 0);
+        TimeSpan finTarde = new TimeSpan(17, 0, 0);
 
         if (turno == "mañana" && ahora.TimeOfDay >= finManana)
             return true;
@@ -425,7 +470,7 @@ else
             return;
         }
 
-        // USA el id del un usuario logueados
+        // Usa el id del usuario logueado
         var nuevaCita = new Cita
             {
                 ClienteId = AuthService.CurrentUser.Id,
@@ -440,11 +485,25 @@ else
 
         if (exito)
         {
-            Navigation.NavigateTo("/citas/mis-citas");
+            // Muestra la modal de éxito en lugar de redirigir inmediatamente
+            mostrarModalExito = true;
+            StateHasChanged();
         }
         else
         {
             mensajeError = "No se pudo agendar la cita. Por favor intenta nuevamente.";
         }
+    }
+
+    private void CerrarModalExito()
+    {
+        mostrarModalExito = false;
+        StateHasChanged();
+    }
+
+    private void IrAMisCitas()
+    {
+        mostrarModalExito = false;
+        Navigation.NavigateTo("/citas/mis-citas");
     }
 }
