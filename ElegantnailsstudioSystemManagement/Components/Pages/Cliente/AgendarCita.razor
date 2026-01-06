@@ -283,7 +283,7 @@ else
     private bool mostrarVerificar = false;
     private string mensajeError = "";
     private bool isLoading = true;
-    private bool mostrarModalExito = false; // Nueva variable para controlar la modal
+    private bool mostrarModalExito = false; 
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "servicioId")]
@@ -485,7 +485,7 @@ else
 
         if (exito)
         {
-            // Muestra la modal de éxito en lugar de redirigir inmediatamente
+            // Muestra la modal de éxito 
             mostrarModalExito = true;
             StateHasChanged();
         }

@@ -41,7 +41,6 @@
 
 <header class="pestanas-header">
     <div class="container">
-        <!-- DIV DE VOLVER - CON ENLACE DIRECTO -->
         <div class="d-flex justify-content-between align-items-start mb-3">
             <div class="link-volver">
                 <a href="/cliente">
@@ -62,7 +61,6 @@
 <!-- CONTENIDO PRINCIPAL -->
 <main class="pestanas-main">
     <div class="container">
-        <!-- En la sección donde muestras serviciosPestanas -->
         @if (serviciosPestanas.Count == 0)
         {
             <div class="alert alert-info">
@@ -150,7 +148,6 @@
             }
             else
             {
-                // Si no existe la categoría, mostrar todos los servicios
                 var todosServicios = await ServicioService.GetServiciosActivosAsync();
                 serviciosPestanas = todosServicios
                     .Where(s => s.Nombre.ToLower().Contains("pestaña") ||
@@ -166,10 +163,10 @@
 
     private async void VerificarSesionYAgendar(int servicioId, string nombreServicio = "")
     {
-        // Verificar si el usuario está logueado
+        // Verifica si el usuario está logueado
         if (!AuthService.IsLoggedIn)
         {
-            // Mostrar alerta si NO está logueado
+            // alerta si NO está logueado
             mostrarAlertaNoLogueado = true;
             StateHasChanged();
         }

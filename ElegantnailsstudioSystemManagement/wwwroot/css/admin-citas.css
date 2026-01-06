@@ -22,32 +22,28 @@
     padding: 20px;
 }
 
-/* =========================================== */
-/* NUEVO CÓDIGO - HEADER CON BOTÓN A UN LADO  */
-/* =========================================== */
-
-/* Contenedor del header con botón */
+/* Contenedor del header  */
 .admin-header-container {
     display: flex;
-    align-items: center; /* Cambié de stretch a center */
+    align-items: center; 
     margin-bottom: 30px;
     gap: 15px;
 }
 
-/* Botón redondo para volver al admin */
+/* Botón volver al admin */
 .btn-volver-icono {
     background: rgba(232, 62, 140, 0.2) !important;
     border: 2px solid rgba(232, 62, 140, 0.4) !important;
-    border-radius: 50% !important; /* Cambié a 50% para que sea redondo */
+    border-radius: 50% !important; 
     color: var(--rosa-claro) !important;
-    width: 60px; /* Tamaño fijo */
-    height: 60px; /* Tamaño fijo - igual que el ancho */
+    width: 60px; 
+    height: 60px; 
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 !important;
     transition: all 0.3s ease !important;
-    flex-shrink: 0; /* Evita que se encoja */
+    flex-shrink: 0;
 }
 
     .btn-volver-icono:hover {
@@ -62,19 +58,17 @@
         color: var(--rosa-claro);
     }
 
-/* Header que ocupa el ancho restante */
 .admin-citas-header {
     background: linear-gradient(135deg, var(--morado-oscuro) 0%, var(--morado-medio) 100%);
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     border: 1px solid var(--morado-claro);
-    flex: 1; /* Ocupa todo el espacio restante */
+    flex: 1; 
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px 25px;
-    min-height: 80px; /* Reducí la altura mínima */
-}
+    min-height: 80px; 
 
 .header-content {
     text-align: center;
@@ -96,10 +90,6 @@
     opacity: 0.9;
     margin: 0;
 }
-
-/* =========================================== */
-/* FIN DEL NUEVO CÓDIGO                        */
-/* =========================================== */
 
 /* Alertas */
 .admin-citas-alert {
@@ -343,7 +333,7 @@
     opacity: 0.8;
 }
 
-/* Botón atrás (opcional - puedes eliminar si ya no lo usas) */
+/* Botón atrás */
 .btn-atras {
     background: linear-gradient(135deg, var(--morado-medio) 0%, var(--morado-claro) 100%);
     color: var(--blanco);
@@ -420,18 +410,14 @@
     padding-top: 0 !important;
 }
 
-/* =========================================== */
-/* RESPONSIVE ACTUALIZADO                      */
-/* =========================================== */
-@media (max-width: 768px) {
-    /* Ajustes para el header con botón en móvil */
+    /* Ajustes en móvil */
     .admin-header-container {
-        flex-direction: row; /* Mantiene en fila en móvil también */
+        flex-direction: row; 
         gap: 10px;
     }
 
     .btn-volver-icono {
-        width: 50px; /* Un poco más pequeño en móvil */
+        width: 50px; 
         height: 50px;
         min-height: auto;
     }
