@@ -39,29 +39,6 @@
     gap: 15px;
 }
 
-.btn-sitio-publico {
-    background: rgba(233, 30, 99, 0.15);
-    border: 2px solid rgba(233, 30, 99, 0.4);
-    color: #f48fb1;
-    padding: 10px 18px;
-    border-radius: 25px;
-    font-weight: 600;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-}
-
-    .btn-sitio-publico:hover {
-        background: rgba(233, 30, 99, 0.25);
-        border-color: #e91e63;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
-    }
-
 .btn-cerrar-sesion {
     background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.2);

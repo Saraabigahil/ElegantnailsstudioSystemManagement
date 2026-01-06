@@ -11,24 +11,23 @@
 
 <PageTitle>Elegant Nails Studio</PageTitle>
 
-<link rel="stylesheet" href="client.css">
+<link rel="stylesheet" href="css/admin-panel.css">
 
-<header class="navbar-morado-cliente">
-    <div class="fila-superior-cliente">
-        <div class="logo-superior-cliente">
+<header class="navbar-morado">
+    <div class="fila-superior">
+        <div class="logo-izquierda">
             @if (!string.IsNullOrEmpty(logoPath))
             {
-                <img src="@logoPath" alt="Elegant Nails Logo" class="cliente-logo" />
+                <img src="@logoPath" alt="Elegant Nails Logo" class="home-logo" />
             }
             else
             {
                 <h1>Elegant Nails</h1>
-                <p class="slogan-cliente">Studio & Lashes</p>
+                <p class="slogan">Studio & Lashes</p>
             }
         </div>
 
-        <!-- REEMPLAZAMOS LA BIENVENIDA POR EL BOTÓN DE CERRAR SESIÓN -->
-        <div class="bienvenida-derecha">
+        <div class="botones-derecha">
             @if (AuthService.IsLoggedIn && AuthService.CurrentUser != null)
             {
                 <div class="d-flex align-items-center gap-3">
@@ -43,7 +42,6 @@
                             @AuthService.CurrentUser.Email
                         </span>
                     </div>
-                    <!-- BOTÓN CON FONDO SOLO -->
                     <a href="#" @onclick="Logout" class="btn-cerrar-sesion-cliente">
                         <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
                     </a>
@@ -59,9 +57,9 @@
         </div>
     </div>
 
-    <nav class="menu-inferior-cliente">
+    <nav class="fila-inferior">
         <div class="container">
-            <ul class="menu-lista-cliente">
+            <ul class="menu-lista">
                 <li><a href="/cliente" class="activo"><i class="bi bi-house"></i> Inicio</a></li>
                 <li><a href="/citas/mis-citas"><i class="bi bi-calendar-check"></i> Mis Citas</a></li>
                 <li><a href="/citas/agendar"><i class="bi bi-calendar-plus"></i> Agendar Cita</a></li>

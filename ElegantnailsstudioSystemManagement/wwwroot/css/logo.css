@@ -374,6 +374,33 @@
     font-weight: 600;
 }
 
+/* Botón para volver al admin - Solo icono */
+.btn-volver-icono {
+    background: rgba(138, 43, 226, 0.2) !important; /* Usando el morado del tema */
+    border: 2px solid rgba(138, 43, 226, 0.4) !important;
+    border-radius: 10px !important;
+    color: var(--logo-dark-purple) !important;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    transition: all 0.3s ease !important;
+}
+
+    .btn-volver-icono:hover {
+        background: rgba(138, 43, 226, 0.3) !important;
+        border-color: var(--logo-primary-purple) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(138, 43, 226, 0.2);
+    }
+
+    .btn-volver-icono i {
+        font-size: 1.5rem;
+        color: var(--logo-dark-purple);
+    }
+
 /* =============================================
    RESPONSIVE
 ============================================= */
