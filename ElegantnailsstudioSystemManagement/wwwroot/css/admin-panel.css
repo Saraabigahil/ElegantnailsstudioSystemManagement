@@ -1,14 +1,14 @@
-﻿/* LOGO EN EL DASHBOARD - MÁS PEQUEÑO */
+﻿
 .dashboard-logo {
-    height: 100px; /* MÁS PEQUEÑO que antes */
+    height: 100px; 
     width: auto;
-    max-width: 200px; /* MÁS PEQUEÑO que antes */
+    max-width: 200px; 
     object-fit: contain;
     border-radius: 6px;
     margin-right: 60px;
 }
 
-/* Ajusta el contenedor del logo en el dashboard */
+
 .logo-izquierda-admin {
     display: flex;
     align-items: center;
@@ -16,13 +16,13 @@
     gap: 30px;
 }
 
-/* Si quieres aún más pequeño, usa estos valores: */
+
 .dashboard-logo.muy-pequeno {
     height: 100px;
     max-width: 200px;
 }
 
-/* Estilos del dashboard (header morado) */
+
 .navbar-morado-admin {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -32,24 +32,24 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 30px; /* Menos padding para logo pequeño */
+    padding: 12px 30px; 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Texto cuando no hay logo */
+
 .logo-izquierda-admin h1 {
-    font-size: 1.4rem; /* Más pequeño */
+    font-size: 1.4rem;
     margin: 0;
     color: white;
 }
 
 .slogan-admin {
-    font-size: 0.100rem; /* Más pequeño */
+    font-size: 0.100rem; 
     margin: 0;
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* Botones del dashboard */
+
 .botones-derecha-admin {
     display: flex;
     gap: 15px;
@@ -72,7 +72,7 @@
         background: rgba(255, 255, 255, 0.2);
     }
 
-/* Menú del dashboard */
+
 .fila-inferior-admin {
     background: rgba(0, 0, 0, 0.1);
     padding: 8px 30px;
@@ -99,9 +99,7 @@
         .menu-lista-admin li a.activo {
             background: rgba(255, 255, 255, 0.1);
         }
-
-/* ESTILOS PARA EL ADMINLAYOUT (sin logo) */
-.header {
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -119,7 +117,7 @@
 }
 
 .logo-text {
-    font-size: 1.5rem; /* Texto normal */
+    font-size: 1.5rem; 
     font-weight: 700;
     color: #333;
     letter-spacing: 1px;
@@ -147,7 +145,7 @@
         text-decoration: none;
     }
 
-/* Navegación */
+
 .nav-container {
     background: #f8f9fa;
     padding: 10px 30px;
@@ -183,9 +181,7 @@
 
 
 
-/* LOGOS PARA TODAS LAS PÁGINAS */
 
-/* Logo en Cliente */
 .cliente-logo {
     height: 90px;
     width: auto;
@@ -195,7 +191,7 @@
     margin-right: 20px;
 }
 
-/* Logo en Home */
+
 .home-logo {
     height: 80px;
     width: auto;
@@ -205,7 +201,6 @@
     margin-right: 20px;
 }
 
-/* Contenedores de logo */
 .logo-superior-cliente,
 .logo-izquierda {
     display: flex;

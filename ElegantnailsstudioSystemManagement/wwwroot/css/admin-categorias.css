@@ -1,8 +1,4 @@
-﻿/* ============================================
-   ADMIN CATEGORÍAS 
-   ============================================ */
-
-/* Contenedor principal */
+﻿
 .admin-categorias-container {
     background-color: #ffffff !important;
     border-radius: 12px;
@@ -12,13 +8,13 @@
     min-height: calc(100vh - 2rem);
 }
 
-/* Encabezado */
+
 .categorias-header {
     padding-bottom: 1.5rem;
     border-bottom: 2px solid #e9ecef;
     margin-bottom: 2rem;
 }
-
+R
     .categorias-header h1 {
         color: #6a1b9a !important; 
         font-weight: 700;
@@ -51,7 +47,7 @@
             color: white !important;
         }
 
-/* Tabla de categorías */
+
 .categorias-table {
     border-radius: 10px;
     overflow: hidden;
@@ -109,7 +105,7 @@
             padding-left: 20px !important;
         }
 
-/* Botones de acción */
+
 .btn-group-actions {
     display: flex;
     gap: 0.75rem;
@@ -157,7 +153,6 @@
         box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
     }
 
-/* Modal de confirmación */
 .modal-categorias {
     backdrop-filter: blur(5px);
 }
@@ -304,7 +299,7 @@
         color: white !important;
     }
 
-/* Botón volver */
+
 .btn-back {
     background: white !important;
     border: 2px solid #9c27b0 !important; 
@@ -333,7 +328,7 @@
         transform: translateX(-3px);
     }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .admin-categorias-container {
         padding: 1.5rem !important;
@@ -387,7 +382,6 @@
     }
 }
 
-/* Animaciones */
 @keyframes fadeIn {
     from {
         opacity: 0;

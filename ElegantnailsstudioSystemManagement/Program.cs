@@ -17,7 +17,6 @@ Console.WriteLine($"EnvironmentName: {env.EnvironmentName}");
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-// CONFIGURACIÓN CRÍTICA PARA ARCHIVOS
 builder.Services.AddServerSideBlazor(options =>
 {
     options.DetailedErrors = true;
@@ -28,7 +27,7 @@ builder.Services.AddServerSideBlazor(options =>
 
 builder.Services.AddRazorPages();
 
-// Configuración para manejar archivos grandes
+
 builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
 {
     options.ValueLengthLimit = 50 * 1024 * 1024; 
@@ -36,18 +35,18 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(optio
     options.MultipartHeadersLengthLimit = 1024 * 1024; 
 });
 
-// Configuracion
+
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     serverOptions.Limits.MaxRequestBodySize = 50 * 1024 * 1024; 
 });
 
-// Configuración de base de datos
+
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-//servicios
+
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IServicioService, ServicioService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
@@ -55,7 +54,7 @@ builder.Services.AddScoped<ICitaService, CitaService>();
 builder.Services.AddScoped<ICupoService, CupoService>();
 builder.Services.AddScoped<ILogoService, LogoService>();
 
-// Servicio de Auth
+
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddAuthorizationCore();
@@ -71,7 +70,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// CONFIGURACIÓN DE ARCHIVOS ESTÁTICOS
+
 var storagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Storage");
 var serviciosPath = Path.Combine(storagePath, "Servicios");
 
@@ -87,7 +86,6 @@ if (!Directory.Exists(serviciosPath))
     Console.WriteLine($"Carpeta Servicios creada: {serviciosPath}");
 }
 
-// Configuracion acceso a imágenes almacenadas en Storage
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(storagePath),

@@ -1,4 +1,4 @@
-﻿/* ===== TARJETAS UNIFICADAS PARA TODAS LAS PÁGINAS ===== */
+﻿
 :root {
     --card-height: 550px;
     --card-width: 380px;
@@ -32,7 +32,7 @@
     margin: 0 auto 25px auto; 
 }
 
-    /* BORDE SUAVIZADO*/
+   
     .tarjeta-unificada::before {
         content: '';
         position: absolute;
@@ -58,14 +58,14 @@
         box-shadow: var(--sombra-hover) !important;
     }
 
-        /* ANIMACIÓN */
+        
         .tarjeta-unificada:hover::before {
             background: linear-gradient(135deg, rgba(233, 30, 99, 0.7) 0%, /* Un poco más intenso al hover */
             rgba(156, 39, 176, 0.6) 50%, rgba(106, 27, 154, 0.5) 100% );
             animation: border-glow-sutil 2s infinite alternate; /* Animación más lenta */
         }
 
-/* ANIMACIÓN */
+
 @keyframes border-glow-sutil {
     0% {
         opacity: 0.6;
@@ -273,7 +273,7 @@
         padding: 0 15px; 
     }
 
-/* RESPONSIVE PARA TARJETAS */
+
 @media (max-width: 1400px) {
     :root {
         --card-width: 360px;

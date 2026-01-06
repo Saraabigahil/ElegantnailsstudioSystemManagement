@@ -1,4 +1,4 @@
-﻿/* ===== ESTILOS PARA CARRUSEL ===== */
+﻿
 
 .shared-carousel {
     width: 99.5%; 
@@ -78,7 +78,6 @@
         opacity: 0.95;
     }
 
-/* Indicadores visibles */
 .carousel-indicators {
     margin-bottom: 20px;
     z-index: 3;
@@ -100,7 +99,7 @@
             transform: scaleY(1.2);
         }
 
-/* Flechas visibles */
+
 .carousel-control-prev,
 .carousel-control-next {
     width: 50px;
@@ -121,7 +120,6 @@
         border-color: rgba(255, 255, 255, 0.5);
     }
 
-/* RESPONSIVE */
 @media (max-width: 1600px) {
     .shared-carousel {
         width: 99%;

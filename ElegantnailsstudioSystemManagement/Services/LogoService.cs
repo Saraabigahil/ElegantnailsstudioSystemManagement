@@ -18,14 +18,14 @@ namespace ElegantnailsstudioSystemManagement.Services
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<LogoService> _logger;
         private const string LogoFolder = "uploads/logos";
-        private const string LogoFileName = "logo_custom.jpg"; // Agregado
+        private const string LogoFileName = "logo_custom.jpg"; 
 
         public LogoService(IWebHostEnvironment environment, ILogger<LogoService> logger)
         {
             _environment = environment;
             _logger = logger;
 
-            // Crear carpeta
+          
             var uploadsFolder = Path.Combine(_environment.WebRootPath, LogoFolder);
             if (!Directory.Exists(uploadsFolder))
             {
@@ -37,7 +37,7 @@ namespace ElegantnailsstudioSystemManagement.Services
         {
             try
             {
-                // Validaciones
+                
                 if (archivo == null || archivo.Length == 0)
                     return "";
 
@@ -47,25 +47,25 @@ namespace ElegantnailsstudioSystemManagement.Services
                 if (!extensionesPermitidas.Contains(extension))
                     return "";
 
-                if (archivo.Length > 5 * 1024 * 1024) // 5MB
+                if (archivo.Length > 5 * 1024 * 1024) 
                     return "";
 
-                // Carpeta
+               
                 var carpetaLogos = Path.Combine(_environment.WebRootPath, LogoFolder);
                 if (!Directory.Exists(carpetaLogos))
                     Directory.CreateDirectory(carpetaLogos);
 
-                // Ruta completa
+               
                 var rutaCompleta = Path.Combine(carpetaLogos, LogoFileName);
 
-                // Eliminar logo anterior si existe
+                
                 if (File.Exists(rutaCompleta))
                 {
                     File.Delete(rutaCompleta);
                     _logger.LogInformation($"Logo anterior eliminado: {rutaCompleta}");
                 }
 
-                // Guardar nuevo logo
+                
                 using (var stream = new FileStream(rutaCompleta, FileMode.Create))
                 {
                     await archivo.CopyToAsync(stream);
@@ -82,7 +82,6 @@ namespace ElegantnailsstudioSystemManagement.Services
             }
         }
 
-        // Método para compatibilidad (opcional)
         public async Task<string> GuardarLogoAsync(Stream fileStream, string fileName)
         {
             var ms = new MemoryStream();
@@ -121,7 +120,7 @@ namespace ElegantnailsstudioSystemManagement.Services
 
                 if (File.Exists(filePath))
                 {
-                    // Agregar timestamp para evitar caché
+                    
                     return relativePath + "?t=" + DateTime.Now.Ticks;
                 }
 

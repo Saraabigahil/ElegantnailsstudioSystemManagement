@@ -23,7 +23,7 @@ namespace ElegantnailsstudioSystemManagement
                 .HasOne(c => c.Servicio)
                 .WithMany()
                 .HasForeignKey(c => c.ServicioId)
-                .OnDelete(DeleteBehavior.Cascade); // ← ASÍ
+                .OnDelete(DeleteBehavior.Cascade); 
         }
     }
 }

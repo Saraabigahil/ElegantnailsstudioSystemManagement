@@ -53,7 +53,7 @@ namespace ElegantnailsstudioSystemManagement.Services
             return await Task.FromResult(IsTurnoPasado(fecha, turno));
         }
 
-        // Crea o actualiza cupos 
+        
         public async Task<bool> HabilitarTurnoAsync(DateTime fecha, string turno, int cuposMaximos)
         {
             try
@@ -62,13 +62,13 @@ namespace ElegantnailsstudioSystemManagement.Services
 
                 if (cupoExistente != null)
                 {
-                    // Actualiza
+                    
                     cupoExistente.CupoMaximo = cuposMaximos;
                     cupoExistente.Habilitado = true;
                 }
                 else
                 {
-                    // Crea nuevo
+                  
                     var nuevoCupo = new Cupo
                     {
                         Fecha = fecha.Date,
@@ -238,7 +238,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                 var ahora = DateTime.Now;
                 var hoy = ahora.Date;
 
-                // Obtiene todos los cupos 
+               
                 var cuposPasados = await _context.Cupos
                     .Where(c => c.Fecha <= hoy && c.Habilitado)
                     .ToListAsync();

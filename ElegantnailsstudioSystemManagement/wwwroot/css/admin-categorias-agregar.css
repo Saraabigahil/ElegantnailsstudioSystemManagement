@@ -1,8 +1,6 @@
-﻿/* ============================================
-   AGREGAR CATEGORÍA
-   ============================================ */
+﻿
 
-/* Contenedor principal */
+
 .admin-agregar-categoria-container {
     background: linear-gradient(135deg, #ffffff, #f9f7ff) !important;
     min-height: 100vh;
@@ -11,7 +9,7 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* Encabezado */
+
 .agregar-categoria-header {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -36,7 +34,7 @@
         display: block;
     }
 
-/* Formulario */
+
 .categoria-form-container {
     background: white !important;
     border-radius: 15px;
@@ -89,7 +87,7 @@
         opacity: 0.7;
     }
 
-/* Botón guardar */
+
 .btn-guardar-categoria {
     background: linear-gradient(135deg, #e91e63, #9c27b0) !important;
     border: none !important;
@@ -123,7 +121,7 @@
         font-size: 1.3rem;
     }
 
-/* Botón atrás */
+
 .btn-atras-container {
     text-align: center;
     margin-top: 2rem;
@@ -159,7 +157,7 @@
         transform: translateX(-3px);
     }
 
-/* Mensajes de estado */
+
 .mensaje-container {
     margin: 1.5rem 0;
     animation: fadeIn 0.5s ease;
@@ -274,7 +272,7 @@
     flex-grow: 1;
 }
 
-/* Animaciones */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -307,7 +305,7 @@
     animation: slideIn 0.6s ease;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .admin-agregar-categoria-container {
         padding: 1.5rem;

@@ -1,8 +1,4 @@
-﻿/* ============================================
-   HABILITAR TURNOS - Diseño Blanco, Morado Lila y Rosado
-   ============================================ */
-
-/* Contenedor principal */
+﻿
 .admin-turnos-habilitar-container {
     background: linear-gradient(135deg, #ffffff, #f9f7ff) !important;
     min-height: 100vh;
@@ -11,7 +7,7 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* Encabezado */
+
 .turnos-main-header {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -50,7 +46,7 @@
     }
 }
 
-/*Turno */
+
 .habilitar-turno-section {
     background: white !important;
     border-radius: 15px;
@@ -75,7 +71,7 @@
             color: #e91e63 !important;
         }
 
-/* formulario */
+
 .turno-form-group {
     margin-bottom: 1.75rem;
 }
@@ -114,7 +110,7 @@
         outline: none !important;
     }
 
-/* elector de turno */
+
 .turno-select-container {
     display: flex;
     flex-wrap: wrap;
@@ -191,7 +187,7 @@
     text-align: center;
 }
 
-/* Botón Habilitar Turno */
+
 .btn-habilitar-turno {
     background: linear-gradient(135deg, #e91e63, #9c27b0) !important;
     border: none !important;
@@ -397,7 +393,6 @@
         transform: translateX(-3px);
     }
 
-/* Animaciones */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -430,7 +425,7 @@
     animation: slideIn 0.6s ease;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .admin-turnos-habilitar-container {
         padding: 1.5rem;
