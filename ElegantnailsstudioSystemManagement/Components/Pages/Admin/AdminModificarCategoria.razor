@@ -42,7 +42,7 @@
                         <DataAnnotationsValidator />
 
                         <div class="tarjeta-formulario">
-                           
+
                             <div class="encabezado-formulario">
                                 <div class="icono-grande">
                                     <i class="bi bi-tag"></i>
@@ -72,6 +72,14 @@
                                     </div>
                                 </div>
 
+                                @if (mostrarMensajeExito)
+                                {
+                                    <div class="mensaje-exito-temporario">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        <span class="texto-exito">¡Categoría actualizada exitosamente!</span>
+                                    </div>
+                                }
+
                                 <div class="contenedor-botones-grandes">
                                     <button type="submit" class="btn-guardar-grande">
                                         <i class="bi bi-check-circle-fill"></i>
@@ -98,7 +106,7 @@
                 </div>
             }
 
-           
+
         </div>
 
         <!-- Pie de página -->
@@ -123,6 +131,9 @@
     [Parameter] public int Id { get; set; }
     private Categoria? categoria;
     private string mensajeError = "";
+    private bool mostrarMensajeExito = false;
+    private int contadorRedireccion = 3;
+    private Timer? timerRedireccion;
 
     protected override async Task OnInitializedAsync()
     {
@@ -148,6 +159,13 @@
 
             if (exito)
             {
+                mostrarMensajeExito = true;
+                mensajeError = "";
+
+                contadorRedireccion = 3;
+                timerRedireccion = new Timer(IncrementarContador, null, 1000, 1000);
+
+                await Task.Delay(3000);
                 Navigation.NavigateTo("/admin/categorias");
             }
             else
@@ -159,5 +177,23 @@
         {
             mensajeError = $"Error al actualizar: {ex.Message}";
         }
+    }
+
+    private void IncrementarContador(object? state)
+    {
+        if (contadorRedireccion > 0)
+        {
+            contadorRedireccion--;
+            InvokeAsync(StateHasChanged);
+        }
+        else
+        {
+            timerRedireccion?.Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        timerRedireccion?.Dispose();
     }
 }
