@@ -113,7 +113,6 @@
     }
 </div>
 
-<!-- MODAL SERVICIO -->
 @if (mostrarModal)
 {
     <div class="modal show d-block">
@@ -124,7 +123,7 @@
                     <button class="btn-close" @onclick="CerrarModalHandler"></button>
                 </div>
 
-                <!-- FORMULARIO SERVICIO -->
+               
                 <form method="post" onsubmit="return false;">
                     <div class="modal-body">
 
@@ -173,7 +172,7 @@
                             </select>
                         </div>
 
-                        <!-- SECCIÓN DE IMAGEN -->
+                       
                         <div class="mb-3">
                             <label class="form-label">Imagen del Servicio</label>
 
@@ -195,7 +194,7 @@
                                 </div>
                             }
 
-                            <!-- FORMULARIO PARA SUBIR IMAGEN -->
+                            
                             @if (servicio.Id > 0)
                             {
                                 <div class="border p-3 rounded bg-light">
@@ -300,7 +299,7 @@
                 {
                     if (servicioId > 0)
                     {
-                        // Busca el servicio y abre modal de edición
+                        
                         var serv = await ServicioService.GetServicioByIdAsync(servicioId);
                         if (serv != null)
                         {
@@ -366,7 +365,7 @@
             isGuardando = true;
             mensajeError = mensajeExito = "";
 
-            // Validaciones
+            
             if (string.IsNullOrWhiteSpace(servicio.Nombre))
             {
                 mensajeError = "El nombre es requerido";
@@ -431,7 +430,7 @@
         await CerrarModal();
     }
 
-    //cerrar modal
+    
     private async Task CerrarModal()
     {
         mostrarModal = false;

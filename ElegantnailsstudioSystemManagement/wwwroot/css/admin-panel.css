@@ -1,4 +1,4 @@
-﻿/* ===== DISEÑO DE ADMIN CORREGIDO ===== */
+﻿/* ===== DISEÑO DE ADMIN ===== */
 .navbar-negro-admin {
     background: linear-gradient(135deg, #000000 0%, #2d2d2d 100%);
     padding: 0;
@@ -140,7 +140,457 @@
             width: 70%;
         }
 
-/* ===== DISEÑO DE CLIENTE/INICIO CORREGIDO ===== */
+
+.navbar-morado {
+    background: #000000;
+    padding: 0;
+    position: relative;
+    z-index: 1000;
+}
+
+.fila-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #000000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-izquierda {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    text-align: left;
+}
+
+    .logo-izquierda h1 {
+        color: white;
+        font-size: 2rem;
+        font-weight: 300;
+        margin: 0;
+        letter-spacing: 1px;
+    }
+
+.slogan {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-weight: 300;
+    margin: 5px 0 0 0;
+    letter-spacing: 0.5px;
+}
+
+.home-logo {
+    height: 80px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.botones-derecha {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-registro {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px 25px;
+    border-radius: 20px;
+    font-weight: 400;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+    .btn-registro:hover {
+        border-color: white;
+        color: white;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+.btn-login {
+    background: white;
+    color: #000000;
+    border: 2px solid white;
+    padding: 8px 25px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+    .btn-login:hover {
+        background: rgba(255, 255, 255, 0.9);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+    }
+
+.fila-inferior {
+    background: #2A0B5E;
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.menu-lista {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 30px;
+}
+
+    .menu-lista a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        padding: 10px 0;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        position: relative;
+        font-size: 0.95rem;
+    }
+
+        .menu-lista a i {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .menu-lista a:hover {
+            color: white;
+        }
+
+        .menu-lista a.activo {
+            color: white;
+            font-weight: 500;
+        }
+
+            .menu-lista a.activo::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: white;
+            }
+
+/* ===== ESTILOS PARA USUARIO LOGUEADO ===== */
+.user-info-cliente {
+    color: white;
+    line-height: 1.3;
+    padding-right: 15px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: right;
+}
+
+.user-name-cliente {
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.user-email-cliente {
+    font-size: 12px;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.btn-cerrar-sesion-cliente {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    min-width: 120px;
+    justify-content: center;
+}
+
+    .btn-cerrar-sesion-cliente:hover {
+        background: rgba(255, 255, 255, 0.25);
+        text-decoration: none;
+        color: white;
+    }
+
+.bienvenida-original {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.bienvenida-saludo {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 300;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.bienvenida-nombre {
+    font-size: 15px;
+    color: white;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .fila-superior,
+    .fila-superior-admin {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 15px;
+    }
+
+    .logo-izquierda,
+    .logo-izquierda-admin {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .botones-derecha,
+    .botones-derecha-admin {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .menu-lista,
+    .menu-lista-admin {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px;
+        gap: 15px;
+    }
+
+        .menu-lista a,
+        .menu-lista-admin a {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+
+    .dashboard-logo,
+    .home-logo {
+        height: 70px;
+        max-width: 150px;
+        margin: 0 auto;
+    }
+
+    .logo-izquierda h1 {
+        font-size: 1.6rem;
+    }
+
+    .logo-izquierda-admin h1 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .fila-superior,
+    .fila-superior-admin {
+        padding: 12px;
+    }
+
+    .logo-izquierda h1 {
+        font-size: 1.4rem;
+    }
+
+    .logo-izquierda-admin h1 {
+        font-size: 1.3rem;
+    }
+
+    .btn-registro,
+    .btn-login,
+    .btn-cerrar-sesion,
+    .btn-cerrar-sesion-cliente {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .menu-lista,
+    .menu-lista-admin {
+        gap: 10px;
+    }
+
+        .menu-lista a,
+        .menu-lista-admin a {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+        }
+
+    .dashboard-logo,
+    .home-logo {
+        height: 60px;
+        max-width: 120px;
+    }
+}
+
+.navbar-morado,
+.navbar-negro-admin {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+/* ===== DISEÑO DE ADMIN ===== */
+.navbar-negro-admin {
+    background: linear-gradient(135deg, #000000 0%, #2d2d2d 100%);
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-bottom: 3px solid #e91e63;
+}
+
+.fila-superior-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo-izquierda-admin {
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+    .logo-izquierda-admin h1 {
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+
+    .logo-izquierda-admin .slogan-admin {
+        color: #e91e63;
+        font-size: 0.9rem;
+        font-weight: 400;
+        margin: 5px 0 0 0;
+        font-style: italic;
+    }
+
+.dashboard-logo {
+    height: 100px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.botones-derecha-admin {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-cerrar-sesion {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+    .btn-cerrar-sesion:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+    }
+
+.fila-inferior-admin {
+    background: #4a1e7c;
+    padding: 10px 0;
+    border-top: 1px solid rgba(233, 30, 99, 0.2);
+}
+
+.menu-lista-admin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 5px;
+}
+
+    .menu-lista-admin a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        min-width: auto;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+        .menu-lista-admin a:hover {
+            background: rgba(233, 30, 99, 0.4);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+        }
+
+        .menu-lista-admin a.activo {
+            background: linear-gradient(135deg, #e91e63, #f06292);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+        }
+
+        .menu-lista-admin a i {
+            font-size: 1rem;
+        }
+
+        .menu-lista-admin a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: #e91e63;
+            transition: width 0.3s ease;
+        }
+
+        .menu-lista-admin a:hover::after {
+            width: 70%;
+        }
+
+/* ===== DISEÑO DE CLIENTE/INICIO===== */
 .navbar-morado {
     background: #000000;
     padding: 0;
@@ -441,9 +891,6 @@
     }
 }
 
-/* ===== ARREGLOS ESPECÍFICOS PARA EL HEADER ===== */
-
-/* Asegura que el header esté en la parte superior */
 .navbar-morado,
 .navbar-negro-admin {
     position: relative;
@@ -451,7 +898,6 @@
     margin: 0;
     padding: 0;
 }
-/* ===== DISEÑO DE ADMIN CORREGIDO ===== */
 .navbar-negro-admin {
     background: linear-gradient(135deg, #000000 0%, #2d2d2d 100%);
     padding: 0;
@@ -593,7 +1039,7 @@
             width: 70%;
         }
 
-/* ===== DISEÑO DE CLIENTE/INICIO CORREGIDO ===== */
+/* ===== DISEÑO DE CLIENTE/INICIO===== */
 .navbar-morado {
     background: #000000;
     padding: 0;
@@ -732,7 +1178,6 @@
                 background: white;
             }
 
-/* ===== ESTILOS PARA USUARIO LOGUEADO EN CLIENTE ===== */
 .user-info-cliente {
     color: white;
     line-height: 1.3;
@@ -894,9 +1339,8 @@
     }
 }
 
-/* ===== ARREGLOS ESPECÍFICOS PARA EL HEADER ===== */
+/* ===== ARREGLOS  PARA EL HEADER ===== */
 
-/* Asegura que el header esté en la parte superior */
 .navbar-morado,
 .navbar-negro-admin {
     position: relative;
@@ -904,505 +1348,42 @@
     margin: 0;
     padding: 0;
 }
-/* ===== DISEÑO DE ADMIN CORREGIDO ===== */
-.navbar-negro-admin {
-    background: linear-gradient(135deg, #000000 0%, #2d2d2d 100%);
-    padding: 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    border-bottom: 3px solid #e91e63;
-}
-
-.fila-superior-admin {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 25px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.logo-izquierda-admin {
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-
-    .logo-izquierda-admin h1 {
-        color: white;
-        font-size: 1.8rem;
-        font-weight: 800;
-        margin: 0;
-        letter-spacing: 0.5px;
-    }
-
-    .logo-izquierda-admin .slogan-admin {
-        color: #e91e63;
-        font-size: 0.9rem;
-        font-weight: 400;
-        margin: 5px 0 0 0;
-        font-style: italic;
-    }
-
-.dashboard-logo {
-    height: 100px;
-    width: auto;
-    max-width: 200px;
-    object-fit: contain;
-    border-radius: 6px;
-}
-
-.botones-derecha-admin {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
-.btn-cerrar-sesion {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 10px 18px;
-    border-radius: 25px;
-    font-weight: 600;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-}
-
-    .btn-cerrar-sesion:hover {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
-    }
-
-.fila-inferior-admin {
-    background: #4a1e7c;
-    padding: 10px 0;
-    border-top: 1px solid rgba(233, 30, 99, 0.2);
-}
-
-.menu-lista-admin {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 5px;
-}
-
-    .menu-lista-admin a {
-        color: rgba(255, 255, 255, 0.9);
-        text-decoration: none;
-        padding: 10px 16px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 500;
-        font-size: 0.9rem;
-        min-width: auto;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-        .menu-lista-admin a:hover {
-            background: rgba(233, 30, 99, 0.4);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
-        }
-
-        .menu-lista-admin a.activo {
-            background: linear-gradient(135deg, #e91e63, #f06292);
-            color: white;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
-        }
-
-        .menu-lista-admin a i {
-            font-size: 1rem;
-        }
-
-        .menu-lista-admin a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: #e91e63;
-            transition: width 0.3s ease;
-        }
-
-        .menu-lista-admin a:hover::after {
-            width: 70%;
-        }
-
-/* ===== DISEÑO DE CLIENTE/INICIO CORREGIDO ===== */
-.navbar-morado {
-    background: #000000;
-    padding: 0;
-    position: relative;
-    z-index: 1000;
-}
-
-.fila-superior {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background: #000000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.logo-izquierda {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    text-align: left;
-}
-
-    .logo-izquierda h1 {
-        color: white;
-        font-size: 2rem;
-        font-weight: 300;
-        margin: 0;
-        letter-spacing: 1px;
-    }
-
-.slogan {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    font-weight: 300;
-    margin: 5px 0 0 0;
-    letter-spacing: 0.5px;
-}
-
-.home-logo {
-    height: 80px;
-    width: auto;
-    max-width: 160px;
-    object-fit: contain;
-    border-radius: 6px;
-}
-
-.botones-derecha {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
-.btn-registro {
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    color: rgba(255, 255, 255, 0.8);
-    padding: 8px 25px;
-    border-radius: 20px;
-    font-weight: 400;
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
-    .btn-registro:hover {
-        border-color: white;
-        color: white;
-        background: rgba(255, 255, 255, 0.05);
-    }
-
-.btn-login {
-    background: white;
-    color: #000000;
-    border: 2px solid white;
-    padding: 8px 25px;
-    border-radius: 20px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
-    .btn-login:hover {
-        background: rgba(255, 255, 255, 0.9);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
-    }
-
-.fila-inferior {
-    background: #2A0B5E;
-    padding: 15px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.menu-lista {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 30px;
-}
-
-    .menu-lista a {
-        color: rgba(255, 255, 255, 0.9);
-        text-decoration: none;
-        padding: 10px 0;
-        font-weight: 400;
-        letter-spacing: 0.5px;
-        transition: all 0.3s;
-        position: relative;
-        font-size: 0.95rem;
-    }
-
-        .menu-lista a i {
-            display: inline-block;
-            margin-right: 5px;
-        }
-
-        .menu-lista a:hover {
-            color: white;
-        }
-
-        .menu-lista a.activo {
-            color: white;
-            font-weight: 500;
-        }
-
-            .menu-lista a.activo::after {
-                content: '';
-                position: absolute;
-                bottom: -5px;
-                left: 0;
-                right: 0;
-                height: 2px;
-                background: white;
-            }
-
-/* ===== ESTILOS PARA USUARIO LOGUEADO EN CLIENTE ===== */
-.user-info-cliente {
-    color: white;
-    line-height: 1.3;
-    padding-right: 15px;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: right;
-}
-
-.user-name-cliente {
-    font-size: 15px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.user-email-cliente {
-    font-size: 12px;
-    opacity: 0.9;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.btn-cerrar-sesion-cliente {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    min-width: 120px;
-    justify-content: center;
-}
-
-    .btn-cerrar-sesion-cliente:hover {
-        background: rgba(255, 255, 255, 0.25);
-        text-decoration: none;
-        color: white;
-    }
-
-.bienvenida-original {
-    display: flex;
-    flex-direction: column;
-    text-align: right;
-}
-
-.bienvenida-saludo {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 300;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-}
-
-.bienvenida-nombre {
-    font-size: 15px;
-    color: white;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .fila-superior,
-    .fila-superior-admin {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
-        padding: 15px;
-    }
-
-    .logo-izquierda,
-    .logo-izquierda-admin {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-
-    .botones-derecha,
-    .botones-derecha-admin {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .menu-lista,
-    .menu-lista-admin {
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 10px;
-        gap: 15px;
-    }
-
-        .menu-lista a,
-        .menu-lista-admin a {
-            padding: 8px 12px;
-            font-size: 0.85rem;
-        }
-
-    .dashboard-logo,
-    .home-logo {
-        height: 70px;
-        max-width: 150px;
-        margin: 0 auto;
-    }
-
-    .logo-izquierda h1 {
-        font-size: 1.6rem;
-    }
-
-    .logo-izquierda-admin h1 {
-        font-size: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .fila-superior,
-    .fila-superior-admin {
-        padding: 12px;
-    }
-
-    .logo-izquierda h1 {
-        font-size: 1.4rem;
-    }
-
-    .logo-izquierda-admin h1 {
-        font-size: 1.3rem;
-    }
-
-    .btn-registro,
-    .btn-login,
-    .btn-cerrar-sesion,
-    .btn-cerrar-sesion-cliente {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-    }
-
-    .menu-lista,
-    .menu-lista-admin {
-        gap: 10px;
-    }
-
-        .menu-lista a,
-        .menu-lista-admin a {
-            padding: 6px 10px;
-            font-size: 0.8rem;
-        }
-
-    .dashboard-logo,
-    .home-logo {
-        height: 60px;
-        max-width: 120px;
-    }
-}
-
-/* ===== ARREGLOS ESPECÍFICOS PARA EL HEADER ===== */
-
-/* Asegura que el header esté en la parte superior */
-.navbar-morado,
-.navbar-negro-admin {
-    position: relative;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-/* Asegura que el contenido no se esconda detrás del header */
 main {
     padding-top: 0;
     margin-top: 0;
 }
 
-/* Arregla la altura del carrusel para que no quede espacio */
 .shared-carousel {
     margin-top: 0;
 }
 
-/* Elimina cualquier espacio extra alrededor del body */
 body {
     margin: 0;
     padding: 0;
 }
 
-/* Asegura que el contenido no se esconda detrás del header */
 main {
     padding-top: 0;
     margin-top: 0;
 }
 
-/* Arregla la altura del carrusel para que no quede espacio */
 .shared-carousel {
     margin-top: 0;
 }
 
-/* Elimina cualquier espacio extra alrededor del body */
 body {
     margin: 0;
     padding: 0;
 }
-/* Asegura que el contenido no se esconda detrás del header */
 main {
     padding-top: 0;
     margin-top: 0;
 }
 
-/* Arregla la altura del carrusel para que no quede espacio */
 .shared-carousel {
     margin-top: 0;
 }
 
-/* Elimina cualquier espacio extra alrededor del body */
 body {
     margin: 0;
     padding: 0;

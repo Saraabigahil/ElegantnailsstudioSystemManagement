@@ -9,7 +9,7 @@
 
 <PageTitle>Elegant Nails - Pestañas</PageTitle>
 
-<!-- ALERTA PARA USUARIOS NO LOGUEADOS -->
+
 @if (mostrarAlertaNoLogueado)
 {
     <div class="modal-overlay" @onclick="CerrarAlertaNoLogueado">
@@ -25,15 +25,15 @@
                 <p class="text-muted">Inicia sesión o regístrate para continuar.</p>
             </div>
             <div class="modal-alerta-footer">
-                <button class="btn btn-secondary" @onclick="CerrarAlertaNoLogueado">
+                <a href="/" class="btn btn-secondary">
                     <i class="bi bi-x-circle me-1"></i>Cancelar
-                </button>
-                <button class="btn btn-danger" @onclick="IrALogin">
+                </a>
+                <a href="/login" class="btn btn-danger">
                     <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
-                </button>
-                <button class="btn btn-success" @onclick="IrARegistro">
+                </a>
+                <a href="/registro" class="btn btn-success">
                     <i class="bi bi-person-plus me-1"></i>Registrarse
-                </button>
+                </a>
             </div>
         </div>
     </div>
@@ -50,7 +50,7 @@
     </div>
 </header>
 
-<!-- CONTENIDO PRINCIPAL -->
+
 <main class="pestanas-main">
     <div class="container">
         @if (serviciosPestanas.Count == 0)
@@ -67,7 +67,7 @@
                 {
                     <div class="col-md-4">
                         <div class="tarjeta-unificada">
-                            <!-- IMAGEN DEL SERVICIO -->
+                            
                             <div class="contenedor-imagen-tarjeta">
                                 @if (!string.IsNullOrEmpty(servicio.ImagenUrl) && !servicio.ImagenUrl.Contains("placeholder"))
                                 {
@@ -105,7 +105,7 @@
                                     </div>
                                 </div>
 
-                                <button class="boton-agendar-unificado" @onclick="() => VerificarSesionYAgendar(servicio.Id, servicio.Nombre)">
+                                <button class="boton-agendar-unificado" @onclick="() => VerificarSesionYAgendar(servicio.Id)">
                                     <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
                                 </button>
                             </div>
@@ -131,7 +131,7 @@
     {
         try
         {
-            // Busca categoría "Pestañas"
+            
             categoriaPestanas = await CategoriaService.GetCategoriaByNombreAsync("Pestañas");
 
             if (categoriaPestanas != null)
@@ -153,42 +153,30 @@
         }
     }
 
-    private async void VerificarSesionYAgendar(int servicioId, string nombreServicio = "")
+    private void VerificarSesionYAgendar(int servicioId)
     {
-        // Verifica si el usuario está logueado
+        Console.WriteLine($"🔍 Verificando sesión para servicio: {servicioId}");
+        Console.WriteLine($"🔍 Estado de AuthService.IsLoggedIn: {AuthService.IsLoggedIn}");
+
         if (!AuthService.IsLoggedIn)
         {
-            // alerta si NO está logueado
+            Console.WriteLine($"⚠️ Usuario NO logueado - Mostrando alerta");
             mostrarAlertaNoLogueado = true;
             StateHasChanged();
         }
         else
         {
-            // Si está logueado, redirigir normalmente
-            if (servicioId > 0)
-            {
-                Navigation.NavigateTo($"/citas/agendar?servicioId={servicioId}");
-            }
-            else
-            {
-                Navigation.NavigateTo("/citas/agendar");
-            }
+            Console.WriteLine($"✅ Usuario logueado - Redirigiendo a cita");
+
+           
+            Navigation.NavigateTo($"/citas/agendar?servicioId={servicioId}", forceLoad: true);
         }
     }
-
     private void CerrarAlertaNoLogueado()
     {
         mostrarAlertaNoLogueado = false;
-        StateHasChanged();
-    }
-
-    private void IrALogin()
-    {
-        Navigation.NavigateTo("/login");
-    }
-
-    private void IrARegistro()
-    {
-        Navigation.NavigateTo("/registro");
     }
 }
+
+
+

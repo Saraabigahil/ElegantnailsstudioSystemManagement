@@ -8,7 +8,7 @@
 @inject NavigationManager Navigation
 @inject AuthService AuthService
 
-<!-- MODAL DE ÉXITO -->
+
 @if (mostrarModalExito)
 {
     <div class="modal-overlay" @onclick="CerrarModalExito">
@@ -177,7 +177,7 @@ else
                         </div>
                     </div>
 
-                    <!-- Sección de Turno -->
+                    
                     <div class="mb-4">
                         <label class="form-label-custom">3. Selecciona un Turno</label>
                         <div class="custom-radio-group">
@@ -228,7 +228,7 @@ else
                         </div>
                     </div>
 
-                    <!-- Verificación de disponibilidad -->
+                    
                     @if (mostrarVerificar)
                     {
                         <div class="mb-4 @(hayDisponibilidad ? "pulse" : "")">
@@ -253,7 +253,6 @@ else
                         </div>
                     }
 
-                    <!-- Botón de agendar -->
                     <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top border-secondary">
                         <a href="/cliente" class="btn btn-secondary-custom btn-custom">
                             <i class="bi bi-arrow-left me-2"></i> Volver al Inicio
@@ -401,7 +400,7 @@ else
 
         try
         {
-            // Valida si la fecha es pasada
+            
             if (fechaSeleccionada.Date < DateTime.Today.Date)
             {
                 hayDisponibilidad = false;
@@ -419,7 +418,7 @@ else
                 return;
             }
 
-            // Verifica disponibilidad en el servicio
+            
             hayDisponibilidad = await CupoService.CheckDisponibilidadAsync(
                 fechaSeleccionada,
                 turnoSeleccionado,
@@ -449,7 +448,7 @@ else
 
     private async Task OnAgendarCita()
     {
-        // VERIFICA QUE EL USUARIO ESTÉ LOGUEADO
+      
         if (!AuthService.IsLoggedIn || AuthService.CurrentUser == null)
         {
             Navigation.NavigateTo("/login?returnUrl=/citas/agendar");
@@ -470,7 +469,7 @@ else
             return;
         }
 
-        // Usa el id del usuario logueado
+        
         var nuevaCita = new Cita
             {
                 ClienteId = AuthService.CurrentUser.Id,
@@ -485,7 +484,7 @@ else
 
         if (exito)
         {
-            // Muestra la modal de éxito 
+            
             mostrarModalExito = true;
             StateHasChanged();
         }

@@ -9,6 +9,7 @@
 @inject IServicioService ServicioService
 @inject ICategoriaService CategoriaService
 @inject ILogoService LogoService
+@inject IJSRuntime JS
 
 <PageTitle>Elegant Nails - Panel de Administración</PageTitle>
 
@@ -140,10 +141,10 @@
                             </div>
 
                             <div class="botones-admin-horizontal">
-                                <a href="/admin/servicios/modificar/@servicio.Id"
-                                   class="btn btn-admin-editar">
+                                <button class="btn btn-admin-editar"
+                                        @onclick="() => EditarServicio(servicio)">
                                     <i class="bi bi-pencil me-1"></i>Editar
-                                </a>
+                                </button>
                                 <button class="btn btn-admin-eliminar"
                                         @onclick="() => MostrarConfirmacionEliminar(servicio)">
                                     <i class="bi bi-trash me-1"></i>Eliminar
@@ -208,16 +209,159 @@
     </div>
 }
 
+
+@if (mostrarModalEdicion && servicioEditar != null)
+{
+    <div class="modal show d-block" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Editar Servicio
+                    </h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModalEdicion"></button>
+                </div>
+
+                <div class="modal-body">
+                    <EditForm Model="servicioEditar" OnValidSubmit="GuardarServicioEditado">
+                        <DataAnnotationsValidator />
+
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nombre *</label>
+                            <InputText @bind-Value="servicioEditar.Nombre" class="form-control" />
+                            <ValidationMessage For="@(() => servicioEditar.Nombre)" />
+                        </div>
+
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <InputTextArea @bind-Value="servicioEditar.Descripcion" class="form-control" rows="3" />
+                        </div>
+
+                       
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Precio *</label>
+                                <InputNumber @bind-Value="servicioEditar.Precio" class="form-control" />
+                                <ValidationMessage For="@(() => servicioEditar.Precio)" />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Duración (minutos) *</label>
+                                <InputNumber @bind-Value="servicioEditar.DuracionMinutos" class="form-control" />
+                                <ValidationMessage For="@(() => servicioEditar.DuracionMinutos)" />
+                            </div>
+                        </div>
+
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Categoría *</label>
+                            <select class="form-select" @bind="servicioEditar.CategoriaId">
+                                <option value="">Seleccione una categoría</option>
+                                @foreach (var categoria in categorias)
+                                {
+                                    <option value="@categoria.Id">@categoria.Nombre</option>
+                                }
+                            </select>
+                            <ValidationMessage For="@(() => servicioEditar.CategoriaId)" />
+                        </div>
+
+                       
+                        <div class="mb-3">
+                            <label class="form-label">Imagen del Servicio</label>
+
+                            @if (!string.IsNullOrEmpty(servicioEditar.ImagenUrl) && !servicioEditar.ImagenUrl.Contains("placeholder"))
+                            {
+                                <div class="text-center mb-2">
+                                    <img src="@servicioEditar.ImagenUrl"
+                                         class="img-fluid rounded"
+                                         style="max-height: 200px;"
+                                         onerror="this.src='/placeholder-image.png'" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center mb-2">
+                                    <img src="/placeholder-image.png"
+                                         class="img-fluid rounded"
+                                         style="max-height: 200px;" />
+                                </div>
+                            }
+
+                           
+                            @if (servicioEditar.Id > 0)
+                            {
+                                <div class="border p-3 rounded bg-light">
+                                    <h6 class="mb-3">Subir nueva imagen</h6>
+                                    <form method="post" enctype="multipart/form-data"
+                                          action="/uploadservicio">
+                                        <input type="hidden" name="servicioId" value="@servicioEditar.Id" />
+                                        <div class="input-group">
+                                            <input type="file" name="file"
+                                                   class="form-control"
+                                                   accept=".jpg,.jpeg,.png,.gif,.webp"
+                                                   required />
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-upload me-1"></i>Subir
+                                            </button>
+                                        </div>
+                                        <small class="text-muted">Formatos permitidos: JPG, PNG, GIF, WEBP (Máx. 5MB)</small>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Primero guarde el servicio para poder subir una imagen.
+                                </div>
+                            }
+                        </div>
+
+                        
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success" disabled="@isGuardando">
+                                @if (isGuardando)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                    <span>Guardando...</span>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    <span>Guardar Cambios</span>
+                                }
+                            </button>
+                            <button type="button" class="btn btn-secondary" @onclick="CerrarModalEdicion">
+                                <i class="bi bi-x-circle me-2"></i>
+                                Cancelar
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private List<Servicio> servicios = new();
     private List<Categoria> categorias = new();
     private int serviciosActivos = 0;
     private int categoriasCount = 0;
-    private int totalServicios = 0;
     private string logoPath = string.Empty;
 
+    
     private bool showConfirmacionEliminar = false;
     private Servicio servicioAEliminar = null;
+
+    
+    private bool mostrarModalEdicion = false;
+    private Servicio servicioEditar = null;
+    private bool isGuardando = false;
+
     private string mensajeExito = string.Empty;
     private string mensajeError = string.Empty;
 
@@ -228,7 +372,7 @@
         Console.WriteLine($"🔍 AuthService.IsAdmin: {AuthService.IsAdmin}");
         Console.WriteLine($"🔍 AuthService.CurrentUser: {AuthService.CurrentUser?.Email}");
 
-        // Carga logo
+        
         logoPath = LogoService.ObtenerLogoActual();
 
         await CargarDatos();
@@ -239,12 +383,11 @@
     {
         try
         {
-            // Carga servicios
+            
             servicios = await ServicioService.GetServiciosActivosAsync();
             serviciosActivos = servicios.Count;
-            totalServicios = servicios.Count;
 
-            // Carga categorías
+           
             categorias = await CategoriaService.GetCategoriasAsync();
             categoriasCount = categorias.Count;
         }
@@ -254,18 +397,108 @@
         }
     }
 
-    private bool IsActivePage(string pagePath)
-    {
-        var currentPath = Navigation.Uri.Replace(Navigation.BaseUri, "");
-        return currentPath.Equals(pagePath.TrimStart('/'), StringComparison.OrdinalIgnoreCase);
-    }
-
     private async Task Logout()
     {
         await AuthService.LogoutAsync();
         Navigation.NavigateTo("/login");
     }
 
+    
+    private void EditarServicio(Servicio servicio)
+    {
+        try
+        {
+            
+            servicioEditar = new Servicio
+                {
+                    Id = servicio.Id,
+                    Nombre = servicio.Nombre,
+                    Descripcion = servicio.Descripcion,
+                    Precio = servicio.Precio,
+                    DuracionMinutos = servicio.DuracionMinutos,
+                    CategoriaId = servicio.CategoriaId,
+                    ImagenUrl = servicio.ImagenUrl
+                };
+
+            mostrarModalEdicion = true;
+            mensajeError = mensajeExito = "";
+
+            Console.WriteLine($"🔍 Abriendo modal para editar servicio ID: {servicio.Id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error al preparar edición: {ex.Message}");
+            mensajeError = "Error al cargar los datos del servicio";
+        }
+    }
+
+    private async Task GuardarServicioEditado()
+    {
+        try
+        {
+            isGuardando = true;
+            mensajeError = mensajeExito = "";
+
+           
+            if (servicioEditar == null || string.IsNullOrWhiteSpace(servicioEditar.Nombre))
+            {
+                mensajeError = "El nombre es requerido";
+                isGuardando = false;
+                return;
+            }
+
+            if (servicioEditar.CategoriaId == 0)
+            {
+                mensajeError = "Debe seleccionar una categoría";
+                isGuardando = false;
+                return;
+            }
+
+            Console.WriteLine($"💾 Guardando servicio ID: {servicioEditar.Id}");
+
+            bool exito = await ServicioService.ActualizarServicio(servicioEditar);
+
+            if (exito)
+            {
+                Console.WriteLine($"✅ Servicio actualizado exitosamente");
+                mensajeExito = "Servicio actualizado correctamente";
+
+                
+                await CerrarModalEdicion();
+                await CargarDatos();
+
+                
+                await Task.Delay(3000);
+                mensajeExito = string.Empty;
+            }
+            else
+            {
+                mensajeError = "Error al actualizar el servicio";
+                Console.WriteLine($"❌ Error al actualizar servicio");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"💥 ERROR GuardarServicioEditado: {ex.Message}");
+            mensajeError = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isGuardando = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task CerrarModalEdicion()
+    {
+        mostrarModalEdicion = false;
+        servicioEditar = null;
+        isGuardando = false;
+        await Task.Delay(100); 
+        StateHasChanged();
+    }
+
+   
     private void MostrarConfirmacionEliminar(Servicio servicio)
     {
         servicioAEliminar = servicio;
@@ -303,7 +536,7 @@
                 mensajeExito = $"Servicio '{servicioAEliminar.Nombre}' eliminado correctamente";
                 mensajeError = string.Empty;
 
-                // Cerrar modal
+               
                 servicioAEliminar = null;
                 showConfirmacionEliminar = false;
 
@@ -314,8 +547,7 @@
             }
             else
             {
-                Console.WriteLine($"❌ [ADMIN] No se pudo eliminar el servicio");
-               
+                mensajeError = "No se pudo eliminar el servicio. Puede que tenga citas pendientes.";
                 mensajeExito = string.Empty;
             }
         }
