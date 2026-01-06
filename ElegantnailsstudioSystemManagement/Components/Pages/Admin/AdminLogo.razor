@@ -9,15 +9,12 @@
 
 <div class="logo-admin-page">
     <div class="container mt-4">
-        <!-- Título con botón de volver -->
         <div class="d-flex align-items-center mb-4">
-            <!-- Botón para volver al admin - Solo icono -->
             <a href="/admin" class="btn btn-volver-icono me-3" title="Volver al Panel">
                 <i class="bi bi-arrow-left-circle fs-4"></i>
             </a>
             <h1 class="logo-page-title mb-0"><i class="bi bi-palette me-2"></i>Gestión del Logo</h1>
         </div>
-        <!-- Mensajes -->
         @if (!string.IsNullOrEmpty(mensajeError))
         {
             <div class="logo-alert logo-alert-error">
@@ -35,7 +32,6 @@
         }
 
         <div class="row">
-            <!-- Logo Actual -->
             <div class="col-md-6 mb-4">
                 <div class="logo-card-container">
                     <div class="logo-card-header-current">
@@ -70,7 +66,7 @@
                         <h5 class="logo-card-title"><i class="bi bi-cloud-arrow-up me-2"></i>Subir Nuevo Logo</h5>
                     </div>
                     <div class="logo-card-body-content">
-                        <!-- FORMULARIO TRADICIONAL -->
+                        <!-- FORMULARIO  -->
                         <form method="post" enctype="multipart/form-data" action="/uploadlogo" class="logo-upload-form">
                             <div class="mb-3">
                                 <label class="logo-form-label">Seleccionar archivo de imagen</label>
