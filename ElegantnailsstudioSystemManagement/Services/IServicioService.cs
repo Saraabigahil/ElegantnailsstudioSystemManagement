@@ -123,18 +123,27 @@ namespace ElegantnailsstudioSystemManagement.Services
                 var servicio = await context.Servicios.FindAsync(id);
                 if (servicio == null) return false;
 
-                
-                var tieneCitasActivas = await context.Citas
-                    .AnyAsync(c => c.ServicioId == id && c.Estado != "cancelada");
+                // SOLO bloquear si hay citas PENDIENTES Permitir eliminar si las citas están COMPLETADA o CANCELADAS
+                var tieneCitasPendientes = await context.Citas
+                    .AnyAsync(c => c.ServicioId == id && c.Estado == "pendiente");
 
-                if (tieneCitasActivas)
+                if (tieneCitasPendientes)
                 {
-                    Console.WriteLine($"⚠️ No se puede eliminar servicio {id}: tiene citas activas");
+                    Console.WriteLine($"⚠️ No se puede eliminar servicio {id}: tiene citas pendientes");
+
+                 
+                    var citasPendientesCount = await context.Citas
+                        .CountAsync(c => c.ServicioId == id && c.Estado == "pendiente");
+
+                    Console.WriteLine($"⚠️ Servicio tiene {citasPendientesCount} cita(s) pendiente(s)");
+
                     return false;
                 }
 
                 context.Servicios.Remove(servicio);
                 await context.SaveChangesAsync();
+
+                Console.WriteLine($"✅ Servicio {id} eliminado exitosamente");
                 return true;
             }
             catch (Exception ex)
