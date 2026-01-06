@@ -6,15 +6,15 @@
 @using ElegantnailsstudioSystemManagement.Components
 @inject IServicioService ServicioService
 @inject NavigationManager Navigation
-@inject ILogoService LogoService 
+@inject ILogoService LogoService
+@inject AuthService AuthService
 
 <PageTitle>Elegant Nails Studio</PageTitle>
 
-<link rel="stylesheet" href="css/admin-panel.css">
+<link rel="stylesheet" href="client.css">
 
 <header class="navbar-morado-cliente">
     <div class="fila-superior-cliente">
-
         <div class="logo-superior-cliente">
             @if (!string.IsNullOrEmpty(logoPath))
             {
@@ -27,9 +27,35 @@
             }
         </div>
 
+        <!-- REEMPLAZAMOS LA BIENVENIDA POR EL BOTÓN DE CERRAR SESIÓN -->
         <div class="bienvenida-derecha">
-            <span class="bienvenida-saludo">BIENVENIDO A</span>
-            <span class="bienvenida-nombre">ELEGANT NAILS ART STUDIO & LASHES!</span>
+            @if (AuthService.IsLoggedIn && AuthService.CurrentUser != null)
+            {
+                <div class="d-flex align-items-center gap-3">
+                    <div class="user-info-cliente text-end">
+                        <span class="user-name-cliente">
+                            <i class="bi bi-person-circle me-1"></i>
+                            @AuthService.CurrentUser.Nombre
+                        </span>
+                        <br>
+                        <span class="user-email-cliente">
+                            <i class="bi bi-envelope me-1"></i>
+                            @AuthService.CurrentUser.Email
+                        </span>
+                    </div>
+                    <!-- BOTÓN CON FONDO SOLO -->
+                    <a href="#" @onclick="Logout" class="btn-cerrar-sesion-cliente">
+                        <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="bienvenida-original">
+                    <span class="bienvenida-saludo">BIENVENIDO A</span>
+                    <span class="bienvenida-nombre">ELEGANT NAILS ART STUDIO & LASHES!</span>
+                </div>
+            }
         </div>
     </div>
 
@@ -149,5 +175,11 @@
         {
             Console.WriteLine($"❌ Error cargando servicios: {ex.Message}");
         }
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        Navigation.NavigateTo("/login");
     }
 }
