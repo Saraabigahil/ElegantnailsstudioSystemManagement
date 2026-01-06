@@ -9,8 +9,14 @@
 
 <div class="logo-admin-page">
     <div class="container mt-4">
-        <h1 class="logo-page-title"><i class="bi bi-palette me-2"></i>Gestión del Logo</h1>
-
+        <!-- Título con botón de volver -->
+        <div class="d-flex align-items-center mb-4">
+            <!-- Botón para volver al admin - Solo icono -->
+            <a href="/admin" class="btn btn-volver-icono me-3" title="Volver al Panel">
+                <i class="bi bi-arrow-left-circle fs-4"></i>
+            </a>
+            <h1 class="logo-page-title mb-0"><i class="bi bi-palette me-2"></i>Gestión del Logo</h1>
+        </div>
         <!-- Mensajes -->
         @if (!string.IsNullOrEmpty(mensajeError))
         {
