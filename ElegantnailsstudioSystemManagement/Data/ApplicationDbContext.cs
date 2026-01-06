@@ -19,11 +19,11 @@ namespace ElegantnailsstudioSystemManagement
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Servicio>()
-                .HasOne(s => s.Categoria)
-                .WithMany(c => c.Servicios)
-                .HasForeignKey(s => s.CategoriaId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.Servicio)
+                .WithMany()
+                .HasForeignKey(c => c.ServicioId)
+                .OnDelete(DeleteBehavior.Cascade); // ← ASÍ
         }
     }
 }

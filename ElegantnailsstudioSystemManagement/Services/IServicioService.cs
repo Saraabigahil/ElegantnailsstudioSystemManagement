@@ -123,8 +123,15 @@ namespace ElegantnailsstudioSystemManagement.Services
                 var servicio = await context.Servicios.FindAsync(id);
                 if (servicio == null) return false;
 
-                var tieneCitas = await context.Citas.AnyAsync(c => c.ServicioId == id);
-                if (tieneCitas) return false;
+                // SOLO verificar citas NO canceladas (pendientes o completadas)
+                var tieneCitasActivas = await context.Citas
+                    .AnyAsync(c => c.ServicioId == id && c.Estado != "cancelada");
+
+                if (tieneCitasActivas)
+                {
+                    Console.WriteLine($"⚠️ No se puede eliminar servicio {id}: tiene citas activas");
+                    return false;
+                }
 
                 context.Servicios.Remove(servicio);
                 await context.SaveChangesAsync();
