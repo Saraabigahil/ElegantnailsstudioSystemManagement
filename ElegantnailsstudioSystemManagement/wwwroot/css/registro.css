@@ -62,8 +62,7 @@
     opacity: 0.9;
     line-height: 1.6;
 }
-
-/* LADO DERECHO - FORMULARIO */
+}
 .registro-lado-formulario {
     padding: 3rem;
 }
@@ -95,7 +94,7 @@
     font-size: 1rem;
 }
 
-/* Alertas */
+
 .alert-registro {
     border-radius: 10px;
     border: none;
@@ -115,7 +114,6 @@
         border-left: 4px solid #38a169;
     }
 
-/* Formulario */
 .registro-form .form-group {
     margin-bottom: 1.5rem;
 }
@@ -146,7 +144,6 @@
         color: #a0aec0;
     }
 
-/* Botones */
 .btn-registro-principal {
     background: linear-gradient(135deg, #a88be0 0%, #9575cd 100%); /* CAMBIADO A LILA */
 
@@ -218,14 +215,12 @@
         box-shadow: 0 4px 12px rgba(214, 158, 46, 0.3);
     }
 
-/* Separador */
 .registro-separador {
     border: none;
     border-top: 2px dashed #e2e8f0;
     margin: 2rem 0;
 }
 
-/* Volver */
 .btn-volver-link {
     color: #8b5fbf;
     text-decoration: none;
@@ -240,7 +235,6 @@
         text-decoration: underline;
     }
 
-/* Responsive */
 @media (max-width: 768px) {
     .registro-page {
         padding: 1rem;

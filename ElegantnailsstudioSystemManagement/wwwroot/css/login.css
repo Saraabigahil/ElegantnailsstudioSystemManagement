@@ -1,11 +1,11 @@
-﻿/* ===== DISEÑO LOGIN - MITAD IMAGEN MITAD FORMULARIO ===== */
+﻿
 .login-container {
     display: flex;
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Lado izquierdo con imagen */
+
 .login-image-side {
     flex: 1;
     background: linear-gradient(rgba(139, 95, 191, 0.7), rgba(107, 70, 193, 0.7)), url('/static/login-background.jpg') no-repeat center center;
@@ -36,7 +36,7 @@
         margin-bottom: 30px;
     }
 
-/* Lado derecho con formulario */
+
 .login-form-side {
     flex: 1;
     background: white;
@@ -70,7 +70,7 @@
     margin-bottom: 40px;
 }
 
-/*formulario */
+
 .form-group {
     margin-bottom: 25px;
 }
@@ -108,7 +108,7 @@
         font-size: 0.9rem;
     }
 
-/* Botón de login */
+
 .login-button {
     width: 100%;
     padding: 14px;
@@ -158,7 +158,6 @@
     }
 }
 
-/* Sección de registro */
 .register-section {
     text-align: center;
     margin-top: 30px;
@@ -218,7 +217,7 @@
     gap: 8px;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .login-container {
         flex-direction: column;

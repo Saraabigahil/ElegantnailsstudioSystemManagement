@@ -42,14 +42,14 @@ namespace ElegantnailsstudioSystemManagement.Services
                     return false;
                 }
 
-                // VALIDA que la fecha no sea pasada
+              
                 if (cita.FechaCita.Date < DateTime.Today)
                 {
                     Console.WriteLine($"❌ No se pueden agendar citas en fechas pasadas: {cita.FechaCita.Date}");
                     return false;
                 }
 
-                // VALIDA que el turno no haya pasado
+                
                 var turnoPasado = await _cupoService.IsTurnoPasadoAsync(cita.FechaCita, cita.Turno);
                 if (turnoPasado)
                 {
@@ -186,10 +186,10 @@ namespace ElegantnailsstudioSystemManagement.Services
                 var servicio = await _context.Servicios.FindAsync(cita.ServicioId);
                 if (servicio == null) return false;
 
-                // Si cambia la fecha o turno, verifica cupo
+
                 if (existing.FechaCita.Date != cita.FechaCita.Date || existing.Turno != cita.Turno)
                 {
-                    // Valida que el nuevo turno no haya pasado
+                   
                     var turnoPasado = await _cupoService.IsTurnoPasadoAsync(cita.FechaCita, cita.Turno);
                     if (turnoPasado) return false;
 
@@ -229,7 +229,7 @@ namespace ElegantnailsstudioSystemManagement.Services
                 var cita = await _context.Citas.FindAsync(id);
                 if (cita == null) return false;
 
-                // Libera cupo
+              
                 await _cupoService.LiberarCupoAsync(cita.FechaCita, cita.Turno);
 
                 _context.Citas.Remove(cita);

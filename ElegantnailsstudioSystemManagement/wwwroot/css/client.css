@@ -1,4 +1,4 @@
-﻿/* ESTILOS SIMPLES PARA LA SECCIÓN DE USUARIO Y CERRAR SESIÓN */
+﻿
 .bienvenida-derecha {
     display: flex;
     align-items: center;
@@ -25,9 +25,9 @@
     align-items: center;
 }
 
-/* BOTÓN SOLO CON FONDO - SIN EFECTOS */
+
 .btn-cerrar-sesion-cliente {
-    background: rgba(255, 255, 255, 0.15); /* SOLO FONDO */
+    background: rgba(255, 255, 255, 0.15);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 8px 16px;
@@ -41,9 +41,9 @@
     min-width: 120px;
 }
 
-    /* HOVER SIMPLE */
+  
     .btn-cerrar-sesion-cliente:hover {
-        background: rgba(255, 255, 255, 0.25); /* SOLO CAMBIA EL FONDO */
+        background: rgba(255, 255, 255, 0.25); 
         text-decoration: none;
         color: white;
     }
@@ -69,7 +69,7 @@
     letter-spacing: 0.8px;
 }
 
-/* Estilos responsivos */
+
 @media (max-width: 992px) {
     .bienvenida-derecha .d-flex {
         flex-direction: column;

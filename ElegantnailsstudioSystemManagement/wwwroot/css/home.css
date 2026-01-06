@@ -1,4 +1,4 @@
-﻿/* ===== VARIABLES CON COLORES EXACTOS ===== */
+﻿
 :root {
     --header-black: #000000;
     --menu-dark-purple: #2A0B5E;
@@ -83,7 +83,6 @@
         box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
     }
 
-/* ===== MENÚ ===== */
 .fila-inferior {
     background: var(--menu-dark-purple);
     padding: 15px 0;
@@ -134,7 +133,7 @@
                 background: white;
             }
 
-/* ===== CARRUSEL ===== */
+
 .hero-carousel {
     margin-top: 0;
     position: relative;
@@ -143,7 +142,7 @@
     box-shadow: var(--shadow);
 }
 
-/* ===== SECCIÓN DE BIENVENIDA ===== */
+
 .welcome-section {
     padding: 4rem 0;
     background: white;
@@ -164,7 +163,7 @@
         margin-bottom: 40px;
     }
 
-/* ===== ALERTA DE LOGIN ===== */
+
 .alert-warning {
     background-color: #fff8e1;
     border: 1px solid #ffd54f;
@@ -185,7 +184,7 @@
         text-decoration: underline;
     }
 
-/* ===== FOOTER ===== */
+
 footer.bg-dark {
     background: var(--header-black) !important;
     color: white;
@@ -199,7 +198,7 @@ footer.bg-dark {
         font-size: 0.9rem;
     }
 
-/* ===== MODAL DE ALERTA ===== */
+
 .modal.show {
     backdrop-filter: blur(5px);
 }
@@ -212,7 +211,7 @@ footer.bg-dark {
     border: 3px solid #dc3545;
 }
 
-/* ENCABEZADO */
+
 .modal-header {
     background: linear-gradient(135deg, #dc3545, #f44336) !important;
     border-bottom: none !important;
@@ -252,7 +251,6 @@ footer.bg-dark {
     text-align: center !important;
 }
 
-/* ICONO DEL MODAL*/
 .bi-shield-lock {
     color: #dc3545 !important;
     font-size: 4rem !important;
@@ -277,7 +275,7 @@ footer.bg-dark {
     }
 }
 
-/* TÍTULO DEL MODAL */
+
 .modal-body h4 {
     color: #2d0036 !important;
     font-weight: 700 !important;
@@ -381,7 +379,6 @@ footer.bg-dark {
             box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
         }
 
-        /* ICONOS DE LOS BOTONES */
         .modal-footer .btn-primary i,
         .modal-footer .btn-success i,
         .modal-footer .btn-outline-secondary i {
@@ -389,7 +386,7 @@ footer.bg-dark {
             font-size: 1.2rem !important;
         }
 
-/* ===== RESPONSIVE ===== */
+
 @media (max-width: 768px) {
     .fila-superior {
         flex-direction: column;
@@ -429,7 +426,7 @@ footer.bg-dark {
         font-size: 1rem;
     }
 
-    /* RESPONSIVE PARA EL MODAL */
+    
     .modal-dialog {
         margin: 15px !important;
     }

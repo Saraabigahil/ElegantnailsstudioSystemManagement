@@ -1,9 +1,4 @@
-﻿}
-/* ============================================
-   ADMIN SERVICIOS 
-   ============================================ */
-
-/*  CONTAINER PRINCIPAL */
+﻿
 .admin-servicios-container {
     background-color: #ffffff !important;
     min-height: 100vh;
@@ -31,7 +26,6 @@
             color: #f8bbd9;
         }
 
-/* BOTÓN NUEVO SERVICIO */
 .btn.btn-new-service {
     background: linear-gradient(135deg, #e91e63, #f06292) !important;
     border: none !important;
@@ -45,7 +39,7 @@
     box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
 }
 
-/* Botón para volver al admin - Solo icono */
+
 .btn-volver-icono {
     background: rgba(255, 255, 255, 0.2) !important;
     border: 2px solid rgba(255, 255, 255, 0.4) !important;
@@ -72,7 +66,6 @@
         color: white;
     }
 
-/*  ALERTAS */
 .alert-servicio {
     border-radius: 10px !important;
     border: none !important;
@@ -98,7 +91,6 @@
     border-left: 4px solid #2196f3 !important;
 }
 
-/* SERVICIOS  */
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -124,7 +116,6 @@
     }
 }
 
-/* TARJETAS DE SERVICIO*/
 .service-card {
     background: white !important;
     border: 2px solid #e1bee7 !important;
@@ -143,7 +134,7 @@
         box-shadow: 0 12px 30px rgba(233, 30, 99, 0.15) !important;
     }
 
-/* CONTENEDOR DE IMAGEN  */
+
 .card-img-container {
     height: 180px !important;
     background: linear-gradient(135deg, #6a1b9a, #9c27b0) !important;
@@ -194,7 +185,7 @@
     flex-direction: column;
 }
 
-/* ENCABEZADO DE TARJETA */
+
 .card-title {
     color: #6a1b9a !important;
     font-size: 18px !important;
@@ -203,7 +194,7 @@
     flex-grow: 1;
 }
 
-/*  BADGE CATEGORÍA */
+
 .badge.badge-category {
     background: linear-gradient(135deg, #e91e63, #f06292) !important;
     color: white !important;
@@ -251,7 +242,6 @@
         color: #9c27b0 !important;
     }
 
-/* BOTONES DE ACCIÓN */
 .card-actions {
     display: flex !important;
     gap: 10px !important;
@@ -373,7 +363,6 @@
     background: white !important;
 }
 
-/*FORMULARIO */
 .form-section {
     margin-bottom: 30px;
     padding-bottom: 20px;
@@ -464,7 +453,6 @@
     border-left: 4px solid #4caf50 !important;
 }
 
-/*BOTONES MODAL */
 .btn-save-service {
     background: linear-gradient(135deg, #e91e63, #9c27b0) !important;
     border: none !important;
@@ -510,7 +498,6 @@
         box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
     }
 
-/* MODAL DE CONFIRMACIÓN PARA ELIMINAR */
 .modal-eliminar {
     background: rgba(0, 0, 0, 0.7) !important;
     backdrop-filter: blur(5px);
@@ -609,7 +596,7 @@
         box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
     }
 
-/* ANIMACIONES */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -651,7 +638,7 @@
         animation-delay: 0.6s;
     }
 
-/* RESPONSIVE */
+
 @media (max-width: 768px) {
     .admin-servicios-container {
         padding: 15px;

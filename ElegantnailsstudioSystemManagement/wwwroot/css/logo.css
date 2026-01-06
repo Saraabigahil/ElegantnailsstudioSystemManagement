@@ -1,29 +1,21 @@
-﻿/* =============================================
-   VARIABLES DE COLOR - TEMA MORADO/ELEGANTE
-============================================= */
+﻿
 :root {
-    --logo-primary-purple: #8A2BE2; /* Morado vibrante */
-    --logo-light-purple: #E6E6FA; /* Lila claro */
-    --logo-dark-purple: #4B0082; /* Morado oscuro */
-    --logo-pale-purple: #D8BFD8; /* Morado pálido */
-    --logo-white: #FFFFFF; /* Blanco puro */
-    --logo-black: #1A1A1A; /* Negro suave */
-    --logo-gray-light: #F5F5F5; /* Gris muy claro */
-    --logo-shadow: rgba(138, 43, 226, 0.1); /* Sombra morada suave */
+    --logo-primary-purple: #8A2BE2; 
+    --logo-light-purple: #E6E6FA; 
+    --logo-dark-purple: #4B0082; 
+    --logo-pale-purple: #D8BFD8; 
+    --logo-white: #FFFFFF; 
+    --logo-black: #1A1A1A; 
+    --logo-gray-light: #F5F5F5; 
+    --logo-shadow: rgba(138, 43, 226, 0.1);
 }
 
-/* =============================================
-   ESTILOS BASE Y CONTENEDOR
-============================================= */
+
 .logo-admin-page {
     background-color: var(--logo-white);
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
-/* =============================================
-   TÍTULO DE PÁGINA
-============================================= */
 .logo-page-title {
     color: var(--logo-dark-purple);
     font-weight: 700;
@@ -37,9 +29,7 @@
         color: var(--logo-primary-purple);
     }
 
-/* =============================================
-   TARJETAS PRINCIPALES
-============================================= */
+
 .logo-card-container {
     background: var(--logo-white);
     border: 1px solid var(--logo-light-purple);
@@ -48,10 +38,7 @@
     height: 100%;
     overflow: hidden;
 }
-
-/* =============================================
-   ENCABEZADOS DE TARJETAS
-============================================= */
+/
 .logo-card-header-current {
     background: linear-gradient(135deg, var(--logo-primary-purple), var(--logo-dark-purple));
     color: var(--logo-white);
@@ -79,9 +66,6 @@
     margin-right: 0.5rem;
 }
 
-/* =============================================
-   CUERPO DE TARJETAS
-============================================= */
 .logo-card-body-content {
     padding: 2rem;
     display: flex;
@@ -90,9 +74,7 @@
     justify-content: center;
 }
 
-/* =============================================
-   PREVIEW DEL LOGO
-============================================= */
+
 .logo-image-container {
     margin-bottom: 1.5rem;
     padding: 1rem;
@@ -111,9 +93,7 @@
     object-fit: contain;
 }
 
-/* =============================================
-   ESTADO VACÍO
-============================================= */
+
 .logo-empty-container {
     padding: 3rem 1rem;
     text-align: center;
@@ -139,10 +119,7 @@
     font-size: 0.95rem;
     margin-top: 0;
 }
-
-/* =============================================
-   FORMULARIO
-============================================= */
+}}
 .logo-upload-form {
     width: 100%;
 }
@@ -227,9 +204,6 @@
     margin-top: 1rem;
 }
 
-/* =============================================
-   ALERTAS
-============================================= */
 .logo-alert {
     border: none;
     border-radius: 8px;
@@ -266,9 +240,7 @@
     padding: 0;
 }
 
-/* =============================================
-   MODAL
-============================================= */
+/
 .logo-modal-overlay {
     position: fixed;
     top: 0;
@@ -374,9 +346,9 @@
     font-weight: 600;
 }
 
-/* Botón para volver al admin - Solo icono */
+
 .btn-volver-icono {
-    background: rgba(138, 43, 226, 0.2) !important; /* Usando el morado del tema */
+    background: rgba(138, 43, 226, 0.2) !important; 
     border: 2px solid rgba(138, 43, 226, 0.4) !important;
     border-radius: 10px !important;
     color: var(--logo-dark-purple) !important;
@@ -401,9 +373,7 @@
         color: var(--logo-dark-purple);
     }
 
-/* =============================================
-   RESPONSIVE
-============================================= */
+
 @media (max-width: 768px) {
     .logo-card-body-content {
         padding: 1.5rem;
