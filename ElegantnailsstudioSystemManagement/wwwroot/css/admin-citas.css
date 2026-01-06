@@ -29,10 +29,38 @@
 /* Contenedor del header con botón */
 .admin-header-container {
     display: flex;
-    align-items: stretch;
+    align-items: center; /* Cambié de stretch a center */
     margin-bottom: 30px;
     gap: 15px;
 }
+
+/* Botón redondo para volver al admin */
+.btn-volver-icono {
+    background: rgba(232, 62, 140, 0.2) !important;
+    border: 2px solid rgba(232, 62, 140, 0.4) !important;
+    border-radius: 50% !important; /* Cambié a 50% para que sea redondo */
+    color: var(--rosa-claro) !important;
+    width: 60px; /* Tamaño fijo */
+    height: 60px; /* Tamaño fijo - igual que el ancho */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    transition: all 0.3s ease !important;
+    flex-shrink: 0; /* Evita que se encoja */
+}
+
+    .btn-volver-icono:hover {
+        background: rgba(232, 62, 140, 0.3) !important;
+        border-color: var(--rosa) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(232, 62, 140, 0.3);
+    }
+
+    .btn-volver-icono i {
+        font-size: 1.8rem;
+        color: var(--rosa-claro);
+    }
 
 /* Header que ocupa el ancho restante */
 .admin-citas-header {
@@ -45,7 +73,7 @@
     align-items: center;
     justify-content: center;
     padding: 20px 25px;
-    min-height: 120px; /* Altura mínima para que coincida con el botón */
+    min-height: 80px; /* Reducí la altura mínima */
 }
 
 .header-content {
@@ -68,35 +96,6 @@
     opacity: 0.9;
     margin: 0;
 }
-
-/* Ajustar el botón para que tenga misma altura visual */
-.btn-volver-icono {
-    background: rgba(232, 62, 140, 0.2) !important;
-    border: 2px solid rgba(232, 62, 140, 0.4) !important;
-    border-radius: 10px !important;
-    color: var(--rosa-claro) !important;
-    width: 60px; /* Un poco más ancho */
-    height: auto; /* Altura automática */
-    min-height: 120px; /* Misma altura que el header */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 !important;
-    transition: all 0.3s ease !important;
-    flex-shrink: 0; /* Evita que se encoja */
-}
-
-    .btn-volver-icono:hover {
-        background: rgba(232, 62, 140, 0.3) !important;
-        border-color: var(--rosa) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(232, 62, 140, 0.3);
-    }
-
-    .btn-volver-icono i {
-        font-size: 1.8rem; /* Un poco más grande */
-        color: var(--rosa-claro);
-    }
 
 /* =========================================== */
 /* FIN DEL NUEVO CÓDIGO                        */
@@ -421,32 +420,37 @@
     padding-top: 0 !important;
 }
 
-/* Responsive */
+/* =========================================== */
+/* RESPONSIVE ACTUALIZADO                      */
+/* =========================================== */
 @media (max-width: 768px) {
     /* Ajustes para el header con botón en móvil */
     .admin-header-container {
-        flex-direction: column;
-        gap: 15px;
+        flex-direction: row; /* Mantiene en fila en móvil también */
+        gap: 10px;
     }
 
     .btn-volver-icono {
-        width: 100%;
-        min-height: 60px;
-        height: 60px;
-        margin-bottom: 0;
+        width: 50px; /* Un poco más pequeño en móvil */
+        height: 50px;
+        min-height: auto;
     }
+
+        .btn-volver-icono i {
+            font-size: 1.5rem;
+        }
 
     .admin-citas-header {
         min-height: auto;
-        padding: 20px;
+        padding: 15px 20px;
     }
 
         .admin-citas-header h1 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
         }
 
         .admin-citas-header .subtitle {
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
     .admin-citas-table thead {
