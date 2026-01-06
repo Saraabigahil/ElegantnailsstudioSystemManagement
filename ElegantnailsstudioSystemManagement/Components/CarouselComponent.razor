@@ -1,8 +1,6 @@
 ﻿@* Components/CarouselComponent.razor *@
 <div class="shared-carousel">
     <div id="carouselMain" class="carousel slide carousel-fade" data-bs-ride="carousel">
-
-      
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselMain" data-bs-slide-to="0" class="active"></button>
             <button type="button" data-bs-target="#carouselMain" data-bs-slide-to="1"></button>
@@ -10,10 +8,9 @@
             <button type="button" data-bs-target="#carouselMain" data-bs-slide-to="3"></button>
         </div>
 
-        <!-- Imágenes -->
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <div class="carousel-image" style="background-image: url('/static/carrusel1.jpg');"></div>
+                <img src="/static/img1.jpg" class="d-block w-100 carousel-img" alt="Transforma tu Estilo">
                 <div class="carousel-caption">
                     <h2>Transforma tu Estilo</h2>
                     <p>La perfección en cada detalle</p>
@@ -21,7 +18,7 @@
             </div>
 
             <div class="carousel-item">
-                <div class="carousel-image" style="background-image: url('/static/carrusel2.jpg');"></div>
+                <img src="/static/img2.jpg" class="d-block w-100 carousel-img" alt="Calidad Premium">
                 <div class="carousel-caption">
                     <h2>Calidad Premium</h2>
                     <p>Productos de primera calidad</p>
@@ -29,7 +26,7 @@
             </div>
 
             <div class="carousel-item">
-                <div class="carousel-image" style="background-image: url('/static/carrusel3.jpg');"></div>
+                <img src="/static/img3.jpg" class="d-block w-100 carousel-img" alt="Diseños Exclusivos">
                 <div class="carousel-caption">
                     <h2>Diseños Exclusivos</h2>
                     <p>Tendencias únicas para ti</p>
@@ -37,7 +34,7 @@
             </div>
 
             <div class="carousel-item">
-                <div class="carousel-image" style="background-image: url('/static/carrusel4.jpg');"></div>
+                <img src="/static/img4.jpg" class="d-block w-100 carousel-img" alt="Reserva Fácil">
                 <div class="carousel-caption">
                     <h2>Reserva Fácil</h2>
                     <p>Agenda tu cita en línea</p>
@@ -54,9 +51,3 @@
         </button>
     </div>
 </div>
-
-
-
-
-
-

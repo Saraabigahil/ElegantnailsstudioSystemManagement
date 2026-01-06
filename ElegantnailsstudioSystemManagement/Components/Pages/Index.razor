@@ -95,7 +95,6 @@
                                 </div>
                             </div>
 
-                            <!-- CAMBIÉ ESTE BOTÓN: de <a> a <button> -->
                             <button class="boton-agendar-unificado" @onclick="() => VerificarSesionYAgendar(servicio.Id)">
                                 <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
                             </button>
@@ -182,10 +181,8 @@
         StateHasChanged();
     }
 
-    // AGREGAR ESTA NUEVA FUNCIÓN
     private void VerificarSesionYAgendar(int servicioId)
     {
-        // Verificar si el usuario está logueado
         if (!AuthService.IsLoggedIn)
         {
             // Mostrar alerta si NO está logueado
