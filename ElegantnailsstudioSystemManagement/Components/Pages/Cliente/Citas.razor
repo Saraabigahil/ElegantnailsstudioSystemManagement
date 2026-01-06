@@ -11,8 +11,20 @@
 <PageTitle>Mis Citas - Elegant Nails</PageTitle>
 
 <div class="container mt-4">
-    <h1 class="mb-4"><i class="bi bi-calendar-check me-2"></i>Mis Citas</h1>
+    <!-- BOTONES ARRIBA - CON BOTÓN REDONDO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Mis Citas</h1>
+        <div class="d-flex gap-2">
+            <a href="/citas/agendar" class="btn btn-primary btn-sm rounded-circle" title="Agendar Nueva Cita" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-plus-circle"></i>
+            </a>
+            <a href="/cliente" class="btn btn-outline-secondary btn-sm" title="Volver al Panel">
+                <i class="bi bi-house-door"></i>
+            </a>
+        </div>
+    </div>
 
+    <!-- El resto de tu contenido permanece igual -->
     @if (citasCliente.Count == 0)
     {
         <div class="alert alert-info text-center py-5">
@@ -102,8 +114,9 @@
                                 @if (cita.Estado == "pendiente")
                                 {
                                     <button class="btn btn-sm btn-outline-danger"
-                                            @onclick="() => MostrarConfirmacionCancelar(cita)">
-                                        <i class="bi bi-x-circle"></i> Cancelar
+                                            @onclick="() => MostrarConfirmacionCancelar(cita)"
+                                            title="Cancelar Cita">
+                                        <i class="bi bi-x-circle"></i>
                                     </button>
                                 }
                                 else
@@ -117,15 +130,6 @@
             </table>
         </div>
     }
-
-    <div class="mt-4">
-        <a href="/citas/agendar" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Agendar Nueva Cita
-        </a>
-        <a href="/cliente" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Volver al Panel
-        </a>
-    </div>
 </div>
 
 <!-- Modal de confirmación al cancelar cita -->
@@ -168,17 +172,10 @@
                     <button type="button" class="btn btn-danger" @onclick="async () => await ConfirmarCancelacion()">
                         <i class="bi bi-trash me-2"></i>Sí, Cancelar Cita
                     </button>
-
                 </div>
             </div>
-            <a href="/cliente" class="btn btn-outline-light btn-lg">
-                <i class="bi bi-calendar-plus me-2"></i>Agendar Cita
-            </a>
         </div>
-
-
-            </div>
-       
+    </div>
 }
 
 <!-- Mensaje de éxito -->
@@ -284,10 +281,3 @@
         }
     }
 }
-
-
-
-
-
-
-
